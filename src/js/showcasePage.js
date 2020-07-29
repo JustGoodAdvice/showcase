@@ -102,6 +102,12 @@ export default class ShowcasePage {
       this.api = api.data;
       this.setActiveAudience(formData.audienceId);
       Loading.hide(loadingId);
+      // send it
+      // https://developers.google.com/analytics/devguides/collection/analyticsjs/pages
+      window.ga("send", {
+        hitType: "pageview",
+        page: location.pathname
+      });
       return api;
     }).catch((jqXHR) => {
       let err;
@@ -125,6 +131,24 @@ export default class ShowcasePage {
         message: `${err}`,
         delay: 10000
       });
+    });
+  }
+
+  /**
+   * Make API request to Advice Set endpoint to get user requests
+   * @returns Promise<jqXHR>
+   */
+  getAdviceSetUserQuestions() {
+    return $.ajax({
+      url: this.api.adviceset._links.self,
+      type: "GET",
+      dataType: "json",
+      headers: {
+        "Accept": "application/json; chartset=utf-8",
+        "Authorization": `Bearer ${this.config.api_key}`
+      }
+    }).then(api => {
+      return api.data.aiUserRequests;
     });
   }
 

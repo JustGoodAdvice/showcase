@@ -42,6 +42,7 @@
   },
   "globals": {
     "$": true,
+    "Intercom": true,
     "Promise": true
   }
 }

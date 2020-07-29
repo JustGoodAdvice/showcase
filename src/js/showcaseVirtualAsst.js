@@ -3,6 +3,7 @@ import _ from "lodash";
 import Handlebars from "handlebars";
 import qs from "querystring";
 import ShowcasePage from "./showcasePage";
+import UserQuestionInstantSearch from "./userQuestions/instantsearch";
 
 export default class showcaseVirtualAsst extends ShowcasePage {
   // #region getter/setter
@@ -31,6 +32,11 @@ export default class showcaseVirtualAsst extends ShowcasePage {
       this.handleClickBack();
       this.handleClickBubble();
       this.listenForUrlChanges();
+
+      this.getAdviceSetUserQuestions().then(aiUserRequests => {
+        const initialQuery = _.first(aiUserRequests).request;
+        new UserQuestionInstantSearch({ initialQuery });
+      });
     });
 
     // when data is updated after page-load, use this fn

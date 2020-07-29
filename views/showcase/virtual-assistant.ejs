@@ -2,6 +2,10 @@
 <html>
   <head>
 		<%- include("partials/_head"); %>
+		<link rel="stylesheet" href="/instantsearch.css/themes/reset-min.css">
+		<link rel="stylesheet" href="/instantsearch.css/themes/algolia-min.css">
+		<script src="//polyfill.io/v3/polyfill.min.js?features=default%2CArray.prototype.find%2CArray.prototype.includes%2CPromise%2CObject.assign%2CObject.entries"></script>
+
   </head>
   <body class="showcase showcase--advice showcase--advice_mobile showcase--advice_mobile-asst uxmode-asst">
 
@@ -39,15 +43,16 @@
 					<p class="mt-3">
 						Our Advice API can be integrated into existing <strong>virtual assistants</strong> and <strong>Alexa-enabled</strong> apps for customized and personalized experiences.
 					</p>
-					<div class="mt-5 typeahead d-none">
+					<div class="mt-5 typeahead">
 						<hr />
 						<p>Try an Alexa-enabled request to start a new rule.</p>
 						<form class="aiUserRequests">
 							<div class="form-group">
-								<input type="text" name="request" class="form-control form-control-sm" placeholder="Try typing '401k'...">
+								<div id="searchbox"></div>
 							</div>
 						</form>
-						<div id="typeahead_results"></div>
+						<div id="stats"></div>
+						<div id="typeahead_results"><span class="text-muted">Loading...</span></div>
 					</div>
 				</div>
 				<div class="col-md-8 right-pane">

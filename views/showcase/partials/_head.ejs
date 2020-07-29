@@ -34,4 +34,6 @@
 
 		gtag('config', '<%= GTAG_ID %>');
 	</script>
+<% } else { %>
+	<script>window.ga=function(){};</script>
 <% } %>
