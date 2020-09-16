@@ -60,7 +60,7 @@
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",
     "mocha": "^8.1.1",
-    "terser-webpack-plugin": "^4.1.0",
+    "terser-webpack-plugin": "^4.2.1",
     "webpack-stream": "^5.2.1"
   }
 }
