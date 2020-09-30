@@ -12,7 +12,7 @@
     "test": "NODE_ENV=test mocha --exit ./test"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-pro": "^5.14.0",
+    "@fortawesome/fontawesome-pro": "^5.15.0",
     "@sentry/apm": "^5.21.4",
     "@sentry/browser": "^5.23.0",
     "@sentry/node": "^5.21.4",
