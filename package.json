@@ -14,7 +14,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-pro": "^5.15.0",
     "@sentry/apm": "^5.24.2",
-    "@sentry/browser": "^5.24.2",
+    "@sentry/browser": "^5.27.2",
     "@sentry/node": "^5.24.2",
     "bitly": "^7.1.0",
     "bootstrap": "^4.5",
