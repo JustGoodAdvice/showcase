@@ -350,7 +350,7 @@ export default class ShowcasePage {
         if (url.includes("localhost")) {
           return resolve({ link: url });
         } else {
-          return $.post("/s/api/shorten", {
+          return $.post("/api/shorten", {
             long_url: url,
             title: `${this.api.adviceset.title} - ${title}`
           }).then(resolve);
@@ -393,7 +393,7 @@ export default class ShowcasePage {
         if (url.includes("localhost")) {
           return resolve({ link: url });
         } else {
-          return $.post("/s/api/shorten", {
+          return $.post("/api/shorten", {
             long_url: url,
             title: `${this.api.adviceset.title} - ${title}`
           }).then(resolve).catch(reject);

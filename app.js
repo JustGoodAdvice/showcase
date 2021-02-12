@@ -10,6 +10,7 @@ const { Integrations: ApmIntegrations } = require("@sentry/apm");
 const { default: sslRedirect } = require("heroku-ssl-redirect");
 
 const indexRouter = require("./routes/index");
+const apiRouter = require("./routes/api");
 const showcaseRouter = require("./routes/showcase");
 
 const pkg = require("./package.json");
@@ -66,6 +67,7 @@ app.use((req, res, next) => {
 
 app.use("/", indexRouter);
 app.use("/s", showcaseRouter);
+app.use("/api", apiRouter);
 
 // redirect all requests to HTTPS
 if (!process.env.WEB_HOST.includes("localhost")) {

@@ -594,7 +594,7 @@ export default class showcaseFull extends ShowcasePage {
             $(`#img_container_${id}`).empty().css("background-image", `url("${bgImg}")`);
             return resolve();
           } else {
-            return $.post("/s/api/ogs", { url: url }, (meta) => {
+            return $.post("/api/ogs", { url: url }, (meta) => {
               if (!meta.success) {
                 console.error("og failure", meta);
                 $(`#img_container_${id}`).empty().css("background-image", `url("${defaultImg}")`);
