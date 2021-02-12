@@ -8,8 +8,12 @@ module.exports = {
       new TerserPlugin({ cache: true, parallel: true, sourceMap: false })
     ]
   },
+  entry: {
+    main: "./src/js/main.js",
+    frb: "./src/js/entryFrb.js"
+  },
   output: {
-    filename: "main.js",
+    filename: "[name].bundle.js",
     path: path.resolve(__dirname, "./public/dist/js/")
   },
   stats: {

@@ -1,0 +1,44 @@
+@import 'variables';
+@import '../../node_modules/bootstrap/scss/bootstrap';
+@import '../../node_modules/@fortawesome/fontawesome-pro/scss/fontawesome';
+@import '../../node_modules/@fortawesome/fontawesome-pro/scss/light';
+@import "../../node_modules/placeholder-loading/src/scss/placeholder-loading";
+@import 'loading';
+
+#toastWrapper {
+  display: none;
+  min-height: 200px;
+  min-width: 320px;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  z-index: 9999999;
+
+  #toastContainer {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
+.ph-item {
+	border: 0 none;
+	padding: 0;
+
+	> * {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+// mixin
+@mixin text-link($color: $body-color, $hoverUnderline: true) {
+	color: $color;
+	text-decoration: none;
+
+	@if $hoverUnderline == true {
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}

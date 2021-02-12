@@ -125,7 +125,8 @@ function sass() {
     includePaths: [node_modules] // find node_modules above the cwd
   }
   return src([
-    "src/sass/taffrail.scss"
+    "src/sass/taffrail.scss",
+    "src/sass/frb.scss",
   ])
     .pipe(sourcemaps.init())
     .pipe(gSass(options).on("error", gSass.logError))
@@ -135,7 +136,10 @@ function sass() {
 }
 
 function scripts() {
-  return src("src/js/main.js")
+  return src([
+    "src/js/main.js",
+    "src/js/entryFrb.js"
+  ])
     .pipe(webpack(require("./webpack.config.js")))
     .pipe(dest(paths.scripts.dest))
     .pipe(browserSync.stream());
