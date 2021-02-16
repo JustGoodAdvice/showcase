@@ -24,7 +24,7 @@
     "ejs": "~3.1.5",
     "express": "~4.17.1",
     "express-healthcheck": "^0.1.0",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "heroku-ssl-redirect": "0.1.1",
     "history": "^4.10.1",
     "http-errors": "~1.8.0",
