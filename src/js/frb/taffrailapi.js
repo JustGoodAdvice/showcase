@@ -31,6 +31,11 @@ export default class TaffrailApi {
    * Initialize
    */
   init(){
+    if (!this.api?.adviceset) {
+      console.info("AdviceSetId not present on DOM, reloading...");
+      window.location.reload();
+    }
+
     // set the base URL for loading data
     window.jga.api._links = { self: `${this.config.api_host}/api/advice/${this.api.adviceset.id}` }
     // helpers
@@ -96,9 +101,9 @@ export default class TaffrailApi {
       {
         include: ["filteredVars"],
         showcase: true
-      }, 
-      currFormData, 
-      _.omit(window.jga.UserProfile.savedProfile, "_name"), 
+      },
+      currFormData,
+      _.omit(window.jga.UserProfile.savedProfile, "_name"),
       qs.parse(newFormData)
     );
     // does link contain referring AI User Request ID (aiUrId)?
@@ -204,7 +209,7 @@ export default class TaffrailApi {
       // add `_isOpen` flag to each item
       const arr = this.api.assumptions[key];
       this.api.assumptions[key] = arr.map(a => {
-        if (key == ASSUMPTIONS_UNGROUPED){ 
+        if (key == ASSUMPTIONS_UNGROUPED){
           a.tagGroup = {
             id: "ag",
             name: ASSUMPTIONS_UNGROUPED
@@ -326,7 +331,7 @@ export default class TaffrailApi {
   }
 
   /**
-   * 
+   *
    */
   updatePanes() {
     // update the window title
@@ -406,7 +411,7 @@ export default class TaffrailApi {
       });
 
       personalProfile = _.compact(personalProfile);
-      this.api.assumptions[`Personal Profile`] = _.sortBy(personalProfile, o => { return o.form.questionVariable.name; });
+      this.api.assumptions["Personal Profile"] = _.sortBy(personalProfile, o => { return o.form.questionVariable.name; });
     }
 
     // render
