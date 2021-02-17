@@ -31,7 +31,7 @@ export default class {
   }
 
   handleClickActivatePersona() {
-    $("body").on("click", "a[data-select-persona]", e => {
+    $(document).on("click", "a[data-select-persona]", e => {
       e.preventDefault();
       const $el = $(e.currentTarget);
       const { selectPersona } = $el.data();

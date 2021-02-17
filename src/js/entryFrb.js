@@ -24,7 +24,7 @@ document.addEventListener("turbolinks:load", () => {
   }
 });
 
-$(".madlib").on("click", "a.dropdown-item", e => {
+$(document).on("click", ".madlib a.dropdown-item", e => {
   e.preventDefault();
   const $this = $(e.currentTarget);
   const { taffrailVar, varValue } = $this.data();
