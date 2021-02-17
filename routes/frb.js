@@ -32,7 +32,7 @@ const PERSONAS = {
     Compensation_Annual: 200000,
     Annual_Expenses: 130000,
     Residence: "Own",
-    Debt_Balance: 0,
+    Debt_Balance: 10000,
     Investment_Amount_Balance: 100000,
     Cash_Balance: 25000,
     Account_Balance: 225000,
