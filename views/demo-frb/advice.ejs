@@ -1,0 +1,65 @@
+<script id="tmpl_groupedRecommendationsAdviceList" type="text/x-handlebars-template">
+	{{#if _recommendationsExist}}
+		
+			{{#each recommendations}}
+				<div class="recommendation-title">
+					{{#if @first}}
+						<header class="screen-edge-padding d-flex justify-content-between align-items-baseline">
+							<h6 class=" text-brand"><a href="#collapse_recgroup_{{@index}}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse_recgroup_{{@index}}"><i class="fal fa-chevron-right"></i> {{@key}}</a></h6>
+							
+							<%# include("_dropdown"); %>
+						</header>
+					{{else}}
+						<h6 class="screen-edge-padding text-brand"><a href="#collapse_recgroup_{{@index}}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse_recgroup_{{@index}}"><i class="fal fa-chevron-right"></i> {{@key}}</a></h6>
+					{{/if}}
+				</div>
+				<ul class="screen-edge-padding advice-list recommendations fa-ul collapse {{#ifEquals ../display.type 'ADVICE'}}show{{/ifEquals}}" id="collapse_recgroup_{{@index}}">
+					{{#each this}}
+						<li data-id="{{id}}" data-idx="{{idx}}">
+							<span class="fa-li">
+								<a href="https://taffrail.app/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}" target="_blank">
+									<i class="{{_icon}}"></i>
+								</a>
+							</span>
+							{{#if summary}}
+								<a data-toggle="collapse" href="#collapse_{{id}}" role="button" aria-expanded="false" aria-controls="collapse_{{id}}">{{headline}} {{#if attachment}}<i class="fal fa-image"></i>{{/if}}</a>
+								<div class="collapseX" id="collapse_{{id}}">
+									{{#if attachment}}
+										{{#if attachment._isInteractiveChart}}
+											<section class="advice-attachment advice-chart--interactive" id="{{id}}_{{@index}}" data-id="{{attachment.id}}" data-src="{{attachment.url}}">
+												<scr{{!}}ipt>
+													var chartFrame = document.createElement('iframe');
+													chartFrame.frameBorder = '0';
+													chartFrame.scrolling = 'no';
+													chartFrame.allowTransparency = 'true';
+													chartFrame.allowFullscreen = 'true';
+													chartFrame.width = '100%';
+													chartFrame.height = '100%';
+													document.getElementById('{{id}}_{{@index}}').appendChild(chartFrame);
+												</scr{{!}}ipt>
+											</section>
+										{{else}}
+											<section class="att">
+												<figure>
+													<img class="advice-attachment img-fluid" src="https://d1d53ugxmopqf1.cloudfront.net/fit-in/1000x563/filters:quality(75)/{{attachment.fileId}}">
+												</figure>
+											</section>
+										{{/if}}
+									{{/if}}
+									<p class="text-muted"><small>{{breaklines summary}}</small></p>
+									{{#if actions.length}}
+										{{#each actions}}
+											<div><a href="{{url}}" target="_blank" class="btn btn-sm btn-primary">{{name}}</a></div>
+										{{/each}}
+									{{/if}}
+								</div>
+							{{else}}
+								{{headline}}
+							{{/if}}
+						</li>
+					{{/each}}
+				</ul>
+			{{/each}}
+		
+	{{/if}}
+</script>

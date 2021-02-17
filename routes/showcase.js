@@ -16,6 +16,7 @@ router.get("/:adviceSetId/:view?", botMiddleware, (req, res, next) => {
   const apiUrl = `${process.env.API_HOST}/api/advice/${adviceSetId}?${qs.stringify(qrystr)}`;
 
   return res.render(`showcase/${template}`, {
+    layout: false,
     adviceSetId: adviceSetId,
     linkApi: apiUrl,
     linkAdviceBuilder: `${process.env.ADVICEBUILDER_HOST}/advicesets/${adviceSetId.substring(2)}/show`,

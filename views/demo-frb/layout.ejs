@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <% if (locals.api) { %>
+  <title>
+    <%= locals.api.data.adviceset.title %> - <%= locals.api.data.adviceset.owner.name %>
+  </title>
+  <meta name="description" content="<%= api.data.adviceset.description %>">
+  <% } else { %>
+    <title>Taffrail</title>
+  <% } %>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="application-name" content="Taffrail">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Taffrail">
+  <meta name="robots" content="index,follow">
+  <meta name="google" content="nositelinkssearchbox">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <!--https://fonts.google.com/specimen/EB+Garamond?preview.text_type=custom&query=garamond&sidebar.open=true&selection.family=EB+Garamond-->
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/dist/css/frb.css" data-turbolinks-track="reload" />
+
+  <!--favicons-->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+  <meta name="turbolinks-cache-control" content="no-cache">
+  <meta name="turbolinks-root" content="/frb">
+
+  <script>window.jga = window.jga || {}; window.jga.config = { cdn_host: "<%= locals.CDN_HOST %>", web_host: "<%= locals.WEB_HOST %>", api_host: "<%= locals.API_HOST %>", advicebuilder_host: "<%= locals.ADVICEBUILDER_HOST %>", api_key: "<%= locals.API_KEY %>" };</script>
+  
+  <%- include("_header_js"); %>
+  <script>window.jga.PERSONAS = <%- JSON.stringify(PERSONAS); %></script>
+</head>
+
+<body class="showcase showcase-frb">
+  <main class="container">
+    <section class="row main-content">
+      <div class="col-md-5 col-lg-3">
+        <header>
+          <div><a href="/frb/goal-planning"><img src="/img/first-republic-bank-logo@2x.png" width="200" height="68.5"></a></div>
+        </header>
+        <p class="lead text-brand intro">Prototype goal planning app</p>
+        <% if (locals.showStart) { %>
+        <p class="text-brand intro">Choose a goal, or start with a persona to simulate an authenticated client.</p>
+        <ul class="text-brand text-secondary intro-personas">
+          <% Object.keys(PERSONAS).forEach(key=> { %>
+            <li><a class="text-white" href="#" data-select-persona="<%= key %>">
+              <%= key %>
+            </a></li>
+            <% }) %>
+        </ul>
+        <% } %>
+      </div>
+      <div class="col-md-5 col-lg-6 advice-outer-container">
+        <section class="phone">
+          <%- include("./_toast_push"); %>
+          <section class="screenarea <%= locals.greenScreen ? 'screenarea-green' : null %>">
+            <div class="notch"></div>
+            <main class="screen <%= locals.greenScreen ? 'screen-nopadd' : null %>">
+              <% if (locals.inApp && !locals.showStart) { %>
+                <header><i class="fal fa-chevron-left"></i>&nbsp;<a href="/frb/goal-planning/start">Goal Planner</a><span id="breadcrumb"></span></header>
+              <% } %>
+              <%- body %>
+            </main>
+            <% if (locals.showDrawer) { %>
+              <div id="drawer">
+                <header><a href="#" data-sheet="drawer">Goal Assumptions & Profile</a></header>
+                <section>
+                  <section id="assumptions"></section>
+                </section>
+              </div>
+            <% } %>
+            <footer class="tabbar" data-turbolinks="false">
+              <a href="/frb/goal-planning" data-toggle="tooltip" title="Reset" target="_top" class="allowed tabbar-item"><i class="fal fa-home"></i></a>
+              <a href="#" class="tabbar-item"><i class="fal fa-dollar-sign"></i></a>
+              <a href="#" class="tabbar-item center"><i class="fal fa-bullseye-pointer"></i></a>
+              <div class="dropup">
+                <a href="#" class="tabbar-item allowed dropdown-toggle w-100 d-inline-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-user"></i></a>
+                <div class="dropdown-menu">
+                  <h6 class="dropdown-header">Personas</h6>
+                  <% Object.keys(PERSONAS).forEach(key => { %>
+                    <a class="dropdown-item" href="#" data-select-persona="<%= key %>"><%= key %></a>
+                  <% }) %>
+                </div>
+              </div>
+              <a href="#" data-action="modal-raw-data" data-toggle="tooltip" title="View data" class="tabbar-item allowed"><i class="fal fa-cog"></i></a>
+            </footer>
+
+          </section>
+        </section>
+      </div>
+      <div class="col-md-2 col-lg-3"></div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <section>
+        <p><span class="confidential">Confidential use only</span></p>
+      </section>
+    </div>
+  </footer>
+
+<!--templates-->
+<%- include("./inputRequest"); %>
+<%- include("./advice"); %>
+<%- include("./assumptions"); %>
+
+<%- include("../showcase/partials/_modal_vars"); %>
+<%- include("../showcase/index/variables"); %>
+<%- include("../showcase/partials/error"); %>
+
+</body>
+
+</html>

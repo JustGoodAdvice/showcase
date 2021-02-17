@@ -16,6 +16,7 @@
     "@sentry/apm": "^5.27.1",
     "@sentry/browser": "^5.28.0",
     "@sentry/node": "^6.0.3",
+    "@stimulus/polyfills": "^2.0.0",
     "bitly": "^7.1.2",
     "bootstrap": "^4.6",
     "clipboard-copy": "^4.0.1",
@@ -23,7 +24,9 @@
     "debug": "~4.3.1",
     "ejs": "~3.1.5",
     "express": "~4.17.1",
+    "express-ejs-layouts": "^2.5.0",
     "express-healthcheck": "^0.1.0",
+    "greeting-time": "^1.0.0",
     "handlebars": "^4.7.6",
     "heroku-ssl-redirect": "0.1.1",
     "history": "^4.10.1",
@@ -45,7 +48,9 @@
     "placeholder-loading": "^0.2.6",
     "pluralize": "^8.0.0",
     "popper.js": "^1.16.1",
-    "store": "^2.0.12"
+    "stimulus": "^2.0.0",
+    "store": "^2.0.12",
+    "turbolinks": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

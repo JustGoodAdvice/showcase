@@ -1,0 +1,37 @@
+<script id="tmpl_assumptionsList" type="text/x-handlebars-template">
+	{{#if _answersExist}}
+		{{#each assumptions}}
+			<div class="assumption-group"><a data-toggle="collapse" href="#collapse_{{@index}}" role="button" aria-expanded="false" aria-controls="collapse_{{@index}}"><i class="fal fa-chevron-{{#if this.0._isOpen}}down{{else}}right{{/if}}"></i>{{@key}}</a></div>
+			<ol class="assumptions-list collapse {{#if this.0._isOpen}}show{{/if}}" id="collapse_{{@index}}">
+				{{#each this}}
+					<li data-id="{{id}}" data-group-id="{{tagGroup.id}}" data-idx="{{idx}}" class="qa">
+						{{#if statement}}
+							<a href="#" class="statement">
+								{{statement}}
+							</a>
+						{{else}}
+							<span class="q">
+								{{#if form.questionVariable}}
+									<span class="text-monospace">{{form.questionVariable.name}}</span>&nbsp;
+								{{else}}
+									{{question}}
+								{{/if}}
+							</span>
+							<span class="a"><a href="#" class="">
+								{{#if form.questionVariable}}
+									<span class="text-monospace">{{answer}}</span>&nbsp;
+								{{else}}
+									{{#if answer}}
+										{{answer}}
+									{{else}}
+										{{value}}
+									{{/if}}
+								{{/if}}
+							</a></span>
+						{{/if}}
+					</li>
+				{{/each}}
+			</ol>
+		{{/each}}
+	{{/if}}
+</script>

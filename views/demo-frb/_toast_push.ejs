@@ -1,0 +1,18 @@
+<script id="tmpl_toast" type="text/x-handlebars-template">
+	<div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" id="{{id}}">
+		<div class="toast-header d-flex justify-content-between align-items-center">
+			<div class="d-flex align-items-center">
+				<div class="appicon"><img src="/img/frb/icon_246x0w.png" width="16" class="rounded"></div>
+				<header class="ml-2">{{{title}}}</header>
+			</div>
+			<time>{{#if time}}<small>{{time}}</small>{{/if}}</time>
+		</div>
+		<div class="toast-body">
+			{{{message}}}
+		</div>
+	</div>
+</script>
+
+<div aria-live="polite" aria-atomic="true" id="toastWrapper">
+	<div id="toastContainer"></div>
+</div>

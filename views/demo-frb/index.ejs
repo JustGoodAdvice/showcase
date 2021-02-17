@@ -1,102 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <% if (locals.api) { %>
-  <title>
-    <%= locals.api.data.adviceset.title %> - <%= locals.api.data.adviceset.owner.name %>
-  </title>
-  <meta name="description" content="<%= api.data.adviceset.description %>">
-  <% } %>
 
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="application-name" content="Taffrail">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Taffrail">
-  <meta name="robots" content="index,follow">
-  <meta name="google" content="nositelinkssearchbox">
+<h1 class="text-brand text-white" style="font-size: 1.25rem;margin-top:1rem;padding-left:.5rem"><%= locals.greeting %></h1>
 
-  <link href="//fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,200;0,300;0,400;0,500;1,400&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="/dist/css/frb.css" />
-
-  <!--favicons-->
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="theme-color" content="#ffffff">
-  <script>window.jga = window.jga || {}; window.jga.config = { cdn_host: "<%= locals.CDN_HOST %>", web_host: "<%= locals.WEB_HOST %>", api_host: "<%= locals.API_HOST %>", advicebuilder_host: "<%= locals.ADVICEBUILDER_HOST %>", api_key: "<%= locals.API_KEY %>" };</script>
-  <% if (locals.GTAG_ID) { %>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="//www.googletagmanager.com/gtag/js?id=<%= GTAG_ID %>"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-
-      gtag('config', '<%= GTAG_ID %>');
-    </script>
-  <% } %>
-</head>
-
-<body class="showcase showcase-frb">
-
-  <main class="container">
-
-    <section class="row main-content">
-      <div class="col-md-5 col-lg-3 assumptions-outer-container">
-
-      </div>
-      <div class="col-md-7 col-lg-9 advice-outer-container">
-
-        <section class="phone">
-          <section class="screenarea">
-            <main class="screen">
-              <header class="title"></header>
-              <a class="action-assumptions" href="#" data-sheet="assumptions" data-toggle="tooltip"
-                title="View assumptions"><i class="fal fa-clipboard-list-check"></i></a>
-              <div class="advice"></div>
-              <div class="list-all-recommendations"></div>
-              <div id="sheet_assumptions" class="sheet screen-edge-padding">
-                <header>
-                  <h6>Assumptions</h6>
-                  <a href="#" data-sheet="assumptions"><i class="fal fa-times"></i></a>
-                </header>
-                <div class="assumptions"></div>
-              </div>
-            </main>
-            <footer class="tabbar">
-              <a href="./?" data-toggle="tooltip" title="Reset"><i class="fal fa-home"></i></a>
-              <a href="#"><i class="fal fa-dollar-sign"></i></a>
-              <a href="#" class="center"><i class="fal fa-bullseye-pointer"></i></a>
-              <a href="#"><i class="fal fa-user"></i></a>
-              <a href="#"><i class="fal fa-cog"></i></a>
-            </footer>
-
-          </section>
-        </section>
-      </div>
-    </section>
-  </main>
-  <footer class="footer">
-    <div class="container">
-      <section>
-        
-      </section>
+<div class="card rounded-0">
+  <div class="card-body">
+    <h6 class="card-title text-secondary">CHECKING, SAVINGS & CDS</h6>
+    <div class="d-flex justify-content-between">
+      <p class="card-text"><strong>TOTAL</strong></p>
+      <h5 class="card-text"><strong>$12,345</strong></h5>
     </div>
-  </footer>
+  </div>
+</div>
 
-<!--templates-->
-<%- include("../showcase/partials/_modal_vars"); %>
-<%- include("../showcase/index/variables"); %>
-<%- include("../showcase/partials/error"); %>
-<%- include("../showcase/partials/_toast"); %>
+<div class="card rounded-0 mt-1">
+  <div class="card-body">
+    <h6 class="card-title text-secondary">LINE OF CREDIT</h6>
+    <div class="d-flex justify-content-between">
+      <p class="card-text"><strong>TOTAL</strong></p>
+      <h5 class="card-text"><strong>$6,879</strong></h5>
+    </div>
+  </div>
+</div>
 
-<%- include("_footer_js"); %>
-</body>
+<div class="card rounded-0 mt-1 card-goalplanner">
+  <div class="card-body">
+    <h6 class="card-title text-primary">GOAL PLANNER</h6>
+    <div class="d-flex justify-content-between">
+      <p class="card-text">
+        <i class="fal fa-lightbulb-on"></i> Try our new goal planner. Our app can assess your financial wellness 
+        and give you insights & recommendations to make your goals a reality. 
+        <a href="./goal-planning/start" class="stretched-link">Start here <i class="fal fa-chevron-double-right"></i></a></p>
+    </div>
+  </div>
+</div>
 
-</html>
+<div class="card rounded-0 mt-1">
+  <div class="card-body">
+    <h6 class="card-title text-secondary">LOANS</h6>
+    <div class="d-flex justify-content-between">
+      <p class="card-text"><strong>TOTAL</strong></p>
+      <h5 class="card-text"><strong>$6,879</strong></h5>
+    </div>
+  </div>
+</div>
+
+<div class="card rounded-0 mt-1">
+  <div class="card-body">
+    <h6 class="card-title text-secondary">OPEN ACCOUNT</h6>
+    <div class="d-flex justify-content-between">
+      <p class="card-text"><i class="fal fa-plus-circle"></i> Open a new account today</p>
+    </div>
+  </div>
+</div>
+

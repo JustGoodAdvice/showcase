@@ -70,7 +70,15 @@ function serve(cb) {
     port: port,
     ghostMode: {
       clicks: false // disable syncronized clicks
-    }
+    },
+    snippetOptions: { // inject script in <head> for turbolinks
+      rule: {
+        match: /<\/head>/i,
+        fn: function(snippet, match) {
+          return snippet + match;
+        }
+      }
+    },
   });
 
   // watch SASS & JS to build and auto reload, views to auto reload

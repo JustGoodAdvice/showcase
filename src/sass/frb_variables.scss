@@ -1,0 +1,68 @@
+// font awesome config
+$fa-font-path: "../../@fortawesome/fontawesome-pro/webfonts";
+$fa-font-size-base: 13px;
+
+$enable-gradients: false;
+
+$colors: (
+  'gray': #979DAC,
+  'gray-light': lighten(#979DAC, 25%),
+  'gray-dark': #5C677D,
+	'red': #EC2D3A,
+	'blue-dark': #12142d
+);
+
+$theme-colors: (
+  'primary': #0a382b,
+  'secondary':#947200,
+  'tertiary': #2a5044
+);
+
+$primary: map-get($theme-colors, 'primary');
+$secondary: map-get($theme-colors, 'secondary');
+$tertiary: map-get($theme-colors, 'tertiary');
+$gray: map-get($colors, 'gray');
+$gray-light: map-get($colors, 'gray-light');
+$gray-dark: map-get($colors, 'gray-dark');
+$blue-dark: map-get($colors, 'blue-dark');
+
+// http://screensiz.es/monitor
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px // default bootstrap
+  // xl: 1366px
+);
+
+$enable-caret: false;
+$enable-shadows: true;
+
+$footer-height: 4rem;
+
+$font-family-sans-serif: "Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+$font-weight-light: 200;
+$font-weight-normal: 400; // light =300, regular =400
+$font-weight-medium: 500; // medium =500
+$font-weight-bold: 600; // medium = 500
+
+$display1-weight: 600;
+$display2-weight: 600;
+$display3-weight: 600;
+$display4-weight: 600;
+
+$headings-font-weight: $font-weight-bold;
+
+$jumbotron-bg: #fff;
+$jumbotron-padding: .75rem;
+
+$line-height-sm: 1.2;
+
+$text-muted: $gray-dark;
+
+$zindex-modal-backdrop: 1040;
+$zindex-fixed: 1030;
+
+// loader
+$zindex-loading-mask: $zindex-fixed - 2;
+$zindex-loading-spinner: $zindex-fixed + 1;

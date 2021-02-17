@@ -1,0 +1,45 @@
+<script src="/jquery/dist/jquery.min.js" type="text/javascript" defer></script>
+<script src="/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript" defer></script>
+
+<script type="text/javascript">
+  window.jga = window.jga || {};
+  window.jga.api = {
+    adviceset: {
+      id: "<%= locals.adviceSetId %>",
+      _links: {
+        self: "<%= locals.API_HOST %>/api/adviceset/<%= locals.adviceSetId.substring(2) %>",
+        advicebuilder: "<%= locals.linkAdviceBuilder %>"
+      }
+    },
+    _links: { self: "<%- locals.linkApi %>" }
+  };
+  window.jga.adviceSetId = "<%= locals.adviceSetId %>";
+</script>
+
+<script src="/dist/js/frb.bundle.js" type="text/javascript" defer data-turbolinks-track="reload"></script>
+
+
+<% if (locals.SENTRY_DSN) { %>
+  <script src="//browser.sentry-cdn.com/5.28.0/bundle.apm.min.js" crossorigin="anonymous" defer></script>
+  <script type="text/javascript">
+    Sentry.init({
+      dsn: '<%= locals.SENTRY_DSN %>',
+      integrations: [
+        new Sentry.Integrations.Tracing(),
+      ],
+      tracesSampleRate: 0.5
+    });
+  </script>
+<% } %>
+
+<% if (locals.GTAG_ID) { %>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="//www.googletagmanager.com/gtag/js?id=<%= GTAG_ID %>"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', '<%= GTAG_ID %>');
+  </script>
+<% } %>

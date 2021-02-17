@@ -6,7 +6,7 @@ const request = require("request");
 module.exports = (req, res, next) => {
   const { adviceSetId } = req.params;
   const { nobot } = req.query;
-  if (nobot == 1) {
+  if (nobot == 1 || !adviceSetId) {
     return next();
   }
 
