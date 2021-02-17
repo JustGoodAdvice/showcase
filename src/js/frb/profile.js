@@ -35,18 +35,24 @@ export default class {
       e.preventDefault();
       const $el = $(e.currentTarget);
       const { selectPersona } = $el.data();
+      if (selectPersona == "reset") {
+        this.deactivatePersona();
+        return;
+      }
       this.activatePersona(selectPersona);
     });
   }
 
   activateCurrentPersona() {
     if (!this.savedProfile) { return; }
-    $("body")
-      .find("a[data-select-persona]").removeClass("active")
+    this.deactivateCurrentPersona()
       .filter(`[data-select-persona="${this.savedProfile._name}"]`)
       .addClass("active");
   }
 
+  deactivateCurrentPersona() {
+    return $("body").find("a[data-select-persona]").removeClass("active");
+  }
 
   activatePersona(persona) {
     const profile = this.PERSONAS[persona];
@@ -60,6 +66,7 @@ export default class {
 
   deactivatePersona() {
     this.savedProfile = null;
+    this.deactivateCurrentPersona();
     this.emit("deactivated", { message: "Profile deactivated" });
   }
 
