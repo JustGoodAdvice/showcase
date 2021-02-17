@@ -14,7 +14,7 @@
 	window.jga.adviceSetId="<%= locals.adviceSetId %>";
 </script>
 <% if (locals.SENTRY_DSN) { %>
-<script src="//browser.sentry-cdn.com/5.28.0/bundle.apm.min.js" crossorigin="anonymous"></script>
+<script src="//browser.sentry-cdn.com/<%= locals.SENTRY_VERSION_APM %>/bundle.apm.min.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
 	Sentry.init({ 
 		dsn: '<%= locals.SENTRY_DSN %>',
