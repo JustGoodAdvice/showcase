@@ -185,6 +185,10 @@ export default class ShowcasePage {
           const { headline: origHeadline } = lastAdvice;
           lastAdvice.headline = "All done!";
           lastAdvice.summary = `There is nothing else to display, this is the ${origHeadline}.`;
+
+          if (this.api.error) {
+            lastAdvice.summary += `\n\n${this.api.error.name}\n${this.api.error.message}`;
+          }
         }
       }
     }
