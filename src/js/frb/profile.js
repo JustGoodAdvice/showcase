@@ -1,6 +1,5 @@
 import _ from "lodash";
 import store from "store";
-
 export default class {
   constructor(){
     this.handleClickActivatePersona();
@@ -62,12 +61,14 @@ export default class {
     this.savedProfile = profile;
     this.activateCurrentPersona();
     this.emit("activated", { profile, message: `Profile set for ${profile._name}` });
+    window.location.reload();
   }
 
   deactivatePersona() {
     this.savedProfile = null;
     this.deactivateCurrentPersona();
     this.emit("deactivated", { message: "Profile deactivated" });
+    window.location.reload();
   }
 
   emit(name, detail) {

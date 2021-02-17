@@ -103,7 +103,7 @@ export default class TaffrailApi {
         showcase: true
       },
       currFormData,
-      _.omit(window.jga.UserProfile.savedProfile, "_name"),
+      (window.jga.UserProfile ? _.omit(window.jga.UserProfile.savedProfile, "_name") : {}),
       qs.parse(newFormData)
     );
     // does link contain referring AI User Request ID (aiUrId)?

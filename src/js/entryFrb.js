@@ -13,8 +13,6 @@ application.load(definitionsFromContext(context));
 Turbolinks.start();
 Turbolinks.setProgressBarDelay(100);
 
-window.jga.UserProfile = new UserProfile();
-
 // redo this on page loads
 document.addEventListener("turbolinks:load", () => {
   if (window.jga.UserProfile) {
@@ -24,6 +22,9 @@ document.addEventListener("turbolinks:load", () => {
   }
 });
 
+/**
+ * handler for madlib-style dropdowns for 'get started' button
+ */
 $(document).on("click", ".madlib a.dropdown-item", e => {
   e.preventDefault();
   const $this = $(e.currentTarget);
@@ -53,7 +54,9 @@ $(document).on("click", ".madlib a.dropdown-item", e => {
   }
 });
 
-// push notifications
+/**
+ * push notifications
+ */
 $(document).on("pushnotification", (e, evtname, detail) => {
   const id = `${evtname}_${Date.now()}`;
   detail.id = id;
@@ -67,7 +70,7 @@ $(document).on("pushnotification", (e, evtname, detail) => {
   $(`#${id}`).toast({
     delay: 2000
   }).on("hidden.bs.toast", () => {
-    // $(this).remove(); // remove it when it's been hidden
-    // $("#toastWrapper").hide();
+    $(this).remove(); // remove it when it's been hidden
+    $("#toastWrapper").hide();
   }).toast("show"); // finally show it
 });
