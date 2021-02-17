@@ -68,6 +68,22 @@
               <% if (locals.inApp && !locals.showStart) { %>
                 <header><i class="fal fa-chevron-left"></i>&nbsp;<a href="/frb/goal-planning/start">Goal Planner</a><span id="breadcrumb"></span></header>
               <% } %>
+              
+              <!-- use this script in the <body> so turbolinks executes it each page load -->
+              <script async="false">
+                  window.jga.api = {
+                  adviceset: {
+                    id: "<%= locals.adviceSetId %>",
+                      _links: {
+                      self: "<%= locals.API_HOST %>/api/adviceset/<%= locals.adviceSetId.substring(2) %>",
+                        advicebuilder: "<%= locals.linkAdviceBuilder %>"
+                    }
+                  },
+                  _links: { self: "<%- locals.linkApi %>" }
+                };
+                window.jga.adviceSetId = "<%= locals.adviceSetId %>";
+              </script>
+
               <%- body %>
             </main>
             <% if (locals.showDrawer) { %>
