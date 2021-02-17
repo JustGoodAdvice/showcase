@@ -22,26 +22,26 @@
     home by
     <div class="btn-group">
       <% const start_year=new Date().getFullYear(); %>
-      <a class="btn dropdown-toggle dotted-btn" data-toggle="dropdown" href="#" data-var-selected="Target_Year|<%= start_year %>"><%= start_year %></span></a>
+      <a class="btn dropdown-toggle dotted-btn" data-toggle="dropdown" href="#" data-var-selected="Home_Purchase_Time_Frame|0"><%= start_year %></span></a>
       <ul class="dropdown-menu">
         <% let dates=[]; 
           for (var i = start_year; i < start_year + 10; i++) {
             dates.push(i);
           } %>
-        <% dates.forEach(d=> { %>
-          <li><a href="#" class="dropdown-item <%= d==start_year?'active':null %>" data-taffrail-var="Target_Year" data-var-value="<%= d %>"><%= d %></a></li>
+        <% dates.forEach((d, c)=> { %>
+          <li><a href="#" class="dropdown-item <%= d==start_year?'active':null %>" data-taffrail-var="Home_Purchase_Time_Frame" data-var-value="<%= c %>"><%= d %></a></li>
         <% }) %>
       </ul>
     </div>
     .
   </div>
   
-  <p class="mt-5 mb-2"><a href="/frb/goal-planning/goals/taffrail/JUZsZh4CUVp3MK8xpBYDhtI?Home_Price=1000000&Target_Year=<%= start_year %>" class="get-started btn btn-block btn-outline-primary">Get started</a></p>
+  <p class="mt-5 mb-2"><a href="/frb/goal-planning/goals/taffrail/FRz1m9tf9TlExqy6BBI2gfM?Home_Price=1000000&Home_Purchase_Time_Frame=<%= start_year %>" class="get-started btn btn-block btn-outline-primary">Get started</a></p>
 
   
   <ul class="mt-5">
     <li><a href="/frb/goal-planning/goals/taffrail/JU8dmuM8pIFQC9UT50bxZPc" class="">How much home can I afford?</a></li>
     <li><a href="/frb/goal-planning/goals/taffrail/JUrkVc7CCdG?Home_Price=123456" class="">How soon can I afford a <span class="madlib">$123,456</span> home?</a></li>
-    <li><a href="/frb/goal-planning/goals/taffrail/JUZsZh4CUVp3MK8xpBYDhtI?Target_Year=2025" class="">How much home can I afford by <span class="madlib">2025</span>?</a></li>
+    <li><a href="/frb/goal-planning/goals/taffrail/JUZsZh4CUVp3MK8xpBYDhtI?Home_Purchase_Time_Frame=2025" class="">How much home can I afford by <span class="madlib">2025</span>?</a></li>
   </ul>
   

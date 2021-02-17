@@ -81,7 +81,8 @@ router.get("/goal-planning/goals/taffrail/:adviceSetId", botMiddleware, (req, re
   const adviceSetView = {
     "JUrkVc7CCdG": "house-affordability",
     "JUZsZh4CUVp3MK8xpBYDhtI": "house-affordability",
-    "JU8dmuM8pIFQC9UT50bxZPc": "house-affordability", //How Much Home Can You Afford?
+    "JU8dmuM8pIFQC9UT50bxZPc": "house-affordability", // How Much Home Can You Afford?
+    "FRz1m9tf9TlExqy6BBI2gfM": "house-affordability", // How Much Home Can You Afford?
     "JU5DZn-v5x1Pc8dasRn1UXk": "pay-debt",
     "JUWlttg90FD9fNGl-MxjoEM": "fitness",
   }
