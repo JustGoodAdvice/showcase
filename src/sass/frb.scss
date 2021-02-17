@@ -368,6 +368,112 @@ main.screen {
 	}
 }
 
+.list-all-recommendations {
+  margin-bottom: 2rem;
+
+  // &.unfocused {
+    
+  // }
+
+  &.has-primary-advice {
+    display: none;
+    margin-top: 2rem;
+
+    &.show {
+      display: block;
+    }
+  }
+}	
+
+.advice-group {
+  header {
+    margin-bottom: $headings-margin-bottom * 2;
+    
+    a:not(.dropdown-item) {
+      @include text-link($body-color, false);
+    }
+
+    i {
+      min-width: 1.25rem;
+    }
+  }
+}
+
+.advice-group + .advice-group {
+  margin-top: 2rem;
+}
+
+.advice-list {
+  &.fa-ul {
+    margin-left: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .fa-li a {
+      color: $primary;
+    }
+
+    .fa-li.no-summary {
+      top: -2px;
+    }
+    
+    i.bullet-sm {
+      color: $primary;
+      font-size: 7px;
+    }
+
+    a.headline {
+      @include text-link();
+      display: block;
+      font-weight: $font-weight-medium;
+    }
+
+    &.is-primary {
+      // background-color: $gray-200;
+      // border-radius: $border-radius;
+      margin-left: -2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      padding-top: .5rem;
+
+      .fa-li {
+        left: 0;
+        padding-top: 0;
+
+        &.no-summary {
+          top: 4px;
+        }
+      }
+
+      a.headline {
+        padding: 0 0 .5rem 0;
+      }
+
+      .collapse {
+        padding: 0 0 .5rem 0;
+      }
+    }
+  }
+
+  .summary {
+    // color: $primary;
+    font-weight: 300; // Plex light //$font-weight-normal;
+    margin-bottom: 0;
+  }
+}
+
+// only when centered...
+.advice-attachment.advice-chart--interactive {
+  margin: -.5rem 0 1rem -.5rem;
+  padding: 0;
+}
+
 .phone.drawer-open {
   .screen {
     filter: blur(1px);

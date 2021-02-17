@@ -250,7 +250,7 @@ export default class TaffrailApi {
 
     // group all advice into bucketed recommendations
     let groupedAdvice = _.groupBy(allAdvice, (a) => {
-      return (a.tagGroup) ? a.tagGroup.name : "Recommendations";
+      return (a.tagGroup) ? a.tagGroup.name : "GOAL PAGE";
     });
 
     // This is hard to read but straightforward chained lodash logic. Steps:
@@ -284,16 +284,16 @@ export default class TaffrailApi {
         }
 
         // only show icon for advice with summary or attachment
-        // let icon = "";
-        // if (a.summary && isChart) {
-        //   icon = "fal fa-chevron-down";
-        // } else if (a.summary) {
-        //   icon = "fal fa-chevron-right";
-        // } else {
-        //   icon = "fal fa-circle bullet-sm";
-        // }
-        // // handlebars helper
-        // a._icon = icon;
+        let icon = "";
+        if (a.summary && isChart) {
+          icon = "fal fa-chevron-down";
+        } else if (a.summary) {
+          icon = "fal fa-chevron-right";
+        } else {
+          icon = "fal fa-circle bullet-sm";
+        }
+        // handlebars helper
+        a._icon = icon;
 
         return a;
       });
