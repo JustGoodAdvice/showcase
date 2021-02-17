@@ -42,7 +42,7 @@ export default class extends Controller {
     const defaults = {
       Homeowner_Association_Fees: 0,
       Homeowner_Insurance_Costs_Monthly: 1000/12,
-      // Home_Property_Taxes: 5000,
+      Home_Property_Taxes: 5000,
       Mortgage_Down_Payment_Pct: .2,
       Mortgage_Insurance_Per_Month: 0,
       Mortgage_Interest_Rate: .03,
