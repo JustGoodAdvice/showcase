@@ -25,7 +25,7 @@ export default class {
   // pass { name: value }
   buildProfileWith(nv) {
     const prof = this.savedProfile;
-    const newProfile = _.extend(prof, nv);
+    const newProfile = _.assign(prof, nv);
     this.savedProfile = newProfile;
   }
 

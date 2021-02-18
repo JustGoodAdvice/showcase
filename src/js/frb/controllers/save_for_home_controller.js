@@ -5,7 +5,7 @@ import Turbolinks from "turbolinks";
 import qs from "querystring";
 import Handlebars from "handlebars";
 export default class extends Controller {
-  // static targets = ["timeframeInYears"];
+  static targets = ["goal"];
   // static values = { id: String };
 
   connect() {
@@ -40,14 +40,14 @@ export default class extends Controller {
     // default values for this adviceset
     const defaults = {
       Homeowner_Association_Fees: 0,
-      Homeowner_Insurance_Costs_Monthly: 1000/12,
-      Home_Property_Taxes: 5000,
-      Mortgage_Down_Payment_Pct: .2,
-      Mortgage_Insurance_Per_Month: 0,
+      // Homeowner_Insurance_Costs_Monthly: 1000/12,
+      // Home_Property_Taxes: 5000,
+      // Mortgage_Down_Payment_Pct: .2,
+      // Mortgage_Insurance_Per_Month: 0,
       Mortgage_Interest_Rate: .03,
-      Mortgage_Term_Years: 30,
+      // Mortgage_Term_Years: 30,
     }
-    const data = qs.stringify(_.extend(defaults, qs.parse(querystring)));
+    const data = qs.stringify(_.assign(defaults, qs.parse(querystring)));
     this.TaffrailAdvice.load(data, $("main.screen")).then(api => {
       // DOM updates
       this.TaffrailAdvice.updateFn(api, "initial page load");
@@ -65,6 +65,11 @@ export default class extends Controller {
 
   updateMainPane() {
     const { api } = this.TaffrailAdvice;
+    // title
+    const { variables_map: { Home_Price, Home_Price_Original, Home_Purchase_Time_Frame } } = api;
+    const price = Home_Price_Original?.valueFormatted || Home_Price?.valueFormatted;
+    const timeFrameYrs = new Date().getFullYear() + Home_Purchase_Time_Frame.value;
+    this.goalTarget.innerHTML = `I want to buy a home for <span class="text-secondary">${price}</span> by <span class="text-secondary">${timeFrameYrs}</span>`;
     // render
     if (api.display.type == "INPUT_REQUEST") {
       // $(".advice").slideDown(300);
@@ -80,36 +85,75 @@ export default class extends Controller {
       // use this to use the "Grouped Advice" template
       // this.TaffrailAdvice.updateForAdvice();
 
-      const { variables_map: {
-        "Can_Afford_House?": Can_Afford_House,
-        Goal_HomeSave_Adjust_DownPayment,
-        Goal_HomeSave_Adjust_Price,
-        Goal_HomeSave_Adjust_Savings,
-        Mortgage_Down_Payment_Savings_Current,
-        Time_Frame_Needed,
-        Time_Frame_Desired,
-      } } = api;
+      this.updateTips();
 
-      let period_from_now;
+      const str = Handlebars.compile($("#tmpl_advice_save_home").html())(api);
+      this.TaffrailAdvice.$advice.html(str);
+    }
 
-      if (Time_Frame_Needed.value <= 12) {
-        period_from_now = `Goal reached in ${Time_Frame_Needed.value.toFixed(0)} months`
+  }
+
+  updateTips() {
+    const { api } = this.TaffrailAdvice;
+    const { variables_map: {
+      "Can_Afford_House?": Can_Afford_House = { value: false },
+      Goal_HomeSave_Adjust_DownPayment = { value: 0 },
+      Goal_HomeSave_Adjust_Price,
+      Goal_HomeSave_Adjust_Savings,
+      Mortgage_Down_Payment_Savings_Current = { value: 0 },
+      Time_Frame_Needed = { value: 0 },
+      Time_Frame_Desired = { value: 0 },
+      Home_Price
+    } } = api;
+
+    try {
+      let period_from_now = "";
+      let reachedGoal = Can_Afford_House.value && Time_Frame_Needed.value <= Time_Frame_Desired.value;
+      const cannotAffordHouse = !Can_Afford_House.value;
+      if (cannotAffordHouse) {
+        reachedGoal = false;
+      }
+
+      if (cannotAffordHouse) {
+        period_from_now = "This is a stretch goal";
       } else {
-        const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
-        period_from_now = `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
+        if (reachedGoal) {
+          period_from_now += "<span class='text-success'>You got this!</span>";
+        } else {
+          if (Time_Frame_Needed.value && Time_Frame_Needed.value > 0) {
+            if (Time_Frame_Needed.value <= 12) {
+              period_from_now += `Goal reached in ${Time_Frame_Needed.value.toFixed(0)} months`
+            } else {
+              const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
+              period_from_now += `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
+            }
+          }
+        }
+        // period_from_now += "</span>"
+        // if (Time_Frame_Needed.value && Time_Frame_Needed.value > 0) {
+        //   if (Time_Frame_Needed.value <= 12) {
+        //     period_from_now = `Goal reached in ${Time_Frame_Needed.value.toFixed(0)} months`
+        //   } else {
+        //     const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
+        //     period_from_now = `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
+        //   }
+        // } else {
+        //   period_from_now = "<span class='text-success'>You got this!</span>";
+        // }
       }
 
       const tip_header = new Date().getFullYear() + (Time_Frame_Desired.value / 12);
       const tips = [];
 
-      // suggest Tip for user to pay off debt faster
-      const reachedGoal = Time_Frame_Needed.value < Time_Frame_Desired.value;
+      // suggest Tip for user to buy house sooner
       if (!reachedGoal) {
-        const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
-        tips.push({
-          tip: `Use projected timeline of ${new Date().getFullYear() + Number(totalYrs)}`,
-          action: `Home_Purchase_Time_Frame=${totalYrs}` // querystring format
-        });
+        if (Can_Afford_House.value) {
+          const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
+          tips.push({
+            tip: `Use projected timeline of ${new Date().getFullYear() + Number(totalYrs)}`,
+            action: `Home_Purchase_Time_Frame=${totalYrs}` // querystring format
+          });
+        }
         tips.push({
           tip: `Lower your target price to ${Goal_HomeSave_Adjust_Price.valueFormatted}`,
           action: `Home_Price=${Goal_HomeSave_Adjust_Price.value}` // querystring format
@@ -130,10 +174,10 @@ export default class extends Controller {
         tips
       }
       api.display.goal = goal;
-
-      const str = Handlebars.compile($("#tmpl_advice_save_home").html())(api);
-      this.TaffrailAdvice.$advice.html(str);
+    } catch (e) {
+      api.display.goal = {}
+      console.error(e);
+      $(document).trigger("pushnotification", ["goal_change", { message: e.message }]);
     }
-
   }
 }

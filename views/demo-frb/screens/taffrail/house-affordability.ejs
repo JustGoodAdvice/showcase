@@ -4,6 +4,7 @@
 
   <div class="goal-result" style="display:none;">
     <div class="mt-2"><img src="/img/frb/temp_goal_home.png" width="100%"></div>
+    <p data-save-for-home-target="goal" class="text-center"></p>
     <div class="mt-2 mb-3"><img src="/img/frb/temp_timeline.png" width="100%"></div>
   </div>
 
@@ -12,7 +13,7 @@
 </div>
 
 <script id="tmpl_advice_save_home" type="text/x-handlebars-template">
-  <h6 class="text-warning">{{display.goal.period_from_now}}</h6>
+  <h6 class="text-warning">{{{display.goal.period_from_now}}}</h6>
   <p>{{display.headline}}</p>
 
   <div class="text-center w-75 m-auto">

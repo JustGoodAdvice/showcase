@@ -98,13 +98,14 @@ export default class TaffrailApi {
    */
   load(newFormData, $loadingContainer = this.$loadingContainer, usePlaceholder = true){
     const currFormData = this.api.params;
+    const userProfileData = window.jga.UserProfile ? _.omit(window.jga.UserProfile.savedProfile, "_name") : {};
     const formData = _.assign(
       {
         include: ["filteredVars"],
         showcase: true
       },
       currFormData,
-      (window.jga.UserProfile ? _.omit(window.jga.UserProfile.savedProfile, "_name") : {}),
+      userProfileData,
       qs.parse(newFormData)
     );
     // does link contain referring AI User Request ID (aiUrId)?
@@ -430,7 +431,7 @@ export default class TaffrailApi {
       });
 
       personalProfile = _.compact(personalProfile);
-      this.api.assumptions["Personal Profile"] = _.sortBy(personalProfile, o => { return o.form.questionVariable.name; });
+      this.api.assumptions["Client Profile"] = _.sortBy(personalProfile, o => { return o.form.questionVariable.name; });
     }
 
     // render
@@ -607,7 +608,7 @@ export default class TaffrailApi {
       const data = $form.serialize();
 
       // push answer to this question into saved user profile
-      window.jga.UserProfile.buildProfileWith(qs.parse(data));
+      // window.jga.UserProfile.buildProfileWith(qs.parse(data));
 
       this.load(data, $("main.screen"), false).then(api => {
         // update content
