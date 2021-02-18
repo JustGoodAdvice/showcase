@@ -32,7 +32,7 @@ export default class TaffrailApi {
    */
   init(){
     if (!this.api?.adviceset) {
-      console.info("AdviceSetId not present on DOM, reloading...");
+      // console.info("AdviceSetId not present on DOM, reloading...");
       window.location.reload();
     }
 
@@ -43,6 +43,7 @@ export default class TaffrailApi {
     // events
     this.initCache();
     this.handleClickContinue();
+    this.handleClickTipTakeAction();
     this.handleClickBack();
     this.handleClickSheet();
     this.handleClickAssumption();
@@ -306,6 +307,22 @@ export default class TaffrailApi {
 
     // all advice to render is saved to `recommendations`
     this.api.recommendations = groupedAdvice;
+
+    this.mapVariables();
+  }
+
+  /**
+   * Map variables into named list
+   */
+  mapVariables() {
+    const vars = this.api.variables;
+    this.api.variables_map = {}
+    vars.forEach(v => {
+      if (!v.value) {
+        v.value = null; // sometimes API doesn't return value property
+      }
+      this.api.variables_map[v.name] = v;
+    });
   }
 
   /**
@@ -345,6 +362,8 @@ export default class TaffrailApi {
    * Template update for INPUT_REQUEST
    */
   updateForInputRequest($container = this.$advice) {
+    // hide goal pane
+    $(".goal-result").hide();
     // render
     const str = this.TEMPLATES["InputRequest"](this.api);
     $container.html(str);
@@ -420,12 +439,37 @@ export default class TaffrailApi {
   }
 
   /**
+   * Get variable object by name
+   * @param {string} name Variable name
+   */
+  var(name) {
+    return _.find(this.api.variables, { name });
+  }
+
+  /**
 	 * Update variables list
 	 */
   updateVariablesList(){
     // render
     const template = Handlebars.compile($("#tmpl_variablesList").html());
     $("#dataModal .variables").html(template(this.api));
+  }
+
+  /**
+   * Click handler for taking action in goal footer
+   */
+  handleClickTipTakeAction() {
+    $(".advice").on("click", "a.tip-take-action", e => {
+      e.preventDefault();
+      const $this = $(e.currentTarget);
+      const { action } = $this.data();
+      this.load(action, $("main.screen"), false).then(api => {
+        // update content
+        this.updateFn(api);
+        this.updatePanes();
+        $(document).trigger("pushnotification", ["goal_change", { message: "Great! Your goal was updated" }]);
+      });
+    });
   }
 
   /**

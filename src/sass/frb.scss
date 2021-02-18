@@ -474,6 +474,15 @@ main.screen {
   padding: 0;
 }
 
+.tips {
+  font-size: 90%;
+  margin-top: 2rem;
+
+  h6 {
+    font-size: .8rem;
+  }
+}
+
 .phone.drawer-open {
   .screen {
     filter: blur(1px);
