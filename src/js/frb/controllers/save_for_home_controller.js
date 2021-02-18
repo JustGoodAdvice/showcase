@@ -3,20 +3,19 @@ import { Controller } from "stimulus";
 import TaffrailAdvice from "../taffrailapi";
 import Turbolinks from "turbolinks";
 import qs from "querystring";
-
-
+import Handlebars from "handlebars";
 export default class extends Controller {
-  // static targets = ["title", "description"];
+  // static targets = ["timeframeInYears"];
   // static values = { id: String };
 
   connect() {
-    console.log("CONNECTED save for home")
+
   }
 
   initialize() {
     // advicsetId = this.idValue
 
-    $("#breadcrumb").html("&nbsp;/&nbsp;Save for a home");
+    // $("#breadcrumb").html("&nbsp;/&nbsp;Save for a home");
 
     this.TaffrailAdvice = new TaffrailAdvice();
     this.TaffrailAdvice.init();
@@ -65,17 +64,75 @@ export default class extends Controller {
   }
 
   updateMainPane() {
+    const { api } = this.TaffrailAdvice;
     // render
-    if (this.TaffrailAdvice.api.display.type == "INPUT_REQUEST") {
+    if (api.display.type == "INPUT_REQUEST") {
       // $(".advice").slideDown(300);
       this.TaffrailAdvice.updateForInputRequest();
     } else {
       // must be advice
-      if (this.TaffrailAdvice.api.display._isLast) {
+      if (api.display._isLast) {
         // since it's "last", hide the question.
         // $(".advice").slideUp(300);
       }
-      this.TaffrailAdvice.updateForAdvice();
+      $(".goal-result").show();
+
+      // use this to use the "Grouped Advice" template
+      // this.TaffrailAdvice.updateForAdvice();
+
+      const { variables_map: {
+        "Can_Afford_House?": Can_Afford_House,
+        Goal_HomeSave_Adjust_DownPayment,
+        Goal_HomeSave_Adjust_Price,
+        Goal_HomeSave_Adjust_Savings,
+        Mortgage_Down_Payment_Savings_Current,
+        Time_Frame_Needed,
+        Time_Frame_Desired,
+      } } = api;
+
+      let period_from_now;
+
+      if (Time_Frame_Needed.value <= 12) {
+        period_from_now = `Goal reached in ${Time_Frame_Needed.value.toFixed(0)} months`
+      } else {
+        const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
+        period_from_now = `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
+      }
+
+      const tip_header = new Date().getFullYear() + (Time_Frame_Desired.value / 12);
+      const tips = [];
+
+      // suggest Tip for user to pay off debt faster
+      const reachedGoal = Time_Frame_Needed.value < Time_Frame_Desired.value;
+      if (!reachedGoal) {
+        const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
+        tips.push({
+          tip: `Use projected timeline of ${new Date().getFullYear() + Number(totalYrs)}`,
+          action: `Home_Purchase_Time_Frame=${totalYrs}` // querystring format
+        });
+        tips.push({
+          tip: `Lower your target price to ${Goal_HomeSave_Adjust_Price.valueFormatted}`,
+          action: `Home_Price=${Goal_HomeSave_Adjust_Price.value}` // querystring format
+        });
+        tips.push({
+          tip: `Cut back on spending to save ${Goal_HomeSave_Adjust_Savings.valueFormatted}`,
+          action: `Mortgage_Down_Payment_Savings_Monthly=${Goal_HomeSave_Adjust_Savings.value}` // querystring format
+        });
+        tips.push({
+          tip: `Contribute an additional ${Goal_HomeSave_Adjust_DownPayment.valueFormatted}`,
+          action: `Mortgage_Down_Payment_Savings_Current=${Mortgage_Down_Payment_Savings_Current.value + Goal_HomeSave_Adjust_DownPayment.value}` // querystring format
+        });
+      }
+
+      const goal = {
+        period_from_now,
+        tip_header,
+        tips
+      }
+      api.display.goal = goal;
+
+      const str = Handlebars.compile($("#tmpl_advice_save_home").html())(api);
+      this.TaffrailAdvice.$advice.html(str);
     }
 
   }

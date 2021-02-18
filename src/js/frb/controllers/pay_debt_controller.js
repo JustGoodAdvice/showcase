@@ -87,7 +87,7 @@ export default class extends Controller {
         period_from_now = `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
       }
 
-      const tips = [];
+      let tips = [];
 
       // suggest Tip for user to pay off debt faster
       if (Debt_Payoff_Period.value >= 6) {
@@ -97,6 +97,14 @@ export default class extends Controller {
                 you will pay off your debt in half the time and save ${Debt_Interest_Paid_Diff.valueFormatted} in interest.`,
           action: `Debt_Payment=${increasedPayment}` // querystring format
         })
+      }
+
+      // minimum payment required
+      if (Debt_Payoff_Period.value === null) {
+        tips = [{
+          tip: `Make at least the ${Debt_Payment_Minimum.valueFormatted} minimum payment`,
+          action: `Debt_Payment=${Debt_Payment_Minimum.value}` // querystring format
+        }]
       }
 
       const goal = {

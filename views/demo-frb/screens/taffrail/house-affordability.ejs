@@ -1,5 +1,33 @@
-<div data-controller="save-for-home" data-save-for-home-id-value="<%= locals.adviceSetId %>">
+<div data-controller="save-for-home" data-save-for-home-value="<%= locals.adviceSetId %>">
+
   <%- include("../loading"); %>
+
+  <div class="goal-result" style="display:none;">
+    <div class="mt-2"><img src="/img/frb/temp_goal_home.png" width="100%"></div>
+    <div class="mt-2 mb-3"><img src="/img/frb/temp_timeline.png" width="100%"></div>
+  </div>
+
   <div class="advice"></div>
+
 </div>
-  
+
+<script id="tmpl_advice_save_home" type="text/x-handlebars-template">
+  <h6 class="text-warning">{{display.goal.period_from_now}}</h6>
+  <p>{{display.headline}}</p>
+
+  <div class="text-center w-75 m-auto">
+    <a href="#" data-action="save-goal" class="btn btn-block btn-outline-primary">Save Goal</a>
+  </div>
+
+  {{#if display.goal.tips}}
+  <div class="tips mb-5">
+    <h6 class="text-success"><i class="fal fa-lightbulb-on"></i> <span>{{display.goal.tip_header}}</span></h6>
+    <ul class="list-unstyled">
+      {{#each display.goal.tips}}
+      <li class="position-relative">{{this.tip}} <a href="#" class="stretched-link tip-take-action"
+          data-action="{{this.action}}"><i class="fal fa-chevron-right"></i></a></li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+</script>
