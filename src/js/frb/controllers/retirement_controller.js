@@ -43,11 +43,14 @@ export default class extends Controller {
       "401K_Tiers": 2,
       "401K_Match_Default_Tiers?": true,
     }
-    if (this.TaffrailAdvice.UserProfile?.Age_Now <= 29) {
-      defaults["401K_Contribution_Goal"] = "Maximize Match";
-    } else if (this.TaffrailAdvice.UserProfile?.Age_Now <= 39) {
+    // if (this.TaffrailAdvice.UserProfile?.Age_Now <= 29) {
+    //   defaults["401K_Contribution_Goal"] = "Maximize Match";
+
+    // users in 30s default to "contribute all i'm allowed"
+    if (window.jga.UserProfile?.savedProfile?.Age_Now <= 39) {
       defaults["401K_Contribution_Goal"] = "maximize contributions";
     }
+
     const data = qs.stringify(_.assign(defaults, qs.parse(querystring)));
     this.TaffrailAdvice.load(data, $("main.screen")).then(api => {
       // DOM updates
@@ -77,8 +80,14 @@ export default class extends Controller {
         // $(".advice").slideUp(300);
 
         // override "display" with Primary Advice
-        api.display = _.first(api.recommendations["Primary Advice"]) || api.display;
+        api.display.advice = api.recommendations["Primary Advice"];
       }
+
+      // ira solution adviceset
+      if (api.adviceset.id == "JUYUuNiqaBZJyNQOOmChLuy") {
+        api.display.advice = api.recommendations["Our Thinking"] || [api.display];
+      }
+
       $(".goal-result").show();
 
       // use this to use the "Grouped Advice" template
@@ -91,9 +100,19 @@ export default class extends Controller {
       const retirement_year = `Retire in ${new Date().getFullYear() + (65 - Age_Now.value)}`;
 
       let tips = [];
+      let ideas = [];
 
-      if (api.recommendations["Maximizing your employer match"].length) {
+      if (api.recommendations["Maximizing your employer match"] && api.recommendations["Maximizing your employer match"].length) {
         tips = api.recommendations["Maximizing your employer match"].map(adv => {
+          return {
+            tip: adv.headline,
+            action: "#"
+          }
+        });
+      }
+
+      if (api.recommendations["Ideas to Consider"] && api.recommendations["Ideas to Consider"].length) {
+        ideas = api.recommendations["Ideas to Consider"].map(adv => {
           return {
             tip: adv.headline,
             action: "#"
@@ -103,7 +122,8 @@ export default class extends Controller {
 
       const goal = {
         retirement_year,
-        tips
+        tips,
+        ideas
       }
       api.display.goal = goal;
 

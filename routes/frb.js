@@ -88,6 +88,8 @@ router.get("/goal-planning/goals/taffrail/:adviceSetId", botMiddleware, (req, re
     // "FRz1m9tf9TlExqy6BBI2gfM": "house-affordability", // How Much Home Can You Afford?
     "JU5DZn-v5x1Pc8dasRn1UXk": "pay-debt",
     "JUpiGfEDTHNwejiELgpJlQp": "save-retirement",
+    "JUhNUe4x5dNezRP1q5cNY4g": "save-retirement",
+    "JUYUuNiqaBZJyNQOOmChLuy": "save-retirement",
     "JUWlttg90FD9fNGl-MxjoEM": "fitness",
   }
 

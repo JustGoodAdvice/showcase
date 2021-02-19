@@ -474,12 +474,21 @@ main.screen {
   padding: 0;
 }
 
-.tips {
+.tips, .ideas {
   font-size: 90%;
   margin-top: 2rem;
 
   h6 {
     font-size: .8rem;
+  }
+}
+
+.ideas {
+  
+  li {
+    font-size: 90%;
+    margin-left: -1.5rem;
+    margin-bottom: .5rem;
   }
 }
 

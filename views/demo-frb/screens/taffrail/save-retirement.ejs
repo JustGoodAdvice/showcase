@@ -12,7 +12,9 @@
 
 <script id="tmpl_advice_save_retirement" type="text/x-handlebars-template">
   <h6 class="text-warning">{{display.goal.retirement_year}}</h6>
-  <p>{{display.headline}}</p>
+  {{#each display.advice}}
+    <p>{{this.headline}}</p>
+  {{/each}}
 
   <div class="text-center w-75 m-auto">
     <a href="#" data-action="save-goal" class="btn btn-sm btn-block btn-outline-primary">Save Goal</a>
@@ -25,6 +27,17 @@
       {{#each display.goal.tips}}
       <li class="position-relative">{{this.tip}} <a href="#" class="stretched-link tip-take-action"
           data-action="{{this.action}}"><i class="fal fa-chevron-right"></i></a></li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if display.goal.ideas}}
+  <div class="ideas mb-5">
+    <h6 class="text-success"><i class="fal fa-lightbulb-on"></i> Ideas to Consider</h6>
+    <ul class="list-">
+      {{#each display.goal.ideas}}
+      <li class="position-relative">{{this.tip}}</li>
       {{/each}}
     </ul>
   </div>
