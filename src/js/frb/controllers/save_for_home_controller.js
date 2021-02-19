@@ -66,7 +66,7 @@ export default class extends Controller {
   updateMainPane() {
     const { api } = this.TaffrailAdvice;
     // title
-    const { variables_map: { Home_Price, Home_Price_Original, Home_Purchase_Time_Frame } } = api;
+    const { variables_map: { Home_Price, Home_Price_Original, Home_Purchase_Time_Frame = { value: 0 } } } = api;
     const price = Home_Price_Original?.valueFormatted || Home_Price?.valueFormatted;
     const timeFrameYrs = new Date().getFullYear() + Home_Purchase_Time_Frame.value;
     this.goalTarget.innerHTML = `I want to buy a home for <span class="text-secondary">${price}</span> by <span class="text-secondary">${timeFrameYrs}</span>`;
@@ -142,7 +142,7 @@ export default class extends Controller {
         // }
       }
 
-      const tip_header = new Date().getFullYear() + (Time_Frame_Desired.value / 12);
+      const tip_header = "Reaching your goal"; //new Date().getFullYear() + (Time_Frame_Desired.value / 12);
       const tips = [];
 
       // suggest Tip for user to buy house sooner
