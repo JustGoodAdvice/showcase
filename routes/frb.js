@@ -13,6 +13,7 @@ const PERSONAS = {
     Age_Now: 25,
     MAGI: 150000,
     Compensation_Annual: 150000,
+    Salary: 150000,
     Annual_Expenses: 100000,
     Residence: "Rent",
     Debt_Balance: 25000,
@@ -30,6 +31,7 @@ const PERSONAS = {
     Age_Now: 32,
     MAGI: 200000,
     Compensation_Annual: 200000,
+    Salary: 200000,
     Annual_Expenses: 130000,
     Residence: "Own",
     Debt_Balance: 10000,
@@ -85,6 +87,7 @@ router.get("/goal-planning/goals/taffrail/:adviceSetId", botMiddleware, (req, re
     // "JU8dmuM8pIFQC9UT50bxZPc": "house-affordability", // How Much Home Can You Afford?
     // "FRz1m9tf9TlExqy6BBI2gfM": "house-affordability", // How Much Home Can You Afford?
     "JU5DZn-v5x1Pc8dasRn1UXk": "pay-debt",
+    "JUpiGfEDTHNwejiELgpJlQp": "save-retirement",
     "JUWlttg90FD9fNGl-MxjoEM": "fitness",
   }
 
