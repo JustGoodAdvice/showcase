@@ -1,0 +1,32 @@
+<div data-controller="retirement" data-retirement-id-value="<%= locals.adviceSetId %>">
+
+  <%- include("../loading"); %>
+
+  <div class="goal-result" style="display:none;">
+    <div class="mt-4"><img src="/img/frb/temp_goal_retire.png" width="100%"></div>
+  </div>
+
+  <div class="advice"></div>
+
+</div>
+
+<script id="tmpl_advice_save_retirement" type="text/x-handlebars-template">
+  <h6 class="text-warning">{{display.goal.retirement_year}}</h6>
+  <p>{{display.headline}}</p>
+
+  <div class="text-center w-75 m-auto">
+    <a href="#" data-action="save-goal" class="btn btn-sm btn-block btn-outline-primary">Save Goal</a>
+  </div>
+
+  {{#if display.goal.tips}}
+  <div class="tips mb-5">
+    <h6 class="text-success"><i class="fal fa-lightbulb-on"></i> Maximize your retirement</h6>
+    <ul class="list-unstyled">
+      {{#each display.goal.tips}}
+      <li class="position-relative">{{this.tip}} <a href="#" class="stretched-link tip-take-action"
+          data-action="{{this.action}}"><i class="fal fa-chevron-right"></i></a></li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+</script>

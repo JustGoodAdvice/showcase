@@ -38,7 +38,18 @@ export default class extends Controller {
 
     // current querystring without "?" prefix
     const querystring = location.search.substr(1);
-    this.TaffrailAdvice.load(querystring, $("main.screen")).then(api => {
+    // default values for this adviceset
+    const defaults = {
+      "401K_Tiers": 2,
+      "401K_Match_Default_Tiers?": true,
+    }
+    if (this.TaffrailAdvice.UserProfile?.Age_Now <= 29) {
+      defaults["401K_Contribution_Goal"] = "Maximize Match";
+    } else if (this.TaffrailAdvice.UserProfile?.Age_Now <= 39) {
+      defaults["401K_Contribution_Goal"] = "maximize contributions";
+    }
+    const data = qs.stringify(_.assign(defaults, qs.parse(querystring)));
+    this.TaffrailAdvice.load(data, $("main.screen")).then(api => {
       // DOM updates
       this.TaffrailAdvice.updateFn(api, "initial page load");
     });
@@ -64,53 +75,35 @@ export default class extends Controller {
       if (api.display._isLast) {
         // since it's "last", hide the question.
         // $(".advice").slideUp(300);
+
+        // override "display" with Primary Advice
+        api.display = _.first(api.recommendations["Primary Advice"]) || api.display;
       }
       $(".goal-result").show();
 
       // use this to use the "Grouped Advice" template
       // this.TaffrailAdvice.updateForAdvice();
 
-      // const { variables_map: {
-      //   Debt_Payment_Minimum,
-      //   Debt_Payoff_Period,
-      //   Debt_Payment,
-      //   Debt_Payment_Diff,
-      //   Debt_Interest_Paid_Diff
-      // } } = api;
+      const { variables_map: {
+        Age_Now
+      } } = api;
 
-      // let period_from_now;
-      // if (Debt_Payoff_Period.value === null) {
-      //   period_from_now = "You need to pay at least " + Debt_Payment_Minimum.valueFormatted + "/month";
-      // } else if (Debt_Payoff_Period.value <= 12) {
-      //   period_from_now = `Goal reached in ${Debt_Payoff_Period.value.toFixed(0)} months`
-      // } else {
-      //   const totalYrs = (Debt_Payoff_Period.value / 12).toFixed(0);
-      //   period_from_now = `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
-      // }
+      const retirement_year = `Retire in ${new Date().getFullYear() + (65 - Age_Now.value)}`;
 
-      // let tips = [];
+      let tips = [];
 
-      // // suggest Tip for user to pay off debt faster
-      // if (Debt_Payoff_Period.value >= 6) {
-      //   const increasedPayment = Debt_Payment.value + Debt_Payment_Diff.value;
-      //   tips.push({
-      //     tip: `Adding ${Debt_Payment_Diff.valueFormatted} to your payment,
-      //           you will pay off your debt in half the time and save ${Debt_Interest_Paid_Diff.valueFormatted} in interest.`,
-      //     action: `Debt_Payment=${increasedPayment}` // querystring format
-      //   })
-      // }
-
-      // // minimum payment required
-      // if (Debt_Payoff_Period.value === null) {
-      //   tips = [{
-      //     tip: `Make at least the ${Debt_Payment_Minimum.valueFormatted} minimum payment`,
-      //     action: `Debt_Payment=${Debt_Payment_Minimum.value}` // querystring format
-      //   }]
-      // }
+      if (api.recommendations["Maximizing your employer match"].length) {
+        tips = api.recommendations["Maximizing your employer match"].map(adv => {
+          return {
+            tip: adv.headline,
+            action: "#"
+          }
+        });
+      }
 
       const goal = {
-        // period_from_now,
-        // tips
+        retirement_year,
+        tips
       }
       api.display.goal = goal;
 

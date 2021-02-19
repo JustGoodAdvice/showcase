@@ -316,7 +316,7 @@ export default class TaffrailApi {
    * Map variables into named list
    */
   mapVariables() {
-    const vars = this.api.variables;
+    const vars = this.api.variables||[];
     this.api.variables_map = {}
     vars.forEach(v => {
       if (!v.value) {
