@@ -35,7 +35,8 @@ module.exports = (req, res, next) => {
         if (api.error) { return next(new Error(api.error.message)); }
 
         return res.render("showcase/bot", {
-          api: api
+          api: api,
+          layout: false
         });
       } else {
         console.error("unexpected!");
