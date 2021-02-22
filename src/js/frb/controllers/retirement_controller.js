@@ -85,7 +85,7 @@ export default class extends Controller {
 
       // ira solution adviceset
       if (api.adviceset.id == "JUYUuNiqaBZJyNQOOmChLuy") {
-        api.display.advice = api.recommendations["Our Thinking"] || [api.display];
+        api.display.advice = api.recommendations["Our Advice"] || [api.display];
       }
 
       $(".goal-result").show();
