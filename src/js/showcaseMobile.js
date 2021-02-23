@@ -57,6 +57,7 @@ export default class showcaseMobile extends ShowcasePage {
     this.updateRecommendationsList();
     this._scrollChatBubbles();
     this.updateVariablesList();
+    this.updateTaffrailVarHtml();
   }
 
   // #region event handlers

@@ -29,6 +29,7 @@ export default class showcaseFull extends ShowcasePage {
       this.handleClickContinue();
       this.handleClickBack();
       this.handleClickAssumption();
+      this.handleClickTaffrailVar();
       this.handleCollapseAdviceSummaries();
       this.handleCollapseAssumptionGroup();
       this.handleClickOnThisPageItem();
@@ -84,6 +85,7 @@ export default class showcaseFull extends ShowcasePage {
     this.updateRecommendationsList();
     this.updateOnThisPageRecommendationsList();
     this.updateVariablesList();
+    this.updateTaffrailVarHtml();
   }
 
   // #region event handlers
@@ -152,6 +154,24 @@ export default class showcaseFull extends ShowcasePage {
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored
       const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == data.idx; });
+      this.api.display = answer;
+      this.api.display.idx = answer.idx;
+      this.updateMainPane();
+    });
+  }
+
+  /**
+   * click taffrail var
+   */
+  handleClickTaffrailVar() {
+    $(document).on("click", "taffrail-var.active", e => {
+      e.preventDefault();
+      const $this = $(e.currentTarget);
+      const { idx } = $this.data();
+      $("html, body").animate({ scrollTop: this.scrollTo });
+      // temp override `display` global prop to insert question into HTML
+      // when user presses "OK" to keep or change answer, global data is refreshed/restored
+      const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == idx; });
       this.api.display = answer;
       this.api.display.idx = answer.idx;
       this.updateMainPane();

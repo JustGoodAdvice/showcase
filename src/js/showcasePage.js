@@ -22,7 +22,9 @@ export default class ShowcasePage {
     });
 
     Handlebars.registerHelper("breaklines", (text) => {
-      text = Handlebars.Utils.escapeExpression(text);
+      if (text && !text.includes("<taffrail-var")) {
+        text = Handlebars.Utils.escapeExpression(text);
+      }
       text = text.replace(/(\r\n|\n|\r)/gm, "<br>");
       return new Handlebars.SafeString(text);
     });
@@ -306,6 +308,28 @@ export default class ShowcasePage {
     // render
     const template = Handlebars.compile($("#tmpl_variablesList").html());
     $("#dataModal .variables").html(template(this.api));
+  }
+
+  /**
+   * Update inline HTML for taffrail variables
+   */
+  updateTaffrailVarHtml() {
+    // handle taffrail-var
+    $("body").find("taffrail-var").each((i, el) => {
+      const $el = $(el);
+      const { variableName } = $el.data();
+      // find corresponding question
+      const question = _.flatMap(this.api.assumptions).find((a) => { return a.form.name == variableName; });
+      if (question) {
+        $el
+          .addClass("active")
+          .data("idx", question.idx)
+          .attr("data-idx", question.idx)
+          .attr("data-toggle", "tooltip")
+          .attr("title", "Click to change")
+        ;
+      }
+    });
   }
 
   /**

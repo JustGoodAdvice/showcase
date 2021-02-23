@@ -53,6 +53,7 @@ export default class showcaseVirtualAsst extends ShowcasePage {
     this.updateRecommendationsList();
     this._scrollChatBubbles();
     this.updateVariablesList();
+    this.updateTaffrailVarHtml();
   }
 
   // #region event handlers

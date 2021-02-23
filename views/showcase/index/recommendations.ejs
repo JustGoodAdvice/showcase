@@ -40,7 +40,15 @@
 									{{#if _icon}}<i class="{{_icon}}"></i>{{/if}}
 								{{/if}}
 								</span>
-								<a href="https://taffrail.app/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}" target="_blank" class="headline">{{headline}}</a>
+								<span class="headline">
+									{{#if headline_html}}
+										{{{headline_html}}}
+									{{else}}
+										{{headline}}
+									{{/if}}
+									<a href="https://taffrail.app/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}"
+										target="_blank" class="headline-open-advice-in-ab">Edit</a>
+								</span>
 								{{#if summary}}
 									<div class="collapse {{#if attachment}}show{{/if}}" id="collapse_{{id}}">
 										{{#if attachment}}
@@ -65,7 +73,13 @@
 												</section>
 											{{/if}}
 										{{/if}}
-										<p class="summary">{{breaklines summary}}</p>
+										<p class="summary">
+											{{#if summary_html}}
+												{{{ breaklines summary_html }}}
+											{{else}}
+												{{breaklines summary}}
+											{{/if}}
+										</p>
 										{{#if actions.length}}
 											<div class="mt-3">
 												{{#each actions}}
@@ -86,7 +100,7 @@
 
 	{{#if _referenceDocumentsExist}}
 		<div class="advice-group references" id="group_references">
-			<header><h5>References & Sources</h5></header>
+			<header><h5>Personalized References</h5></header>
 			<div class="card-deck">
 				{{#each adviceset.referenceDocuments}}
 					<div class="card {{#if _hidden}}d-none{{/if}}">

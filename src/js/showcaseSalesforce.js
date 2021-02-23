@@ -76,6 +76,7 @@ export default class showcaseSalesforce extends ShowcasePage {
     this.updateAssumptionsList();
     this.updateRecommendationsList();
     this.updateVariablesList();
+    this.updateTaffrailVarHtml();
   }
 
   // #region event handlers

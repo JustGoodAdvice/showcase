@@ -374,7 +374,7 @@ export default class TaffrailApi {
           .attr("title", "Click to change")
         ;
       }
-    })
+    });
 
     $("#showcase_url").prop("href", `/s/${this.api.adviceset.id}/?${this.api.paramsAsQueryStr}`).prop("target","_blank");
   }

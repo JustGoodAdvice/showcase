@@ -189,6 +189,18 @@
 		}
 	}
 
+taffrail-var {
+  &.active {
+    border-bottom: 1px dotted $secondary;
+    color: $primary;
+    cursor: pointer;
+
+		&:hover {
+			color: $secondary;
+		}
+  }
+}
+
 	.advice-outer-container {
 		min-height: 600px;
 		padding-top: 1rem;
@@ -303,10 +315,22 @@
 					font-size: 7px;
 				}
 
-				a.headline {
-					@include text-link();
+				.headline {
 					display: block;
 					font-weight: $font-weight-medium;
+				}
+
+				.headline-open-advice-in-ab {
+					color: $gray-500;
+					display: none;
+					font-size: $font-size-sm;
+					font-weight: normal;
+				}
+
+				&:hover {
+					.headline-open-advice-in-ab {
+						display: inline-block;
+					}
 				}
 
 				&.is-primary {
