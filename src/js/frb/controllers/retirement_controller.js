@@ -100,7 +100,7 @@ export default class extends Controller {
       if (api.recommendations["Maximizing your employer match"] && api.recommendations["Maximizing your employer match"].length) {
         tips = api.recommendations["Maximizing your employer match"].map(adv => {
           return {
-            tip: adv.headline,
+            tip: adv.headline_html || adv.headline,
             action: "#"
           }
         });
@@ -109,7 +109,7 @@ export default class extends Controller {
       if (api.recommendations["Ideas to Consider"] && api.recommendations["Ideas to Consider"].length) {
         ideas = api.recommendations["Ideas to Consider"].map(adv => {
           return {
-            tip: adv.headline,
+            tip: adv.headline_html || adv.headline,
             action: "#"
           }
         });

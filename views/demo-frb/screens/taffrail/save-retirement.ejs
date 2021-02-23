@@ -40,7 +40,7 @@
     <h6 class="text-success"><i class="fal fa-lightbulb-on"></i> Maximize your retirement</h6>
     <ul class="list-unstyled">
       {{#each display.goal.tips}}
-      <li class="position-relative">{{this.tip}} <a href="#" class="stretched-link tip-take-action"
+      <li class="position-relative">{{{this.tip}}} <a href="#" class="stretched-link tip-take-action"
           data-action="{{this.action}}"><i class="fal fa-chevron-right"></i></a></li>
       {{/each}}
     </ul>
@@ -52,7 +52,7 @@
     <h6 class="text-success"><i class="fal fa-lightbulb-on"></i> Ideas to Consider</h6>
     <ul class="list-">
       {{#each display.goal.ideas}}
-      <li class="position-relative">{{this.tip}}</li>
+      <li class="position-relative">{{{this.tip}}}</li>
       {{/each}}
     </ul>
   </div>
