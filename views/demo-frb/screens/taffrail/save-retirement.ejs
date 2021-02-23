@@ -14,6 +14,9 @@
   <h6 class="text-warning">{{display.goal.retirement_year}}</h6>
   {{#each display.advice}}
     <p>{{this.headline}}</p>
+    {{#if this.summary}}
+      <p class="small">{{this.summary}}</p>
+    {{/if}}
   {{/each}}
 
   <div class="text-center w-75 m-auto">

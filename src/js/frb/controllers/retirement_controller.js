@@ -79,12 +79,7 @@ export default class extends Controller {
         // since it's "last", hide the question.
         // $(".advice").slideUp(300);
 
-        // override "display" with Primary Advice
-        api.display.advice = api.recommendations["Primary Advice"];
-      }
-
-      // ira solution adviceset
-      if (api.adviceset.id == "JUYUuNiqaBZJyNQOOmChLuy") {
+        // override "display" with Advice
         api.display.advice = api.recommendations["Our Advice"] || [api.display];
       }
 
