@@ -13,9 +13,21 @@
 <script id="tmpl_advice_save_retirement" type="text/x-handlebars-template">
   <h6 class="text-warning">{{display.goal.retirement_year}}</h6>
   {{#each display.advice}}
-    <p>{{this.headline}}</p>
+    <p>
+      {{#if this.headline_html}}
+        {{{this.headline_html}}}
+      {{else}}
+        {{this.headline}}
+      {{/if}}
+    </p>
     {{#if this.summary}}
-      <p class="small">{{this.summary}}</p>
+      <p class="small">
+        {{#if this.summary_html}}
+          {{{this.summary_html}}}
+        {{else}}
+          {{this.summary}}
+        {{/if}}
+      </p>
     {{/if}}
   {{/each}}
 

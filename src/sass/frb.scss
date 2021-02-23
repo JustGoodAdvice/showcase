@@ -260,6 +260,17 @@ p.intro {
   }
 }
 
+taffrail-var {
+  font-weight: bold;
+
+  &.active {
+    border-bottom: 2px dotted $secondary;
+    color: $primary;
+    cursor: pointer;
+    font-weight: normal;
+  }
+}
+
 .madlib {
   span.madlib {
     border-bottom: 2px dashed $secondary;

@@ -47,6 +47,7 @@ export default class TaffrailApi {
     this.handleClickBack();
     this.handleClickSheet();
     this.handleClickAssumption();
+    this.handleClickTaffrailVar();
     this.handleCollapseAssumptionGroup();
     this.handleChangeAudience();
     // this.handleCopyLink();
@@ -358,6 +359,23 @@ export default class TaffrailApi {
     this._setCurrentIdx();
     this.updateVariablesList();
 
+    // handle taffrail-var
+    this.$advice.find("taffrail-var").each((i, el) => {
+      const $el = $(el);
+      const { variableName } = $el.data();
+      // find corresponding question
+      const question = _.flatMap(this.api.assumptions).find((a) => { return a.form.name == variableName; });
+      if (question) {
+        $el
+          .addClass("active")
+          .data("idx", question.idx)
+          .attr("data-idx", question.idx)
+          .attr("data-toggle", "tooltip")
+          .attr("title", "Click to change")
+        ;
+      }
+    })
+
     $("#showcase_url").prop("href", `/s/${this.api.adviceset.id}/?${this.api.paramsAsQueryStr}`).prop("target","_blank");
   }
 
@@ -496,6 +514,23 @@ export default class TaffrailApi {
       this.api.display.idx = answer.idx;
       this.updateForInputRequest();
       this.triggerClickSheet(); // close
+    });
+  }
+
+  /**
+   * click taffrail var
+   */
+  handleClickTaffrailVar() {
+    $(document).on("click", "taffrail-var.active", e => {
+      e.preventDefault();
+      const $this = $(e.currentTarget);
+      const { idx } = $this.data();
+      // temp override `display` global prop to insert question into HTML
+      // when user presses "OK" to keep or change answer, global data is refreshed/restored
+      const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == idx; });
+      this.api.display = answer;
+      this.api.display.idx = answer.idx;
+      this.updateForInputRequest();
     });
   }
 

@@ -14,7 +14,13 @@
 
 <script id="tmpl_advice_save_home" type="text/x-handlebars-template">
   <h6 class="text-warning">{{{display.goal.period_from_now}}}</h6>
-  <p>{{display.headline}}</p>
+  <p>
+  {{#if display.headline_html}}
+    {{{display.headline_html}}}
+  {{else}}
+    {{display.headline}}
+  {{/if}}
+  </p>
 
   <div class="text-center w-75 m-auto">
     <a href="#" data-action="save-goal" class="btn btn-sm btn-block btn-outline-primary">Save Goal</a>
