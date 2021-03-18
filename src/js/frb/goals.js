@@ -3,7 +3,7 @@ import pluralize from "pluralize";
 import store from "store";
 import Handlebars from "handlebars";
 import numeral from "numeral";
-
+import qs from "querystring";
 export default class {
   constructor(profile, isFirstLoad = false) {
     if (!profile) {
@@ -29,10 +29,7 @@ export default class {
   }
 
   get savedGoals() {
-    let g = store.get(this.STORAGE_KEY, []);
-    if (g.length) {
-      g = this.prioritzeGoals(g);
-    }
+    const g = store.get(this.STORAGE_KEY, []);
     return g;
   }
 
@@ -46,16 +43,19 @@ export default class {
     return this.savedGoals.length;
   }
 
-  prioritzeGoals(goals) {
-    const saveForHome = goals.find(g => { return g.controllerName == "save-for-home" });
-    const payoffDebt = goals.find(g => { return g.controllerName == "pay-debt" });
-    const saveRetirement = goals.find(g => { return g.controllerName == "retirement" });
+  prioritzeGoals() {
+    const saveForHome = this.getGoalByName("save-for-home");
+    const payoffDebt = this.getGoalByName("pay-debt");
+    const saveRetirement = this.getGoalByName("retirement");
+    const debtIsCreditCardDebt = this.isDebtCreditCardDebt(payoffDebt);
 
     // debt, retirement, home
     const prioritized = [];
-    if (payoffDebt) { prioritized.push(payoffDebt); }
+    // credit card debt is first, all other debt is last
+    if (payoffDebt && debtIsCreditCardDebt) { prioritized.push(payoffDebt); }
     if (saveRetirement) { prioritized.push(saveRetirement); }
     if (saveForHome) { prioritized.push(saveForHome); }
+    if (payoffDebt && !debtIsCreditCardDebt) { prioritized.push(payoffDebt); }
     return prioritized;
   }
 
@@ -105,12 +105,15 @@ export default class {
   }
 
   _OPTIMIZE() {
+    const queue = [];
     const isOverBudget = !(this.availableCash > 0);
+    // const goals = this.savedGoals;
+    // const goalCount = goals.length;
+    const saveForHome = this.getGoalByName("save-for-home");
+    const payoffDebt = this.getGoalByName("pay-debt");
+    const debtIsCreditCardDebt = this.isDebtCreditCardDebt(payoffDebt);
+
     if (isOverBudget) {
-      this.emit("opto", { message: "You're over budget" });
-      const goals = this.savedGoals;
-      const goalCount = goals.length;
-      const saveForHome = goals.find(g => { return g.controllerName == "save-for-home" });
       // if you have a home goal, reduce this first
       if (saveForHome) {
         const cost = this.getCostFor("save-for-home");
@@ -119,9 +122,88 @@ export default class {
         const newMonthlyCost = cost + this.availableCash;
         console.log(newMonthlyCost)
       }
+    } else {
+      // under budget
+
+      // if client has credit debt & home with extra cash, split between two to reach home goal
+      if (payoffDebt && debtIsCreditCardDebt && saveForHome) {
+        const {
+          Debt_Payment_Suggested: { value: amNeededToPayOffDebtInHalfTime = 0 },
+          Debt_Payoff_Period = { value: 0 }
+        } = payoffDebt.data.variables_map;
+
+        const {
+          Goal_HomeSave_Adjust_Savings: { value: amtNeededToReachHomeGoal = 0 }
+        } = saveForHome.data.variables_map;
+
+        if (Debt_Payoff_Period.value <= 24) {
+          console.error(`OPTIMIZE - apply ${this.availableCash} to pay off debt faster`);
+
+          queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
+            Debt_Payment: this.availableCash + Number(payoffDebt.data.variables_map.Debt_Payment.value)
+          }));
+
+          // make home goal longer
+          console.error("OPTIMIZE - stretch home goal longer");
+          queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome));
+
+        } else {
+
+        }
+      }
+
+      if (debtIsCreditCardDebt) {
+        // total debt greater than available cash?
+        // if (payoffDebt.data.variables_map.Debt_Balance.value > this.availableCash) {
+        //   console.info(`OPTIMIZE - apply ${this.availableCash} to pay off debt faster`);
+
+        //   payoffDebt.data.params = _.assign(payoffDebt.data.params, {
+        //     Debt_Payment: this.availableCash + Number(payoffDebt.data.variables_map.Debt_Payment.value)
+        //   })
+        //   this._OPTIMIZE_REFRESH_GOAL(payoffDebt, payoffDebt.data);
+        // }
+      }
     }
-    this.renderBudgetAndGoals();
-    this.emit("opto", { message: "Your Action Plan is optimized." });
+
+    Promise.all(queue).then(() => {
+      this.renderBudgetAndGoals();
+      this.emit("opto", { message: "Your Action Plan is optimized." });
+    }).catch(err => {
+      console.error(err);
+      this.emit("opto", { message: err.message });
+    });
+  }
+
+  _OPTIMIZE_REFRESH_GOAL(goal, params = {}){
+    const { id: goalId, controllerName, data } = goal;
+    console.log(goalId, data)
+    const $container = $(`#heading_${goalId}`); // card-header
+    const $summary = $container.find(".card-header-summary");
+    $summary.html("Optimizing...");
+
+    return $.ajax({
+      url: data._links.base,
+      data: _.assign(data.params, params),
+    }).then(api => {
+      const { data } = api;
+      this.mapVariables(data);
+      data.paramsAsQueryStr = qs.stringify(data.params);
+
+      console.log("OPTIMIZED API response", data)
+
+      if (controllerName == "pay-debt") {
+        // const newSummary = _.first(data.advice.filter(a => { return a.type == "ADVICE"; }));
+        // $summary.html(newSummary.headline_html);
+
+
+      }
+
+      data.save_to_goal = {
+        advice: data.advice.filter(a => { return a.type == "ADVICE"; })
+      }
+
+      this.saveGoal(controllerName, data, goalId);
+    });
   }
 
   get monthlyIncome() {
@@ -149,16 +231,24 @@ export default class {
     return p;
   }
 
+  isDebtCreditCardDebt(payoffDebt) {
+    return payoffDebt && payoffDebt?.data?.variables_map?.Debt_Type_FRB?.value == "credit card";
+  }
+
+  getGoalByName(controllerName) {
+    return this.savedGoals.find(g => { return g.controllerName == controllerName });
+  }
+
   getCostFor(controllerName) {
-    const goal = this.savedGoals.find(g => { return g.controllerName == controllerName });
+    const goal = this.getGoalByName(controllerName);
     let cost = 0;
     if (!goal) { return cost; }
 
-    const { data: { variables_map } } = goal;
+    const { data: { variables_map = {} } } = goal;
     const {
-      Current_Monthly_Savings,
-      Debt_Payment,
-      Mortgage_Down_Payment_Savings_Monthly
+      Current_Monthly_Savings = { value: 0 },
+      Debt_Payment = { value: 0 },
+      Mortgage_Down_Payment_Savings_Monthly = { value: 0 }
     } = variables_map;
 
     switch (controllerName) {
@@ -182,36 +272,6 @@ export default class {
     cost += this.getCostFor("save-for-home");
     cost += this.getCostFor("retirement");
 
-    // const goals = this.savedGoals;
-    // const saveForHome = goals.find(g => { return g.controllerName == "save-for-home" });
-    // const payoffDebt = goals.find(g => { return g.controllerName == "pay-debt" });
-    // const saveRetirement = goals.find(g => { return g.controllerName == "retirement" });
-
-    // if (saveForHome) {
-    //   const { data: { variables_map } } = saveForHome;
-    //   const { Mortgage_Down_Payment_Savings_Monthly } = variables_map;
-    //   cost += Mortgage_Down_Payment_Savings_Monthly.value;
-    // }
-
-    // if (payoffDebt) {
-    //   const { data: { variables_map } } = payoffDebt;
-    //   const { Debt_Payment } = variables_map;
-    //   cost += Debt_Payment.value;
-    // }
-
-    // if (saveRetirement) {
-    //   const { data: { variables_map } } = saveRetirement;
-    //   const {
-    //     Current_Monthly_Savings = { value: 0 },
-    //     // Monthly_401K_Contribution_Current_Total = { value: 0 },
-    //     // Monthly_Retirement_Savings_Other_Current = { value: 0 },
-    //   } = variables_map;
-
-    //   cost += Current_Monthly_Savings.value;
-    //   // cost += Monthly_401K_Contribution_Current_Total.value;
-    //   // cost += Monthly_Retirement_Savings_Other_Current.value;
-    // }
-
     return cost;
   }
 
@@ -220,27 +280,27 @@ export default class {
     $("#budget_start").toggle(!showBudget);
     const $container = $("#user_selected_goals");
     if ($container.length) {
-      const goals = this.savedGoals;
+      const goals = this.prioritzeGoals();
       // remove 1st advice from
       const ctx = {
         goals,
         incomeF: numeral(this.monthlyIncome).format("$0,0"),
         expensesF: numeral(this.monthlyExpenses).format("$0,0"),
-        positiveAvailableCash: this.availableCash > 0,
+        positiveAvailableCash: this.availableCash >= 0,
         availableCashF: numeral(this.availableCash).format("$0,0"),
         startingCashF: numeral(this.startingCash).format("$0,0"),
         percentAllocatedF: numeral(this.percentAllocated).format("0%"),
         costOfGoalsF: numeral(this.costOfGoals).format("$0,0"),
-        showOptimizeButton: goals.length > 1
+        showOptimizeButton: this.availableCash > 0 && goals.length > 1
       }
       console.log("goals ctx", ctx)
       const str = Handlebars.compile($("#tmpl_user_selected_goals").html())(ctx);
       $container.html(str);
 
       // disable goal tiles if goal exists
-      const saveForHome = goals.find(g => { return g.controllerName == "save-for-home" });
-      const payoffDebt = goals.find(g => { return g.controllerName == "pay-debt" });
-      const saveRetirement = goals.find(g => { return g.controllerName == "retirement" });
+      const saveForHome = this.getGoalByName("save-for-home");
+      const payoffDebt = this.getGoalByName("pay-debt");
+      const saveRetirement = this.getGoalByName("retirement");
       const $tiles = $(".goal-tiles a");
       $tiles.eq(0).prop("disabled", saveForHome !== undefined).toggleClass("disabled", saveForHome !== undefined);
       $tiles.eq(1).prop("disabled", saveRetirement !== undefined).toggleClass("disabled", saveRetirement !== undefined);
@@ -257,13 +317,13 @@ export default class {
     this.savedGoals = newGoals;
   }
 
-  saveGoal(controllerName) {
+  saveGoal(controllerName, api = window.jga.api, goalId) {
     const nameMap = {
       "save-for-home": "Save for a home",
       "retirement": "Save for retirement",
       "pay-debt": "Payoff debt",
     }
-    const data = _.pick(window.jga.api, "adviceset", "params", "paramsAsQueryStr", "variables_map", "save_to_goal");
+    const data = _.pick(api, "adviceset", "params", "paramsAsQueryStr", "variables_map", "save_to_goal", "_links");
     const { save_to_goal } = data;
     const { advice } = save_to_goal;
     const [headline] = advice;
@@ -272,22 +332,26 @@ export default class {
     const filteredAdvice = advice.filter(a => { return a.id != headline.id });
 
     data.display = filteredAdvice;
+
+    // api url
+    const apiUrl = new URL(data._links.self);
+    data._links.base = `${apiUrl.origin}${apiUrl.pathname}`
+
     const newGoal = [{
       name: nameMap[controllerName],
       controllerName,
       data,
       headline,
-      id: _.uniqueId(`${controllerName}_`)
+      id: goalId || _.uniqueId(`${controllerName}_`)
     }];
 
     // delete current goal, if saved, and replace with new/updated
-    const goalToDelete = this.savedGoals.find(g => { return g.controllerName == controllerName; });
+    const goalToDelete = this.getGoalByName(controllerName);
     if (goalToDelete){
       this.deleteGoal(goalToDelete.id);
     }
 
     // set new goals
-    console.log("about to save this goal data", this.savedGoals.concat(newGoal))
     this.savedGoals = this.savedGoals.concat(newGoal);
 
     this.emit("goals", { message: "Goal saved! Action Plan updated." });
@@ -295,5 +359,21 @@ export default class {
 
   emit(name, detail) {
     $(document).trigger("pushnotification", [name, detail]);
+  }
+
+  /**
+   * Map variables into named list
+   */
+  mapVariables(api) {
+    const vars = api.variables || [];
+    api.variables_map = {}
+    vars.forEach(v => {
+      // sometimes API doesn't return value property
+      if (!_.has(v, "value")) {
+        v.value = null;
+      }
+      api.variables_map[v.name] = v;
+    });
+    return api;
   }
 }

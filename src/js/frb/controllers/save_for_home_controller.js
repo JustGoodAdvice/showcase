@@ -14,6 +14,9 @@ export default class extends Controller {
   }
 
   initialize() {
+    // track state for goal
+    this.reachedGoal = false;
+
     // advicsetId = this.idValue
 
     // $("#breadcrumb").html("&nbsp;/&nbsp;Save for a home");
@@ -88,10 +91,13 @@ export default class extends Controller {
 
       const str = Handlebars.compile($("#tmpl_advice_save_home").html())(api);
       this.TaffrailAdvice.$advice.html(str);
+
+      // $(".advice").find("a[data-action='save-goal']").toggle(this.reachedGoal);
     }
 
   }
 
+  // eslint-disable-next-line complexity
   updateTips() {
     const { api } = this.TaffrailAdvice;
     const { variables_map: {
@@ -100,24 +106,29 @@ export default class extends Controller {
       Goal_HomeSave_Adjust_Price,
       Goal_HomeSave_Adjust_Savings,
       Goal_HomeSave_Adjust_Time,
+      Home_Price = { value: 0 },
+      Home_Purchase_Time_Frame = { value: 0 },
       Mortgage_Down_Payment_Savings_Current = { value: 0 },
+      Mortgage_Down_Payment_Savings_Monthly = { value: 0 },
+      Mortgage_Down_Payment_Savings_Monthly_Needed: DP_Savings_Monthly_Needed = { value: 0 },
+      Mortgage_Down_Payment_Pct = { value: 0 },
       Time_Frame_Needed = { value: 0 },
       Time_Frame_Desired = { value: 0 },
-      Home_Price
+      // Home_Price
     } } = api;
 
     try {
       let period_from_now = "";
-      let reachedGoal = Can_Afford_House.value && Time_Frame_Needed.value <= Time_Frame_Desired.value;
+      this.reachedGoal = Can_Afford_House.value && Time_Frame_Needed.value <= Time_Frame_Desired.value;
       const cannotAffordHouse = !Can_Afford_House.value;
       if (cannotAffordHouse) {
-        reachedGoal = false;
+        this.reachedGoal = false;
       }
 
       if (cannotAffordHouse) {
         period_from_now = "This goal is out of reach";
       } else {
-        if (reachedGoal) {
+        if (this.reachedGoal) {
           const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
           period_from_now += `<span class='text-success'>You got this in ${pluralize("year", totalYrs, true)}!</span>`;
         } else {
@@ -129,30 +140,40 @@ export default class extends Controller {
               period_from_now += `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
             }
           }
+
+          // not reaching the goal
+          const aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
+          // remove 1st element from array, advice we don't want to display when goal has not been reached
+          // api.display.advice.shift();
+          // insert new "you're not there yet..." advice at top of display stack
+          api.display.advice.unshift({
+            headline_html: "<h6 class='text-uppercase text-secondary' style='font-size:90%;'>How to reach your goal</h6>"
+          });
+          api.display.advice.unshift({
+            headline_html: `By saving
+              <taffrail-var data-variable-name="Mortgage_Down_Payment_Savings_Monthly">${Mortgage_Down_Payment_Savings_Monthly.valueFormatted}</taffrail-var>
+              per month you are <strong>${aboveOrBelow}</strong> the
+              <taffrail-var data-variable-name="Mortgage_Down_Payment_Savings_Monthly_Needed">${DP_Savings_Monthly_Needed.valueFormatted}</taffrail-var>
+              required to afford the 
+              <taffrail-var data-variable-name="Mortgage_Down_Payment_Pct">${Mortgage_Down_Payment_Pct.valueFormatted}</taffrail-var>
+              down payment on your 
+              <taffrail-var data-variable-name="Home_Price">${Home_Price.valueFormatted}</taffrail-var>
+              home in 
+              <taffrail-var data-variable-name="Home_Purchase_Time_Frame">${pluralize("year", Home_Purchase_Time_Frame.value, true)}</taffrail-var>.`,
+          });
         }
-        // period_from_now += "</span>"
-        // if (Time_Frame_Needed.value && Time_Frame_Needed.value > 0) {
-        //   if (Time_Frame_Needed.value <= 12) {
-        //     period_from_now = `Goal reached in ${Time_Frame_Needed.value.toFixed(0)} months`
-        //   } else {
-        //     const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
-        //     period_from_now = `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
-        //   }
-        // } else {
-        //   period_from_now = "<span class='text-success'>You got this!</span>";
-        // }
       }
 
-      const tip_header = "Reaching your goal"; // new Date().getFullYear() + (Time_Frame_Desired.value / 12);
+      const tip_header = "Getting into this home";
       const tips = [];
 
       // suggest Tip for user to buy house sooner
-      if (!reachedGoal) {
+      if (!this.reachedGoal) {
         if (Can_Afford_House.value) {
           const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
           tips.push({
             tip: `Use projected timeline of ${new Date().getFullYear() + Number(totalYrs)}`,
-            action: `Home_Purchase_Time_Frame=${totalYrs}` // querystring format
+            action: `Home_Purchase_Time_Frame=${Number(totalYrs) + 1}` // querystring format
           });
         }
         tips.push({
