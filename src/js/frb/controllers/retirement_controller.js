@@ -108,8 +108,8 @@ export default class extends Controller {
       // get percent difference between what is needed and what client is saving
       // anything less than 3% difference is "on track"
       const [RSN, FVT] = [Retirement_Savings_Needed.value, Future_Value_Of_Savings_Total.value]
-      const pctDiff = 100 * Math.abs((RSN - FVT) / ((RSN + FVT) / 2));
-      this.reachedGoal = pctDiff <= 3;
+      const pctDiff = 100 * (FVT - RSN) / ((FVT + RSN) / 2);
+      this.reachedGoal = pctDiff >= -3;
 
       const retirement_year = `Retire in ${Retirement_Year_Target?.value}`;
 
@@ -163,7 +163,7 @@ export default class extends Controller {
         });
 
         ideas = ideas.concat([{
-          tip: `You're off track by ${numeral(pctDiff/100).format("0%")}`,
+          tip: `You're off track by about ${numeral(Math.abs(pctDiff) / 100).format("0%")}`,
           action: "#"
         }]);
 
