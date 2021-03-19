@@ -143,9 +143,25 @@ export default class extends Controller {
         }));
       }
 
+      const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
+
+      if (this.reachedGoal && Current_Monthly_Savings.value > Monthly_Savings_Needed.value) {
+        // remove 1st element from array, advice we don't want to display when goal has not been reached
+        api.display.advice.shift();
+        // insert "you're already there.."
+        api.display.advice.unshift({
+          headline_html: `By saving 
+            <taffrail-var data-variable-name="Current_Monthly_Savings">${Current_Monthly_Savings.valueFormatted}</taffrail-var> 
+            per month you are <strong>${aboveOrBelow}</strong> the
+            <taffrail-var data-variable-name="Monthly_Savings_Needed">${Monthly_Savings_Needed.valueFormatted}</taffrail-var>
+             required to retire comfortably by age 
+             <taffrail-var data-variable-name="Retirement_Age">${Retirement_Age.value}</taffrail-var>, in 
+             <taffrail-var data-variable-name="Retirement_Year_Target">${Retirement_Year_Target.value}</taffrail-var>.`,
+        });
+      }
+
       // not reaching the goal
       if (!this.reachedGoal) {
-        const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
         // remove 1st element from array, advice we don't want to display when goal has not been reached
         api.display.advice.shift();
         // insert new "you're not there yet..." advice at top of display stack
