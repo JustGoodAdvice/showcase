@@ -110,22 +110,35 @@ export default class {
   _OPTIMIZE() {
     // users can only "optimize" when goals.length > 1 (button is hidden from UX otherwise)
     const queue = [];
-    const isOverBudget = !(this.availableCash > 0);
+    const isOverBudget = this.availableCash < 0;
     const saveForHome = this.getGoalByName("save-for-home");
     const payoffDebt = this.getGoalByName("pay-debt");
     const saveRetirement = this.getGoalByName("retirement");
     const debtIsCreditCardDebt = this.isDebtCreditCardDebt(payoffDebt);
-    const { Salary } = this.profile;
 
     if (isOverBudget) {
+      console.group("Over budget");
       // if you have a home goal, reduce this first
-      // if (saveForHome) {
-      //   const cost = this.getCostFor("save-for-home");
-      //   console.log("cost", cost)
-      //   console.log("availableCash", this.availableCash)
-      //   const newMonthlyCost = cost + this.availableCash;
-      //   console.log(newMonthlyCost)
-      // }
+      if (saveForHome) {
+        const cost = this.getCostFor("save-for-home");
+        const {
+          Goal_HomeSave_Adjust_Price = { value: 0 },
+        } = saveForHome.data.variables_map;
+        const newMonthlyDownPaymentSavings = cost + this.availableCash;
+        console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings}, then adjusting price below ${Goal_HomeSave_Adjust_Price.value}`);
+        queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
+          Mortgage_Down_Payment_Savings_Monthly: newMonthlyDownPaymentSavings
+        }).then(() => {
+          const { Goal_HomeSave_Adjust_Price = { value: 0 }, } = this.getGoalByName("save-for-home").data.variables_map;
+          console.group("Over budget still... ");
+          console.log(`Adjusting target price to ${Goal_HomeSave_Adjust_Price.value}`)
+          console.groupEnd();
+          return this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
+            Home_Price: Goal_HomeSave_Adjust_Price.value
+          });
+        }));
+      }
+      console.groupEnd();
     } else {
       // under budget
 
@@ -168,9 +181,10 @@ export default class {
             "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
             Monthly_Retirement_Savings_Other_Current = { value: 0 },
             Monthly_IRA_Contribution_Max = { value: 0 },
+            Salary = { value: 0 },
           } = saveRetirement.data.variables_map;
 
-          const onePctOf401kContributionMonthly = Number(((Number(Salary) * .01) / 12).toFixed(2));
+          const onePctOf401kContributionMonthly = Number((Number(Salary.value) * .01 / 12).toFixed(2));
 
           if (_401K_Contribution_Current_Pct.value < _401K_Contribution_Max_Pct.value) {
             console.log(`Remainder is > $25 and client is not yet maxing 401k (${_401K_Contribution_Current_Pct.value} of ${_401K_Contribution_Max_Pct.value}%)`);
@@ -210,7 +224,7 @@ export default class {
               }
               let iraContribution = remainderToContributeToRetirement;
               let otherContribution = Monthly_Retirement_Savings_Other_Current.value;
-              console.log("otherContribution____",otherContribution)
+
               if (willMaxIra) {
                 iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
                 otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
@@ -446,7 +460,7 @@ export default class {
         startingCashF: numeral(this.startingCash).format("$0,0"),
         percentAllocatedF: numeral(this.percentAllocated).format("0%"),
         costOfGoalsF: numeral(this.costOfGoals).format("$0,0"),
-        showOptimizeButton: this.availableCash > 0 && goals.length > 1/* && !this.profile.optimizedOnce*/
+        showOptimizeButton: goals.length > 1 && this.availableCash != 0
       }
       console.log("Rendering prioritzed goals", ctx);
       const str = Handlebars.compile($("#tmpl_user_selected_goals").html())(ctx);
@@ -509,7 +523,10 @@ export default class {
     // set new goals
     this.savedGoals = this.savedGoals.concat(newGoal);
 
-    this.emit("goals", { message: "Goal saved! Action Plan updated." });
+    // if it's NOT an update, show the PN
+    if (!goalId) {
+      this.emit("goals", { message: "Goal saved! Action Plan updated." });
+    }
   }
 
   emit(name, detail) {
