@@ -9,7 +9,7 @@ export default class extends Controller {
   // static values = { id: String };
 
   connect() {
-    console.log("CONNECTED fitness")
+    // console.log("CONNECTED fitness")
   }
 
   initialize() {
