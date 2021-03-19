@@ -115,6 +115,7 @@ export default class {
     const payoffDebt = this.getGoalByName("pay-debt");
     const saveRetirement = this.getGoalByName("retirement");
     const debtIsCreditCardDebt = this.isDebtCreditCardDebt(payoffDebt);
+    const { Salary } = this.profile;
 
     if (isOverBudget) {
       // if you have a home goal, reduce this first
@@ -132,31 +133,45 @@ export default class {
        * CC debt and Retirement: pay off CC in 1/2 time and allocate rest to retirement
        */
       console.group("Under budget");
-      if (payoffDebt && debtIsCreditCardDebt && saveRetirement) {
-        console.group("Credit card + Retirement");
+      let budget = this.availableCash;
+
+      if (payoffDebt && debtIsCreditCardDebt) {
         const {
-          Debt_Payment_Suggested: { value: amNeededToPayOffDebtInHalfTime = 0 },
+          Debt_Payment = { value: 0 },
           Debt_Payment_Diff = { value: 0 }
         } = payoffDebt.data.variables_map;
-        const {
-          "401K_Contribution_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
-          "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
-          Monthly_Retirement_Savings_Other_Current = { value: 0 },
-          Monthly_IRA_Contribution_Max = { value: 0 },
-        } = saveRetirement.data.variables_map;
+        let {
+          Debt_Payment_Suggested: { value: amNeededToPayOffDebtInHalfTime = 0 },
+        } = payoffDebt.data.variables_map;
 
-        const { Salary } = this.profile;
-        const onePctOf401kContributionMonthly = Number(((Number(Salary) * .01) / 12).toFixed(2));
+        if (amNeededToPayOffDebtInHalfTime > budget) {
+          console.log(`Paying the suggested amount (${amNeededToPayOffDebtInHalfTime}) is not an option (over budget)`);
+          amNeededToPayOffDebtInHalfTime = Debt_Payment.value + budget;
+        }
 
         console.log(`Increasing debt payment to $${amNeededToPayOffDebtInHalfTime.toFixed(2)}`);
         queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
           Debt_Payment: amNeededToPayOffDebtInHalfTime
         }));
 
-        // if there's enough left over, figure out how much to increase 401k contribution by
-        const remainder = this.availableCash - Number(Debt_Payment_Diff.value.toFixed(2));
-        console.log(`Remainder is $${remainder}`);
-        if (remainder > 25) {
+        budget -= Number(Debt_Payment_Diff.value.toFixed(2));
+      }
+
+      // if there's enough left over, figure out how much to increase 401k contribution by
+      const remainder = budget;
+      console.log(`Remainder is $${remainder}`);
+      if (remainder > 25) {
+        if (saveRetirement) {
+          console.group("Retirement");
+          const {
+            "401K_Contribution_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
+            "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
+            Monthly_Retirement_Savings_Other_Current = { value: 0 },
+            Monthly_IRA_Contribution_Max = { value: 0 },
+          } = saveRetirement.data.variables_map;
+
+          const onePctOf401kContributionMonthly = Number(((Number(Salary) * .01) / 12).toFixed(2));
+
           if (_401K_Contribution_Current_Pct.value < _401K_Contribution_Max_Pct.value) {
             console.log(`Remainder is > $25 and client is not yet maxing 401k (${_401K_Contribution_Current_Pct.value} of ${_401K_Contribution_Max_Pct.value}%)`);
             let increase401kContributionBy = 0;
@@ -176,6 +191,7 @@ export default class {
             }
 
             if (overMaxByPct <= 0) {
+              console.log(`Increase 401k contribution to ${newContributionPct}`);
               queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
                 "401K_Contribution_Current_Pct": newContributionPct
               }));
@@ -226,8 +242,8 @@ export default class {
             }));
 
           }
+          console.groupEnd();
         }
-        console.groupEnd();
       }
 
       console.groupEnd();
