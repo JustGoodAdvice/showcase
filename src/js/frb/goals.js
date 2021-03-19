@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import _ from "lodash";
 import pluralize from "pluralize";
 import store from "store";
@@ -11,7 +12,8 @@ export default class {
       return;
     }
     this.profile = profile;
-    console.log("goals setup for", profile)
+
+    console.log(`Profile for "${this.profile._name}" present, current state is:`, this.profile)
 
     this.STORAGE_KEY = "frb_user_goals_" + this.profile._name;
 
@@ -35,7 +37,7 @@ export default class {
 
   set savedGoals(arr) {
     store.set(this.STORAGE_KEY, arr);
-    console.log("SAVING GOAL>>>>", arr);
+    // console.log("SAVING GOAL>>>>", arr);
     this.activateCurrentGoals();
   }
 
@@ -104,53 +106,161 @@ export default class {
       .html(`&nbsp;(${pluralize("goal", this.goalCount, true)}, <a href="#" data-action="reset-goals" data-toggle="tooltip" title="Delete all goals">reset</a>)`);
   }
 
+  // eslint-disable-next-line complexity
   _OPTIMIZE() {
+    // users can only "optimize" when goals.length > 1 (button is hidden from UX otherwise)
     const queue = [];
     const isOverBudget = !(this.availableCash > 0);
-    // const goals = this.savedGoals;
-    // const goalCount = goals.length;
     const saveForHome = this.getGoalByName("save-for-home");
     const payoffDebt = this.getGoalByName("pay-debt");
+    const saveRetirement = this.getGoalByName("retirement");
     const debtIsCreditCardDebt = this.isDebtCreditCardDebt(payoffDebt);
 
     if (isOverBudget) {
       // if you have a home goal, reduce this first
-      if (saveForHome) {
-        const cost = this.getCostFor("save-for-home");
-        console.log("cost", cost)
-        console.log("availableCash", this.availableCash)
-        const newMonthlyCost = cost + this.availableCash;
-        console.log(newMonthlyCost)
-      }
+      // if (saveForHome) {
+      //   const cost = this.getCostFor("save-for-home");
+      //   console.log("cost", cost)
+      //   console.log("availableCash", this.availableCash)
+      //   const newMonthlyCost = cost + this.availableCash;
+      //   console.log(newMonthlyCost)
+      // }
     } else {
       // under budget
 
-      // if client has credit debt & home with extra cash, split between two to reach home goal
-      if (payoffDebt && debtIsCreditCardDebt && saveForHome) {
+      /**
+       * CC debt and Retirement: pay off CC in 1/2 time and allocate rest to retirement
+       */
+      console.group("Under budget");
+      if (payoffDebt && debtIsCreditCardDebt && saveRetirement) {
+        console.group("Credit card + Retirement");
         const {
           Debt_Payment_Suggested: { value: amNeededToPayOffDebtInHalfTime = 0 },
-          Debt_Payoff_Period = { value: 0 }
+          Debt_Payment_Diff = { value: 0 }
         } = payoffDebt.data.variables_map;
-
         const {
-          Goal_HomeSave_Adjust_Savings: { value: amtNeededToReachHomeGoal = 0 }
-        } = saveForHome.data.variables_map;
+          "401K_Contribution_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
+          "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
+          Monthly_Retirement_Savings_Other_Current = { value: 0 },
+          Monthly_IRA_Contribution_Max = { value: 0 },
+        } = saveRetirement.data.variables_map;
 
-        if (Debt_Payoff_Period.value <= 24) {
-          console.error(`OPTIMIZE - apply ${this.availableCash} to pay off debt faster`);
+        const { Salary } = this.profile;
+        const onePctOf401kContributionMonthly = Number(((Number(Salary) * .01) / 12).toFixed(2));
 
-          queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
-            Debt_Payment: this.availableCash + Number(payoffDebt.data.variables_map.Debt_Payment.value)
-          }));
+        console.log(`Increasing debt payment to $${amNeededToPayOffDebtInHalfTime.toFixed(2)}`);
+        queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
+          Debt_Payment: amNeededToPayOffDebtInHalfTime
+        }));
 
-          // make home goal longer
-          console.error("OPTIMIZE - stretch home goal longer");
-          queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome));
+        // if there's enough left over, figure out how much to increase 401k contribution by
+        const remainder = this.availableCash - Number(Debt_Payment_Diff.value.toFixed(2));
+        console.log(`Remainder is $${remainder}`);
+        if (remainder > 25) {
+          if (_401K_Contribution_Current_Pct.value < _401K_Contribution_Max_Pct.value) {
+            console.log(`Remainder is > $25 and client is not yet maxing 401k (${_401K_Contribution_Current_Pct.value} of ${_401K_Contribution_Max_Pct.value}%)`);
+            let increase401kContributionBy = 0;
+            let increase401kContributionPct = 0;
+            while (increase401kContributionBy < (remainder - onePctOf401kContributionMonthly)) {
+              increase401kContributionBy += onePctOf401kContributionMonthly;
+              increase401kContributionPct += .01;
+            }
+            let newContributionPct = Number(_401K_Contribution_Current_Pct.value.toFixed(2)) + increase401kContributionPct;
+            console.log(`Increase 401k contribution by $${increase401kContributionBy} or ${increase401kContributionPct} to ${newContributionPct}`);
 
-        } else {
+            let overMaxByPct = 0;
+            let remainderToContributeToRetirement = 0;
+            if (newContributionPct >= Number(_401K_Contribution_Max_Pct.value.toFixed(2))) {
+              overMaxByPct = Number((newContributionPct - _401K_Contribution_Max_Pct.value).toFixed(2));
+              console.log(`...but max 401k contribution percentage over by ${overMaxByPct}`);
+            }
 
+            if (overMaxByPct <= 0) {
+              queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+                "401K_Contribution_Current_Pct": newContributionPct
+              }));
+            } else {
+              newContributionPct -= overMaxByPct;
+              remainderToContributeToRetirement = (onePctOf401kContributionMonthly * overMaxByPct) * 100;
+
+              console.log(`401k contribution increase adjusted down because client will now max at ${newContributionPct}`);
+              console.log(`Funds remaining to apply to retirement action plan: ${remainderToContributeToRetirement}`);
+
+              const willMaxIra = remainderToContributeToRetirement > Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
+              if (willMaxIra) {
+                console.log(`IRA would be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
+              } else {
+                console.log(`IRA would NOT be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
+              }
+              let iraContribution = remainderToContributeToRetirement;
+              let otherContribution = Monthly_Retirement_Savings_Other_Current.value;
+              console.log("otherContribution____",otherContribution)
+              if (willMaxIra) {
+                iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
+                otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
+                console.log("math", otherContribution, iraContribution, remainderToContributeToRetirement)
+              }
+
+              console.log(`IRA contribution ${iraContribution}`);
+              console.log(`Other savings ${otherContribution}`);
+
+              const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection";
+              queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+                "401K_Contribution_Current_Pct": newContributionPct,
+                [hasIraRuleId]: 1,
+                Monthly_IRA_Contribution_Current: iraContribution,
+                Monthly_Retirement_Savings_Other_Current: otherContribution,
+              }));
+            }
+          } else {
+            // maxed 401k, stick rest into IRA & other
+            const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection";
+            const iraContribution = remainder > Monthly_IRA_Contribution_Max.value ? Monthly_IRA_Contribution_Max.value : remainder;
+            const otherContribution = Math.abs(remainder - iraContribution);
+            console.log(`401k is already maxed, apply remainder to IRA $(${iraContribution}) and other (${otherContribution})`);
+            queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+              "401K_Contribution_Current_Pct": _401K_Contribution_Max_Pct.value,
+              [hasIraRuleId]: 1,
+              Monthly_IRA_Contribution_Current: iraContribution,
+              Monthly_Retirement_Savings_Other_Current: otherContribution,
+            }));
+
+          }
         }
+        console.groupEnd();
       }
+
+      console.groupEnd();
+
+
+
+
+      // // if client has credit debt & home with extra cash, split between two to reach home goal
+      // if (payoffDebt && debtIsCreditCardDebt && saveForHome) {
+      //   const {
+      //     Debt_Payment_Suggested: { value: amNeededToPayOffDebtInHalfTime = 0 },
+      //     Debt_Payoff_Period = { value: 0 }
+      //   } = payoffDebt.data.variables_map;
+
+      //   const {
+      //     Goal_HomeSave_Adjust_Savings: { value: amtNeededToReachHomeGoal = 0 }
+      //   } = saveForHome.data.variables_map;
+
+      //   if (Debt_Payoff_Period.value <= 24) {
+      //     console.error(`OPTIMIZE - apply ${this.availableCash} to pay off debt faster`);
+
+      //     queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
+      //       Debt_Payment: this.availableCash + Number(payoffDebt.data.variables_map.Debt_Payment.value)
+      //     }));
+
+      //     // make home goal longer
+      //     console.error("OPTIMIZE - stretch home goal longer");
+      //     queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome));
+
+      //   } else {
+
+      //   }
+      // }
 
       if (debtIsCreditCardDebt) {
         // total debt greater than available cash?
@@ -166,6 +276,7 @@ export default class {
     }
 
     Promise.all(queue).then(() => {
+      window.jga.UserProfile.savedProfile = _.assign(this.profile, { optimizedOnce: true });
       this.renderBudgetAndGoals();
       this.emit("opto", { message: "Your Action Plan is optimized." });
     }).catch(err => {
@@ -176,7 +287,6 @@ export default class {
 
   _OPTIMIZE_REFRESH_GOAL(goal, params = {}){
     const { id: goalId, controllerName, data } = goal;
-    console.log(goalId, data)
     const $container = $(`#heading_${goalId}`); // card-header
     const $summary = $container.find(".card-header-summary");
     $summary.html("Optimizing...");
@@ -186,20 +296,49 @@ export default class {
       data: _.assign(data.params, params),
     }).then(api => {
       const { data } = api;
+
+      // re-do some work taffrailapi.js is doing
       this.mapVariables(data);
       data.paramsAsQueryStr = qs.stringify(data.params);
+      data.advice = data.advice.filter(a => { return a.type == "ADVICE"; });
 
-      console.log("OPTIMIZED API response", data)
+      let reachedGoal = controllerName == "pay-debt" ? true : false;
+      // insert mechanical text generated by retirement and home goals
+      if (controllerName == "retirement") {
+        const { variables_map: {
+          Current_Monthly_Savings = { value: 0 },
+          Monthly_Savings_Needed = { value: 0 },
+          Future_Value_Of_Savings_Total = { value: 0 },
+          Retirement_Age = { value: 65 },
+          Retirement_Year_Target,
+          Retirement_Savings_Needed = { value: 0, valueFormatted: "$0" }
+        } } = data;
+        // console.log(data)
+        // get percent difference between what is needed and what client is saving
+        // anything less than 3% difference is "on track"
+        const [RSN, FVT] = [Retirement_Savings_Needed.value, Future_Value_Of_Savings_Total.value]
+        const pctDiff = 100 * (FVT - RSN) / ((FVT + RSN) / 2);
+        reachedGoal = pctDiff >= -3;
 
-      if (controllerName == "pay-debt") {
-        // const newSummary = _.first(data.advice.filter(a => { return a.type == "ADVICE"; }));
-        // $summary.html(newSummary.headline_html);
-
-
+        if (!reachedGoal) {
+          const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
+          // remove 1st element from array, advice we don't want to display when goal has not been reached
+          data.advice.shift();
+          // new mechanical text
+          data.advice.unshift({
+            headline_html: `By saving 
+              <taffrail-var data-variable-name="Current_Monthly_Savings">${Current_Monthly_Savings.valueFormatted}</taffrail-var> 
+              per month you are <strong>${aboveOrBelow}</strong> the
+              <taffrail-var data-variable-name="Monthly_Savings_Needed">${Monthly_Savings_Needed.valueFormatted}</taffrail-var>
+              required to retire comfortably by age 
+              <taffrail-var data-variable-name="Retirement_Age">${Retirement_Age.value}</taffrail-var>, in 
+              <taffrail-var data-variable-name="Retirement_Year_Target">${Retirement_Year_Target.value}</taffrail-var>.`,
+          });
+        }
       }
 
       data.save_to_goal = {
-        advice: data.advice.filter(a => { return a.type == "ADVICE"; })
+        advice: data.advice
       }
 
       this.saveGoal(controllerName, data, goalId);
@@ -291,9 +430,9 @@ export default class {
         startingCashF: numeral(this.startingCash).format("$0,0"),
         percentAllocatedF: numeral(this.percentAllocated).format("0%"),
         costOfGoalsF: numeral(this.costOfGoals).format("$0,0"),
-        showOptimizeButton: this.availableCash > 0 && goals.length > 1
+        showOptimizeButton: this.availableCash > 0 && goals.length > 1/* && !this.profile.optimizedOnce*/
       }
-      console.log("goals ctx", ctx)
+      console.log("Rendering prioritzed goals", ctx);
       const str = Handlebars.compile($("#tmpl_user_selected_goals").html())(ctx);
       $container.html(str);
 
