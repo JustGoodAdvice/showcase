@@ -127,6 +127,15 @@ export default class extends Controller {
 
       if (cannotAffordHouse) {
         period_from_now = "This goal is out of reach";
+        api.display.advice.shift();
+        api.display.advice.unshift({
+          headline_html: `Saving
+              <taffrail-var data-variable-name="Mortgage_Down_Payment_Savings_Monthly">${Mortgage_Down_Payment_Savings_Monthly.valueFormatted}</taffrail-var>
+              per month is not enough to meet your goal in
+              <taffrail-var data-variable-name="Home_Purchase_Time_Frame">${pluralize("year", Home_Purchase_Time_Frame.value, true)}</taffrail-var>,
+               try changing your settings.`,
+        });
+
       } else {
         if (this.reachedGoal) {
           const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
@@ -144,7 +153,7 @@ export default class extends Controller {
           // not reaching the goal
           const aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
           // remove 1st element from array, advice we don't want to display when goal has not been reached
-          // api.display.advice.shift();
+          api.display.advice.shift();
           // insert new "you're not there yet..." advice at top of display stack
           api.display.advice.unshift({
             headline_html: "<h6 class='text-uppercase text-secondary' style='font-size:90%;'>How to reach your goal</h6>"
