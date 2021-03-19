@@ -61,17 +61,18 @@ export default class extends Controller {
       if (api.display._isLast) {
         // since it's "last", hide the question.
         // $(".advice").slideUp(300);
+
+        // save "budget"
+        const prof = window.jga.UserProfile.savedProfile;
+        const budget = _.omit(api.params, "State", "include", "showcase");
+        window.jga.UserProfile.savedProfile = _.assign(prof, budget, { budgetcreated: true });
+        $(document).trigger("pushnotification", ["budget", { message: "Savings budget saved!" }]);
       }
+
       $(".goal-result").show();
 
       const str = Handlebars.compile($("#tmpl_advice_profile").html())(api);
       this.TaffrailAdvice.$advice.html(str);
-
-      // save "budget"
-      const prof = window.jga.UserProfile.savedProfile;
-      const budget = _.omit(api.params, "State", "include", "showcase");
-      window.jga.UserProfile.savedProfile = _.assign(prof, budget, { budgetcreated: true });
-      $(document).trigger("pushnotification", ["budget", { message: "Savings budget saved!" }]);
     }
 
   }

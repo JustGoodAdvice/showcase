@@ -28,6 +28,9 @@ export default class {
       this.activateCurrentGoals();
       this.renderBudgetAndGoals();
     }
+
+    // temp
+    window.g = this;
   }
 
   get savedGoals() {
@@ -261,48 +264,6 @@ export default class {
       }
 
       console.groupEnd();
-
-
-
-
-      // // if client has credit debt & home with extra cash, split between two to reach home goal
-      // if (payoffDebt && debtIsCreditCardDebt && saveForHome) {
-      //   const {
-      //     Debt_Payment_Suggested: { value: amNeededToPayOffDebtInHalfTime = 0 },
-      //     Debt_Payoff_Period = { value: 0 }
-      //   } = payoffDebt.data.variables_map;
-
-      //   const {
-      //     Goal_HomeSave_Adjust_Savings: { value: amtNeededToReachHomeGoal = 0 }
-      //   } = saveForHome.data.variables_map;
-
-      //   if (Debt_Payoff_Period.value <= 24) {
-      //     console.error(`OPTIMIZE - apply ${this.availableCash} to pay off debt faster`);
-
-      //     queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
-      //       Debt_Payment: this.availableCash + Number(payoffDebt.data.variables_map.Debt_Payment.value)
-      //     }));
-
-      //     // make home goal longer
-      //     console.error("OPTIMIZE - stretch home goal longer");
-      //     queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome));
-
-      //   } else {
-
-      //   }
-      // }
-
-      if (debtIsCreditCardDebt) {
-        // total debt greater than available cash?
-        // if (payoffDebt.data.variables_map.Debt_Balance.value > this.availableCash) {
-        //   console.info(`OPTIMIZE - apply ${this.availableCash} to pay off debt faster`);
-
-        //   payoffDebt.data.params = _.assign(payoffDebt.data.params, {
-        //     Debt_Payment: this.availableCash + Number(payoffDebt.data.variables_map.Debt_Payment.value)
-        //   })
-        //   this._OPTIMIZE_REFRESH_GOAL(payoffDebt, payoffDebt.data);
-        // }
-      }
     }
 
     Promise.all(queue).then(() => {
@@ -422,13 +383,13 @@ export default class {
 
     switch (controllerName) {
       case "pay-debt":
-        cost += Debt_Payment.value;
+        cost += Number(Debt_Payment.value.toFixed(2));
         break;
       case "save-for-home":
-        cost += Mortgage_Down_Payment_Savings_Monthly.value;
+        cost += Number(Mortgage_Down_Payment_Savings_Monthly.value.toFixed(2));
         break;
       case "retirement":
-        cost += Current_Monthly_Savings.value;
+        cost += Number(Current_Monthly_Savings.value.toFixed(2));
         break;
     }
 
