@@ -106,8 +106,12 @@ export default class ShowcasePage {
    */
   _loadApi(newFormData, $loadingContainer = this.$loadingContainer, usePlaceholder = true){
     const currFormData = this.api.params;
+    const include = ["filteredVars"];
+    if (location.href.includes("harness")) {
+      include.push("formulaDebug");
+    }
     const formData = _.assign({
-      include: ["filteredVars"],
+      include: include,
       showcase: true
     }, currFormData, qs.parse(newFormData));
     // does link contain referring AI User Request ID (aiUrId)?
@@ -346,7 +350,7 @@ export default class ShowcasePage {
     // handle taffrail-var
     $("body").find("taffrail-var").each((i, el) => {
       const $el = $(el);
-      const { variableName } = $el.data();
+      const { variableId, variableName } = $el.data();
       // find corresponding question
       const question = _.flatMap(this.api.assumptions).find((a) => {
         // check question rules first, then input requests
@@ -360,6 +364,41 @@ export default class ShowcasePage {
           .attr("data-toggle", "tooltip")
           .attr("title", "Click to change")
         ;
+      } else {
+        // if not a question, check for raw formula
+        if (this.api.formulaDebug) {
+          const source = this.api.formulaDebug.find(f => { return f.id == variableId });
+          if (!source) { console.error("no source found", variableId); return; }
+          const isInSidebar = $el.closest(".advice-debug").length;
+          if (isInSidebar) { return; }
+
+          const html = `
+            <div class="debug-card">
+              <div>
+                <code class="text-primary">${source.expression}</code>
+                <hr>
+                Debug:<br>
+                <code class="text-primary">${source.expressionDebug}</code>
+              </div>
+            </div>
+          `;
+
+          $el
+            .addClass("active active--calculated")
+            .attr("tabindex", 0)
+            .attr("role", "button")
+            .popover({
+              container: "body",
+              placement: "top",
+              title: source.name,
+              content: html,
+              html: true,
+              trigger: "focus"
+            })
+            // .attr("data-toggle", "tooltip")
+            // .attr("title", "View source")
+          ;
+        }
       }
     });
   }

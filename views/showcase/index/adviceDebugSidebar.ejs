@@ -1,0 +1,30 @@
+<script id="tmpl_adviceDebugSidebar" type="text/x-handlebars-template">
+  <div class="advice-debug">
+    <h5>Advice Formulas</h5>
+    <ul class="list-unstyled">
+    {{#each formulaDebug}}
+      <li>
+        <div class="d-flex justify-content-between var-value">
+          <code class="var"><taffrail-var data-variable-name="{{name}}" data-variable-id="{{id}}">{{name}}</taffrail-var></code>
+          <code class="value text-right">
+            {{#if _hide_result}}
+              {{expressionDebug}}
+            {{else}}
+              {{result_formatted}}
+            {{/if}}
+          </code>
+        </div>
+
+        {{#unless _hide_result}}
+        <div class="d-flex justify-content-between expression">
+          <code class="exp cpy" data-toggle="tooltip" title="Click to copy">{{expression}}</code>
+          <code class="value text-right">= {{result}}</code>
+        </div>
+        {{/unless}}
+        
+        <hr>
+      </li>
+    {{/each}}
+    </ul>
+  </div>
+</script>

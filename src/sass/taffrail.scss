@@ -198,6 +198,15 @@ taffrail-var {
 		&:hover {
 			color: $secondary;
 		}
+
+		&.active--calculated {
+			border-bottom: 1px dotted $warning;
+
+			&:hover {
+				border-bottom: 1px dotted $primary;
+				color: $warning;
+			}
+		}
   }
 }
 
@@ -378,6 +387,28 @@ taffrail-var {
 		position: relative;
 	}
 
+	.advice-debug {
+		.var-value {
+			.var {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		}
+
+		code {
+			color: $primary;
+			font-size: 80%;
+		}
+
+		.expression {
+			margin-top: .5rem;
+		}
+		.expression code {
+			color: $gray-500;
+		}
+	}	
+
 	.advice-on-this-page {
 		position: absolute;
 		top: 0;
@@ -507,13 +538,19 @@ taffrail-var {
 		.variables {
 			font-family: $font-family-monospace;
 			font-size: 12px;
+
 			td:nth-child(1) {
 				max-width: 1px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
+
+				& + td {
+					width: 2rem;
+				}
 			}
-			td:nth-child(2) {
+
+			td.var {
 				max-width: 1px;
 				overflow: hidden;
 				text-overflow: ellipsis;
