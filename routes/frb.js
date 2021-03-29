@@ -9,39 +9,33 @@ const PERSONAS = {
   "Doug": {
     _name: "Doug",
     State: "CA",
-    Marital_Status: "Single",
-    Age_Now: 25,
-    Salary: 150000,
-    Annual_Expenses: 100000,
-    Residence: "Rent",
-    // Debt_Balance: 25000,
-    Investment_Amount_Balance: 25000,
-    Cash_Balance: 5000,
-    Account_Balance: 30000,
-    Retirement_Account_Balance: 50000,
-    "Fit_Living_Paycheck_to_Paycheck?": false,
-    "Fit_Financially_Independent?": true,
+    // Marital_Status: "single",
+    // Age_Now: 25,
+    // Salary: 150000,
+    // // Annual_Expenses: 100000,
+    // Expenses_Monthly: 100000 / 12,
+    // Income_Monthly: 14000,
+    budgetcreated: false
   },
   "Billy & Barbara": {
     _name: "Billy & Barbara",
-    State: "NJ",
-    Marital_Status: "Married",
-    Age_Now: 32,
-    Salary: 200000,
-    Annual_Expenses: 130000,
-    Residence: "Own",
-    // Debt_Balance: 10000,
-    Investment_Amount_Balance: 100000,
-    Cash_Balance: 25000,
-    Account_Balance: 225000,
-    Retirement_Account_Balance: 100000,
-    "Fit_Living_Paycheck_to_Paycheck?": false,
-    "Fit_Financially_Independent?": true,
+    State: "CA",
+    // Marital_Status: "Married",
+    // Age_Now: 32,
+    // Salary: 200000,
+    // // Annual_Expenses: 130000,
+    // Expenses_Monthly: 130000 / 12,
+    // Income_Monthly: 20000,
+    budgetcreated: false
   },
+  "Client w/o settings": {
+    _name: "Client w/o settings",
+  }
 }
 
 router.get("/goal-planning/:start?", botMiddleware, (req, res, next) => {
   const { start: isStart } = req.params;
+  const { budgetcreated = 0 } = req.query;
   return res.render("demo-frb/" + (isStart ? "/screens/start" : "index"), {
     layout: req.xhr ? false : "demo-frb/layout",
     adviceSetId: "",
@@ -50,7 +44,8 @@ router.get("/goal-planning/:start?", botMiddleware, (req, res, next) => {
     PERSONAS: PERSONAS,
     inApp: isStart,
     showStart: isStart,
-    greenScreen: !isStart,
+    budgetcreated: budgetcreated,
+    greenScreen: true,
     greeting: greetingTime(new Date())
   });
 });
@@ -65,6 +60,7 @@ router.get("/goal-planning/goals/:goal", (req, res, next) => {
     linkAdviceBuilder: null,
     PERSONAS: PERSONAS,
     inApp: true,
+    greenScreen: true,
   });
 });
 
@@ -77,6 +73,7 @@ router.get("/goal-planning/goals/taffrail/:adviceSetId", botMiddleware, (req, re
   const apiUrl = `${process.env.API_HOST}/api/advice/${adviceSetId}?${qs.stringify(qrystr)}`;
 
   const adviceSetView = {
+    "JUsIoPDhkNcvs1zb8UErR1I": "profile", // User profile
     "JU-24nfNyguvAjZQiBbqLuf": "house-affordability", // Save For Home
     // "JUrkVc7CCdG": "house-affordability",
     // "JUZsZh4CUVp3MK8xpBYDhtI": "house-affordability",
@@ -106,6 +103,7 @@ router.get("/goal-planning/goals/taffrail/:adviceSetId", botMiddleware, (req, re
     error: view == "error" ? {} : "",
     inApp: true,
     showDrawer: true,
+    greenScreen: true,
   });
 
   // fetch(apiUrl, {

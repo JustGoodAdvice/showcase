@@ -1,47 +1,49 @@
-<div class="mb-2">
-  <img src="/img/frb/temp_save_home.png" width="100%" height="152.86">
-</div>
-
-  <!--<h2>Save for home</h2>-->
-  <p>To calculate how much house you can afford, we take into account a few primary items, such as your household income,
-  monthly debts (for example, car loan and student loan payments) and the amount of available savings for a down payment.
-  As a home buyer, you’ll want to have a certain level of comfort in understanding your monthly mortgage payments.</p>
-  
-  <div class="madlib d-flex">
-    I want to buy a 
-    <div class="btn-group">
-      <% const start_price="1M"; %>
-      <a class="btn dropdown-toggle dotted-btn" data-toggle="dropdown" href="#" data-var-selected="Home_Price|1000000">$<%= start_price %></span></a>
-      <ul class="dropdown-menu">
-        <% const prices = [{l:"250k",v:250000},{l:"500k",v:500000},{l:"750k",v:750000},{l:"1M",v:1000000},{l:"1.25M",v:1250000},{l:"1.5M",v:1500000},{l:"1.75M",v:1750000},{l:"2M",v:2000000}]; %>
-        <% prices.forEach(p => { %>
-          <li><a href="#" class="dropdown-item <%= p.l==start_price?'active':null %>" data-taffrail-var="Home_Price" data-var-value="<%= p.v%>">$<%= p.l %></a></li>
-        <% }) %>
-      </ul>
-    </div>
-    home by
-    <div class="btn-group">
-      <% const start_year=new Date().getFullYear(); %>
-      <a class="btn dropdown-toggle dotted-btn" data-toggle="dropdown" href="#" data-var-selected="Home_Purchase_Time_Frame|4"><%= start_year+4 %></span></a>
-      <ul class="dropdown-menu">
-        <% let dates=[]; 
-          for (var i = start_year; i < start_year + 10; i++) {
-            dates.push(i);
-          } %>
-        <% dates.forEach((d, c)=> { %>
-          <li><a href="#" class="dropdown-item <%= d==start_year+4?'active':null %>" data-taffrail-var="Home_Purchase_Time_Frame" data-var-value="<%= c %>"><%= d %></a></li>
-        <% }) %>
-      </ul>
-    </div>
-    .
+<div class="bg-white px-2 pb-5" style="min-height:593px;">
+  <div class="mb-2 pt-1">
+    <img src="/img/frb/temp_save_home.png" width="100%" height="152.86">
   </div>
-  
-  <p class="mt-5 mb-2"><a href="/frb/goal-planning/goals/taffrail/JU-24nfNyguvAjZQiBbqLuf?Home_Price=1000000&Home_Purchase_Time_Frame=4" class="get-started btn btn-block btn-outline-primary">Get started</a></p>
 
-  <!--
-  <ul class="mt-5">
-    <li><a href="/frb/goal-planning/goals/taffrail/JU8dmuM8pIFQC9UT50bxZPc" class="">How much home can I afford?</a></li>
-    <li><a href="/frb/goal-planning/goals/taffrail/JUrkVc7CCdG?Home_Price=123456" class="">How soon can I afford a <span class="madlib">$123,456</span> home?</a></li>
-    <li><a href="/frb/goal-planning/goals/taffrail/JUZsZh4CUVp3MK8xpBYDhtI?Home_Purchase_Time_Frame=2025" class="">How much home can I afford by <span class="madlib">2025</span>?</a></li>
-  </ul>
--->
+    <!--<h2>Save for home</h2>-->
+    <p>To calculate how much house you can afford, we take into account a few primary items, such as your household income,
+    monthly debts (for example, car loan and student loan payments) and the amount of available savings for a down payment.
+    As a home buyer, you’ll want to have a certain level of comfort in understanding your monthly mortgage payments.</p>
+    
+    <div class="madlib d-flex">
+      I want to buy a 
+      <div class="btn-group">
+        <% const start_price="750k"; %>
+        <a class="btn dropdown-toggle dotted-btn" data-toggle="dropdown" href="#" data-var-selected="Home_Price|750000">$<%= start_price %></span></a>
+        <ul class="dropdown-menu">
+          <% const prices = [{l:"250k",v:250000},{l:"500k",v:500000},{l:"750k",v:750000},{l:"1M",v:1000000},{l:"1.25M",v:1250000},{l:"1.5M",v:1500000},{l:"1.75M",v:1750000},{l:"2M",v:2000000}]; %>
+          <% prices.forEach(p => { %>
+            <li><a href="#" class="dropdown-item <%= p.l==start_price?'active':null %>" data-taffrail-var="Home_Price" data-var-value="<%= p.v%>">$<%= p.l %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+      home by
+      <div class="btn-group">
+        <% const start_year=new Date().getFullYear(); %>
+        <a class="btn dropdown-toggle dotted-btn" data-toggle="dropdown" href="#" data-var-selected="Home_Purchase_Time_Frame|4"><%= start_year+4 %></span></a>
+        <ul class="dropdown-menu">
+          <% let dates=[]; 
+            for (var i = start_year; i < start_year + 10; i++) {
+              dates.push(i);
+            } %>
+          <% dates.forEach((d, c)=> { %>
+            <li><a href="#" class="dropdown-item <%= d==start_year+4?'active':null %>" data-taffrail-var="Home_Purchase_Time_Frame" data-var-value="<%= c %>"><%= d %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+      .
+    </div>
+    
+    <p class="mt-5 mb-2"><a href="/frb/goal-planning/goals/taffrail/JU-24nfNyguvAjZQiBbqLuf?Home_Price=750000&Home_Purchase_Time_Frame=4" class="get-started btn btn-block btn-outline-primary">Get started</a></p>
+
+    <!--
+    <ul class="mt-5">
+      <li><a href="/frb/goal-planning/goals/taffrail/JU8dmuM8pIFQC9UT50bxZPc" class="">How much home can I afford?</a></li>
+      <li><a href="/frb/goal-planning/goals/taffrail/JUrkVc7CCdG?Home_Price=123456" class="">How soon can I afford a <span class="madlib">$123,456</span> home?</a></li>
+      <li><a href="/frb/goal-planning/goals/taffrail/JUZsZh4CUVp3MK8xpBYDhtI?Home_Purchase_Time_Frame=2025" class="">How much home can I afford by <span class="madlib">2025</span>?</a></li>
+    </ul>
+  -->
+</div>

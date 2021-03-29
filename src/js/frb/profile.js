@@ -1,13 +1,15 @@
 import _ from "lodash";
 import store from "store";
+import UserGoals from "./goals";
 export default class {
   constructor(){
     this.handleClickActivatePersona();
-    this.reinit();
+    this.reinit(true);
   }
 
-  reinit() {
+  reinit(isFirstLoad = false) {
     this.activateCurrentPersona();
+    this.goals = new UserGoals(this.savedProfile, isFirstLoad);
   }
 
   get PERSONAS() {
@@ -60,14 +62,18 @@ export default class {
     }
     this.savedProfile = profile;
     this.activateCurrentPersona();
-    this.emit("activated", { profile, message: `Profile set for ${profile._name}` });
+    // this.emit("activated", { profile, message: `Profile set for ${profile._name}` });
     window.location.reload();
   }
 
   deactivatePersona() {
     this.savedProfile = null;
     this.deactivateCurrentPersona();
-    this.emit("deactivated", { message: "Profile deactivated" });
+    // clear goals
+    this.goals.savedGoals = [];
+    // reset budget creation
+    this.buildProfileWith({ budgetcreated: false });
+    // this.emit("deactivated", { message: "Profile deactivated" });
     window.location.reload();
   }
 

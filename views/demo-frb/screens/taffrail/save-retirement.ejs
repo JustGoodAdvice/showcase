@@ -1,13 +1,15 @@
-<div data-controller="retirement" data-retirement-id-value="<%= locals.adviceSetId %>">
+<div class="bg-white px-2 pb-5 pt-1" style="min-height:593px;">
+  <div data-controller="retirement" data-retirement-id-value="<%= locals.adviceSetId %>">
 
-  <%- include("../loading"); %>
+    <%- include("../loading"); %>
 
-  <div class="goal-result" style="display:none;">
-    <div class="mt-4"><img src="/img/frb/temp_goal_retire.png" width="100%"></div>
+    <div class="goal-result my-2" style="display:none;">
+      <img src="/img/frb/temp_save_retirement.png" width="100%" height="126.63">
+    </div>
+
+    <div class="advice"></div>
+
   </div>
-
-  <div class="advice"></div>
-
 </div>
 
 <script id="tmpl_advice_save_retirement" type="text/x-handlebars-template">
@@ -36,7 +38,7 @@
   </div>
 
   {{#if display.goal.tips}}
-  <div class="tips mb-5">
+  <div class="tips mb-1">
     <h6 class="text-success"><i class="fal fa-lightbulb-on"></i> Maximize your retirement</h6>
     <ul class="list-unstyled">
       {{#each display.goal.tips}}

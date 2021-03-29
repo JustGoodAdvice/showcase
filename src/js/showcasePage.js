@@ -126,6 +126,7 @@ export default class ShowcasePage {
         "Accept": "application/json; chartset=utf-8",
         "Authorization": `Bearer ${this.config.api_key}`
       },
+      contentType: "application/json",
       data: formData
     }).then(api => {
       // Advice API (preview mode) can return HTTP 200 (success)

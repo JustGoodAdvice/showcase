@@ -44,16 +44,16 @@
     <section class="row main-content">
       <div class="col-md-5 col-lg-3">
         <header>
-          <div><a href="/frb/goal-planning"><img src="/img/first-republic-bank-logo@2x.png" width="200" height="68.5"></a></div>
+          <div><a href="/frb/goal-planning"><img src="/img/frb/first-republic-bank-logo@2x.png" width="200" height="68.5"></a></div>
         </header>
-        <p class="lead text-brand intro">Prototype goal planning app</p>
+        <p class="lead text-brand intro">Prototype goal optimizer app</p>
         <% if (locals.showStart) { %>
-        <p class="text-brand intro">Choose a goal, or start with a persona to simulate an authenticated client.</p>
+        <p class="text-brand intro">Start with a persona to simulate an authenticated client.</p>
         <ul class="text-brand text-secondary intro-personas">
           <% Object.keys(PERSONAS).forEach(key=> { %>
             <li><a class="text-white" href="#" data-select-persona="<%= key %>">
-              <%= key %>
-            </a></li>
+              <%= key %> 
+            </a><span data-profile-selected-goals></span></li>
             <% }) %>
             <li><a class="text-white" href="#" data-select-persona="reset">Reset / logout persona</a></li>
         </ul>
@@ -66,7 +66,9 @@
             <div class="notch"></div>
             <main class="screen <%= locals.greenScreen ? 'screen-nopadd' : null %>">
               <% if (locals.inApp && !locals.showStart) { %>
-                <header><i class="fal fa-chevron-left"></i>&nbsp;<a href="/frb/goal-planning/start">Goal Optimizer</a><span id="breadcrumb"></span></header>
+                <h1 class="text-brand text-white">
+                  <i class="fal fa-chevron-left"></i>&nbsp;<a href="/frb/goal-planning/start" class="text-white">Goal Optimizer</a><span id="breadcrumb"></span>
+                </h1>
               <% } %>
               
               <!-- use this script in the <body> so turbolinks executes it each page load -->

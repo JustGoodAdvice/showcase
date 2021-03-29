@@ -116,6 +116,12 @@ export default class extends Controller {
       }
       api.display.goal = goal;
 
+      // export data setup for saving to goal
+      api.save_to_goal = {
+        advice: api.display.advice.map(a => { return _.omit(a, "advice"); }),
+        goal
+      };
+
       const str = Handlebars.compile($("#tmpl_advice_pay_debt").html())(api);
       this.TaffrailAdvice.$advice.html(str);
     }

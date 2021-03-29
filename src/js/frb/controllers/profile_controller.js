@@ -3,19 +3,17 @@ import { Controller } from "stimulus";
 import TaffrailAdvice from "../taffrailapi";
 import Turbolinks from "turbolinks";
 import qs from "querystring";
-
+import Handlebars from "handlebars";
 export default class extends Controller {
   // static targets = ["title", "description"];
   // static values = { id: String };
 
   connect() {
-    // console.log("CONNECTED fitness")
+    // console.log("CONNECTED profile")
   }
 
   initialize() {
     // advicsetId = this.idValue
-
-    $("#breadcrumb").html("&nbsp;/&nbsp;Financial Fitness");
 
     this.TaffrailAdvice = new TaffrailAdvice();
     this.TaffrailAdvice.init();
@@ -53,17 +51,28 @@ export default class extends Controller {
   }
 
   updateMainPane() {
+    const { api } = this.TaffrailAdvice;
     // render
-    if (this.TaffrailAdvice.api.display.type == "INPUT_REQUEST") {
+    if (api.display.type == "INPUT_REQUEST") {
       // $(".advice").slideDown(300);
       this.TaffrailAdvice.updateForInputRequest();
     } else {
       // must be advice
-      if (this.TaffrailAdvice.api.display._isLast) {
+      if (api.display._isLast) {
         // since it's "last", hide the question.
         // $(".advice").slideUp(300);
+
+        // save "budget"
+        const prof = window.jga.UserProfile.savedProfile;
+        const budget = _.omit(api.params, "State", "include", "showcase");
+        window.jga.UserProfile.savedProfile = _.assign(prof, budget, { budgetcreated: true });
+        $(document).trigger("pushnotification", ["budget", { message: "Savings budget saved!" }]);
       }
-      this.TaffrailAdvice.updateForAdvice();
+
+      $(".goal-result").show();
+
+      const str = Handlebars.compile($("#tmpl_advice_profile").html())(api);
+      this.TaffrailAdvice.$advice.html(str);
     }
 
   }
