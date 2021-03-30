@@ -2,6 +2,8 @@
 $fa-font-path: "../../@fortawesome/fontawesome-pro/webfonts";
 $fa-font-size-base: 13px;
 
+$enable-gradients: true;
+
 $colors: (
   'gray': #979DAC,
   'gray-light': lighten(#979DAC, 25%),

@@ -372,13 +372,28 @@ export default class ShowcasePage {
           const isInSidebar = $el.closest(".advice-debug").length;
           if (isInSidebar) { return; }
 
+          const varLookup = this.api.variables.find(v => { return v.id == variableId });
+          if (!varLookup) { console.error("no var found", variableId); return; }
+
+          const dictLink = `${this.config.advicebuilder_host}/admin/dictionary?preloadId=${varLookup.id}`;
+
           const html = `
             <div class="debug-card">
               <div>
-                <code class="text-primary">${source.expression}</code>
-                <hr>
-                Debug:<br>
-                <code class="text-primary">${source.expressionDebug}</code>
+                <h5>Variable</h5>
+                <div class="text-monospace var-name"><a href="${dictLink}" target="_blank">${varLookup.name}</a></div>
+                <div class="expression">
+                  <h5>Formula</h5>
+                  <div class="d-flex justify-content-between">
+                    <code class="exp cpy" data-toggle="tooltip" title="Click to copy">${source.expression}</code>
+                    <code class="value text-right">= ${source.result}</code>
+                  </div>
+                </div>
+
+                <div class="exp-debug">
+                  <h5>Expression debug</h5>
+                  <code>${source.expressionDebug}</code>
+                </div>
               </div>
             </div>
           `;
@@ -390,10 +405,26 @@ export default class ShowcasePage {
             .popover({
               container: "body",
               placement: "top",
-              title: source.name,
+              title: "Inspector",
               content: html,
               html: true,
               trigger: "focus"
+            }).on("shown.bs.popover", e => {
+              $(".popover").find(".cpy").on("click", e => {
+                const $el = $(e.currentTarget);
+                copy($el.text()).then(() => {
+                  $el.attr("title", "Copied!")
+                    .tooltip("_fixTitle")
+                    .tooltip("setContent")
+                    .tooltip("show")
+                });
+              }).on("mouseout", e=> {
+                const $el = $(e.currentTarget);
+                $el.attr("title", "Click to copy")
+                  .tooltip("_fixTitle")
+                  .tooltip("setContent")
+                  .tooltip("show")
+              }).tooltip({ title: "Click to copy" })
             })
             // .attr("data-toggle", "tooltip")
             // .attr("title", "View source")

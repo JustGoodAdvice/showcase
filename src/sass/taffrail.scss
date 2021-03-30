@@ -43,6 +43,10 @@
 	}
 }
 
+.popover {
+	min-width: 25em !important;
+}
+
 .showcase.showcase--redux {
 	background-color: $gray-200;
 
@@ -385,6 +389,43 @@ taffrail-var {
 
 	.recommendations-on-this-page {
 		position: relative;
+	}
+
+	.debug-card {
+		h5 {
+			color: $gray-600;
+			font-size: 80%;
+			text-transform: uppercase;
+		}
+		
+		.var-name {
+			font-size: 90%;
+			margin-bottom: .75rem;
+		}
+
+		code {
+			color: $primary;
+			display: block;
+			font-size: 80%;
+		}
+
+		.expression {
+			.value {
+				color: $secondary;
+				margin-left: .5rem;
+				white-space: nowrap;
+			}
+		}
+
+		.exp-debug {
+			margin-top: 1rem;
+			
+			code {
+				min-height: 2rem;
+				overflow-x: scroll;
+				white-space: nowrap;
+			}
+		}
 	}
 
 	.advice-debug {
