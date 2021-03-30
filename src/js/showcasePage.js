@@ -298,6 +298,28 @@ export default class ShowcasePage {
   }
 
   /**
+   * Fix input requests with boolean variables in statements
+   */
+  fixInputRequestsWithBooleanVars() {
+    Object.keys(this.api.assumptions).forEach((key, idx) => {
+      const arr = this.api.assumptions[key];
+      this.api.assumptions[key] = arr.map(a => {
+        const { answer, form: { fieldType, name } } = a;
+        // for input requests using a boolean variable *with variables used in statements*
+        // replace the variable's value (`true` or `false`) with the `answer` (`Yes` or `No`)
+        // where the variable exists in the statement
+        if (fieldType == "Boolean" && a.statement && a.statement_raw) {
+          const h = Handlebars.compile(a.statement_raw)({
+            [name]: answer
+          });
+          a.statement = h;
+        }
+        return a;
+      });
+    });
+  }
+
+  /**
    * Map reference doc data
    */
   mapReferenceDocuments() {
@@ -748,13 +770,28 @@ export default class ShowcasePage {
 	 */
   _setValue($container = this.$advice) {
     const { display: { form: { fieldType } } } = this.api;
+    const { display: { answer } } = this.api;
     let { display: { value } } = this.api;
-    if (!value || value == "\"null\"") { return; }
+    // TODO: fix null bools when false
+    // `false` bools come out of the API as `null`
+    const isBooleanFalseValue = value === null && fieldType == "Boolean" && answer == "No";
+
+    // if there is no value, don't continue
+    if (!isBooleanFalseValue && value == undefined || value == "\"null\"") { return; }
 
     const $formEls = $container.find("form").find("input,select");
     $formEls.each((i, el) => {
       const $el = $(el);
       if ($el.is(":radio")) {
+
+        // for Bools, we need to stringify `true` and `false` to check the radio button
+        if (fieldType == "Boolean") {
+          if (isBooleanFalseValue) {
+            value = false;
+          }
+          value = String(value);
+        }
+
         if ($el.prop("value") == value || $el.prop("value") == "\""+value+"\"") {
           $el.prop("checked", true)
         }

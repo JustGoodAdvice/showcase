@@ -395,6 +395,9 @@ export default class showcaseHarness extends ShowcasePage {
       return (a.tagGroup) ? a.tagGroup.name : ASSUMPTIONS_UNGROUPED;
     });
 
+    // fix input requests with boolean variables in statements
+    this.fixInputRequestsWithBooleanVars();
+
     // go through each assumption group and set open/close state
     Object.keys(this.api.assumptions).forEach((key, idx) => {
       const arr = this.api.assumptions[key];
