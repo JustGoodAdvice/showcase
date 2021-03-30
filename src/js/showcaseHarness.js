@@ -415,6 +415,8 @@ export default class showcaseHarness extends ShowcasePage {
       });
     });
 
+    this.putPersonalProfileFirst();
+
     this.mapAdviceData();
     this.mapReferenceDocuments();
   }

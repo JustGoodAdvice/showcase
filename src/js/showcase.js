@@ -438,6 +438,8 @@ export default class showcaseFull extends ShowcasePage {
       });
     });
 
+    this.putPersonalProfileFirst();
+
     this.mapAdviceData();
     this.mapReferenceDocuments();
   }

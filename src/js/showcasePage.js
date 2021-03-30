@@ -319,6 +319,15 @@ export default class ShowcasePage {
     });
   }
 
+  putPersonalProfileFirst() {
+    if (Object.keys(this.api.assumptions).includes("Personal Profile")) {
+      this.api.assumptions = {
+        "Personal Profile": this.api.assumptions["Personal Profile"],
+        ...this.api.assumptions
+      }
+    }
+  }
+
   /**
    * Map reference doc data
    */
