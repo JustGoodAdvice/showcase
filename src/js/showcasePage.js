@@ -375,24 +375,29 @@ export default class ShowcasePage {
           const varLookup = this.api.variables.find(v => { return v.id == variableId });
           if (!varLookup) { console.error("no var found", variableId); return; }
 
-          const dictLink = `${this.config.advicebuilder_host}/admin/dictionary?preloadId=${varLookup.id}`;
+          const dictLink = `${this.config.advicebuilder_host}/admin/dictionary?preloadId=${variableId}`;
 
           const html = `
             <div class="debug-card">
               <div>
                 <h5>Variable</h5>
-                <div class="text-monospace var-name"><a href="${dictLink}" target="_blank">${varLookup.name}</a></div>
+                <div class="d-flex justify-content-between">
+                  <div class="text-monospace var-name">
+                    <a href="${dictLink}" target="_blank">${varLookup.name}</a>
+                  </div>
+                  <a href="#formula_${variableId}" class="jumptoformula"><i class="fal fa-sort-amount-down-alt"></i></a>
+                </div>
                 <div class="expression">
                   <h5>Formula</h5>
                   <div class="d-flex justify-content-between">
-                    <code class="exp cpy" data-toggle="tooltip" title="Click to copy">${source.expression}</code>
+                    <code class="exp cpy">${source.expression}</code>
                     <code class="value text-right">= ${source.result}</code>
                   </div>
                 </div>
 
                 <div class="exp-debug">
                   <h5>Expression debug</h5>
-                  <code>${source.expressionDebug}</code>
+                  <code class="cpy">${source.expressionDebug}</code>
                 </div>
               </div>
             </div>
@@ -409,25 +414,33 @@ export default class ShowcasePage {
               content: html,
               html: true,
               trigger: "focus"
-            }).on("shown.bs.popover", e => {
-              $(".popover").find(".cpy").on("click", e => {
-                const $el = $(e.currentTarget);
-                copy($el.text()).then(() => {
-                  $el.attr("title", "Copied!")
-                    .tooltip("_fixTitle")
-                    .tooltip("setContent")
-                    .tooltip("show")
-                });
-              }).on("mouseout", e=> {
-                const $el = $(e.currentTarget);
-                $el.attr("title", "Click to copy")
-                  .tooltip("_fixTitle")
-                  .tooltip("setContent")
-                  .tooltip("show")
-              }).tooltip({ title: "Click to copy" })
             })
-            // .attr("data-toggle", "tooltip")
-            // .attr("title", "View source")
+            .on("shown.bs.popover", e => {
+              $(".popover")
+                .find(".cpy")
+                .on("click", e => {
+                  e.preventDefault();
+                  const $el = $(e.currentTarget);
+                  copy($el.text()).then(() => {
+                    $el.tooltip("dispose");
+                  });
+                })
+                .tooltip({ title: "Click to copy" })
+              ;
+              $(".popover")
+                .find("a.jumptoformula")
+                .on("click", e => {
+                  e.preventDefault();
+                  const $el = $(e.currentTarget);
+                  $el.tooltip("dispose");
+                  const link = $el.attr("href");
+                  $("html, body").animate({ scrollTop: $(`${link}`).offset().top - 50 }, 400, () => {
+                    $(`${link}`).addClass("flash");
+                  });
+                })
+                .tooltip({ title: "Jump to formula" })
+              ;
+            })
           ;
         }
       }

@@ -3,7 +3,7 @@
     <h5>Advice Formulas</h5>
     <ul class="list-unstyled">
     {{#each formulaDebug}}
-      <li>
+      <li id="formula_{{id}}">
         <div class="d-flex justify-content-between var-value">
           <code class="var"><taffrail-var data-variable-name="{{name}}" data-variable-id="{{id}}">{{name}}</taffrail-var></code>
           <code class="value text-right">

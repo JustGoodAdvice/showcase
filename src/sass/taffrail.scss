@@ -401,12 +401,21 @@ taffrail-var {
 		.var-name {
 			font-size: 90%;
 			margin-bottom: .75rem;
+
+			// max-width: 1px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		code {
 			color: $primary;
 			display: block;
 			font-size: 80%;
+		}
+
+		.jumptoformula {
+			margin-left: .5rem;
 		}
 
 		.expression {
@@ -421,7 +430,7 @@ taffrail-var {
 			margin-top: 1rem;
 			
 			code {
-				min-height: 2rem;
+				min-height: 2.5rem;
 				overflow-x: scroll;
 				white-space: nowrap;
 			}
@@ -429,6 +438,24 @@ taffrail-var {
 	}
 
 	.advice-debug {
+		.flash {
+			-webkit-animation-name: flash-animation;
+			-webkit-animation-duration: 3s;
+
+			animation-name: flash-animation;
+			animation-duration: 3s;
+		}
+
+		@-webkit-keyframes flash-animation {  
+				from { background: $warning; }
+				to   { background: default; }
+		}
+
+		@keyframes flash-animation {  
+				from { background: $warning; }
+				to   { background: default; }
+		}
+
 		.var-value {
 			.var {
 				overflow: hidden;
