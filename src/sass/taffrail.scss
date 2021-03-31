@@ -340,9 +340,11 @@ taffrail-var {
 					font-weight: normal;
 				}
 
-				&:hover {
-					.headline-open-advice-in-ab {
-						display: inline-block;
+				.advice-editor-mode-enabled & {
+					&:hover {
+						.headline-open-advice-in-ab {
+							display: inline-block;
+						}
 					}
 				}
 

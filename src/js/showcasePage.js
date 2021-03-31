@@ -45,6 +45,10 @@ export default class ShowcasePage {
     $("body").tooltip({ selector: "[data-toggle=tooltip]" });
     // mode
     this.primaryAdviceModeEnabled = store.get("primaryAdviceModeEnabled", false);
+    this.adviceEditorModeEnabled = store.get("adviceEditorModeEnabled", false);
+    if (this.adviceEditorModeEnabled) {
+      $("html").addClass("advice-editor-mode-enabled");
+    }
     // events
     this.handleChangeAudience();
     this.handleCopyLink();
@@ -52,6 +56,7 @@ export default class ShowcasePage {
     this.handleShowAllRecommendationsFromPrimaryAdvice();
     this.handleClickOpenRawDataModal();
     this.handleClickTogglePrimaryAdviceMode();
+    this.handleClickToggleAdviceEditorMode();
     this.handleClickShowAllSources();
 
     // inside iframe? screenshot generator helper
@@ -690,6 +695,20 @@ export default class ShowcasePage {
       setTimeout(() => {
         window.location.reload();
       }, 3000);
+    });
+  }
+
+  /**
+   * Handle clicks to toggle advice editing mode
+   */
+  handleClickToggleAdviceEditorMode() {
+    $("main").on("click", "a[data-action='toggle-edit-advice-mode']", e => {
+      e.preventDefault();
+      const currentlyEnabled = this.adviceEditorModeEnabled;
+      const modeEnabled = !currentlyEnabled ? true : false;
+      store.set("adviceEditorModeEnabled", modeEnabled);
+      this.adviceEditorModeEnabled = modeEnabled;
+      $("html").toggleClass("advice-editor-mode-enabled", modeEnabled);
     });
   }
 
