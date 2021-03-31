@@ -386,7 +386,7 @@ export default class ShowcasePage {
     // handle taffrail-var
     $("body").find("taffrail-var").each((i, el) => {
       const $el = $(el);
-      const { variableId, variableName } = $el.data();
+      const { variableId, variableName, isUndefined = false } = $el.data();
       // find corresponding question
       const question = _.flatMap(this.api.assumptions).find((a) => {
         // check question rules first, then input requests
@@ -401,6 +401,13 @@ export default class ShowcasePage {
           .attr("title", "Click to change")
         ;
       } else {
+        // attempt to resolve
+        if (isUndefined) {
+          const varLookup = this.api.variables.find(v => { return v.id == variableId });
+          if (varLookup) {
+            $el.text(varLookup.valueFormatted || varLookup.value || $el.text())
+          }
+        }
         // if not a question, check for raw formula
         if (this.api.formulaDebug) {
           const source = this.api.formulaDebug.find(f => { return f.id == variableId });
