@@ -20,7 +20,7 @@ export default class showcaseHarness extends ShowcasePage {
   init() {
     super.init();
     this.initCache();
-    this.AUTO_EXPAND_RECOMMENDATION_COUNT = 8;
+    this.AUTO_EXPAND_RECOMMENDATION_COUNT = 1;
     // get banner
     this.updateAdviceSetDetails();
     // current querystring without "?" prefix
