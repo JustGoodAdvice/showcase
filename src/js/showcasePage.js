@@ -371,6 +371,17 @@ export default class ShowcasePage {
 	 * Update variables list
 	 */
   updateVariablesList(){
+    // add formatted value to Booleans
+    this.api.variables = this.api.variables.map(v => {
+      if (v.dataType == "Boolean") {
+        if (v.value === 1) {
+          v.valueFormatted = "Yes";
+        } else if (v.value === 0) {
+          v.valueFormatted = "No";
+        }
+      }
+      return v;
+    });
     // render
     const template = Handlebars.compile($("#tmpl_variablesList").html());
     $("#dataModal .variables").html(template(this.api));
