@@ -345,6 +345,41 @@ export default class showcaseHarness extends ShowcasePage {
    */
   _updateForInputRequest() {
     // render
+
+    // IR belongs to this adviceset or another?
+    const outOfContext = this.api.adviceset._id !== this.api.display.ruleSetId;
+    if (outOfContext) {
+      this.api.display._outOfContext = true;
+
+      new Promise((resolve) => {
+        const outOfContextRuleSetCache = store.get(`taffrail_adviceset_${this.api.display.ruleSetId}`);
+        if (outOfContextRuleSetCache) {
+          return resolve(outOfContextRuleSetCache);
+        } else {
+          return $.ajax({
+            url: `${this.config.api_host}/api/adviceset/${this.api.display.ruleSetId}`,
+            type: "GET",
+            dataType: "json",
+            headers: {
+              "Accept": "application/json; chartset=utf-8",
+              "Authorization": `Bearer ${this.config.api_key}`
+            }
+          }).then(api => { return resolve(api); });
+        }
+      }).then(api => {
+        const { data: { entity: { name, meta: { isStarter = false } } } } = api;
+        store.set(`taffrail_adviceset_${this.api.display.ruleSetId}`, api);
+
+        if (isStarter === true) {
+          const abLink = `${this.config.advicebuilder_host}/advicesets/${this.api.display.ruleSetId}/show`;
+          $(`#context_${this.api.display.ruleSetId}`).html(`<i class="fal fa-tasks"></i>&nbsp;<a href="${abLink}" target=_blank>${name}`);
+        } else {
+          this.api.display._outOfContext = false;
+          $(`#context_${this.api.display.ruleSetId}`).hide();
+        }
+      });
+    }
+
     const str = this.TEMPLATES["InputRequest"](this.api);
     this.$advice.html(str);
 

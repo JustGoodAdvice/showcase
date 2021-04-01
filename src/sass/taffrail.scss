@@ -219,6 +219,11 @@ taffrail-var {
 		padding-top: 1rem;
 		width: 100%;
 
+		.rs-context,
+		.rs-context a {
+			color: $gray-600;
+		}
+
 		.question {
 			background-color: $gray-200;
 			border-radius: $border-radius;

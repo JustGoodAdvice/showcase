@@ -1,4 +1,7 @@
 <script id="tmpl_adviceInputRequest" type="text/x-handlebars-template">
+	{{#if display._outOfContext}}
+		<h5 class="mb-3 rs-context" id="context_{{display.ruleSetId}}"><span class="text-muted">...</span></h5>
+	{{/if}}
 	<div class="question">
 		<header class="mb-1 d-flex align-items-center justify-content-between">
 			<h4 class="mb-0 mr-2">{{display.question}}</h4>
