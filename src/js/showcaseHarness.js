@@ -601,7 +601,7 @@ export default class showcaseHarness extends ShowcasePage {
 	 */
   updateAdviceDebugSidebar() {
     // render
-    this.api.formulaDebug = _.compact(this.api.formulaDebug.map(f => {
+    this.api.formulaDebug = _.compact((this.api.formulaDebug||[]).map(f => {
       const varLookup = this.api.variables.find(v => { return f.id == v.id });
       if (f.name.toLowerCase().endsWith("_txt")) {
         return null;
