@@ -350,7 +350,7 @@ export default class ShowcasePage {
    */
   mapReferenceDocuments() {
     let hasMoreThanLimit = false;
-    this.api.adviceset.referenceDocuments = [].concat(this.api.adviceset.referenceDocuments).map((rd, i) => {
+    this.api.adviceset.referenceDocuments = [].concat(this.api.adviceset.referenceDocuments||[]).map((rd, i) => {
       const { _links: { original = "" } } = rd;
       if (original && original != "null") {
         const u = new URL(original);
