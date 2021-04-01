@@ -303,6 +303,18 @@ export default class ShowcasePage {
   }
 
   /**
+   * Remove any assumptions without statements
+   */
+  filterAssumptionsWithoutStatement(){
+    Object.keys(this.api.assumptions).forEach((key, idx) => {
+      const arr = this.api.assumptions[key];
+      this.api.assumptions[key] = arr.filter(a => {
+        return a.statement;
+      })
+    });
+  }
+
+  /**
    * Fix input requests with boolean variables in statements
    */
   fixInputRequestsWithBooleanVars() {

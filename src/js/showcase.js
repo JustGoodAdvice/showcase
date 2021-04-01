@@ -420,6 +420,7 @@ export default class showcaseFull extends ShowcasePage {
 
     // fix input requests with boolean variables in statements
     this.fixInputRequestsWithBooleanVars();
+    this.filterAssumptionsWithoutStatement();
 
     // go through each assumption group and set open/close state
     Object.keys(this.api.assumptions).forEach((key, idx) => {
