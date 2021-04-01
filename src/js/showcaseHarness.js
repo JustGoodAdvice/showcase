@@ -296,6 +296,7 @@ export default class showcaseHarness extends ShowcasePage {
       this._updateForInputRequest();
       $(".list-all-recommendations").addClass("unfocused").removeClass("has-primary-advice");
     } else {
+      $(".rs-context").remove();
       // see `updateRecommendationsList`
     }
   }
