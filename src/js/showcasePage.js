@@ -411,7 +411,7 @@ export default class ShowcasePage {
       const $el = $(el);
       const { variableId, variableName } = $el.data();
       // find corresponding question
-      const question = _.flatMap(this.api.assumptions).find((a) => {
+      const question = _.flatMap(this.api.answers).find((a) => {
         // check question rules first, then input requests
         return a.form.questionVariable?.reservedName == variableName || a.form.name == variableName;
       });
