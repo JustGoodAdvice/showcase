@@ -560,7 +560,7 @@ export default class TaffrailApi {
       const { idx } = $this.data();
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored
-      const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == idx; });
+      const answer = _.flatMap(this.api.answers).find((a) => { return a.idx == idx; });
       this.api.display = answer;
       this.api.display.idx = answer.idx;
       this.updateForInputRequest();

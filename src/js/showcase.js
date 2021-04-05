@@ -171,7 +171,7 @@ export default class showcaseFull extends ShowcasePage {
       $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored
-      const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == idx; });
+      const answer = _.flatMap(this.api.answers).find((a) => { return a.idx == idx; });
       this.api.display = answer;
       this.api.display.idx = answer.idx;
       this.updateMainPane();
@@ -440,6 +440,10 @@ export default class showcaseFull extends ShowcasePage {
     });
 
     this.putPersonalProfileFirst();
+
+    if (this.api.assumptions[ASSUMPTIONS_UNGROUPED].length === 0) {
+      delete this.api.assumptions[ASSUMPTIONS_UNGROUPED];
+    }
 
     this.mapAdviceData();
     this.mapReferenceDocuments();
