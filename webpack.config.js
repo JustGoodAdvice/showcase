@@ -5,7 +5,7 @@ module.exports = {
   mode: process.env.NODE_ENV === "production" ? "production" : "development",
   optimization: {
     minimizer: [
-      new TerserPlugin({ cache: true, parallel: true, sourceMap: false })
+      new TerserPlugin({ parallel: true })
     ]
   },
   entry: {
