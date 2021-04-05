@@ -453,10 +453,7 @@ export default class showcaseHarness extends ShowcasePage {
     });
 
     this.putPersonalProfileFirst();
-
-    if (this.api.assumptions[ASSUMPTIONS_UNGROUPED].length === 0) {
-      delete this.api.assumptions[ASSUMPTIONS_UNGROUPED];
-    }
+    this.deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED);
 
     this.mapAdviceData();
     this.mapReferenceDocuments();

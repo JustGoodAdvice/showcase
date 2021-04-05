@@ -336,6 +336,19 @@ export default class ShowcasePage {
     });
   }
 
+  /**
+   * Delete default assumption group if no statements exist
+   * @param {string} ASSUMPTIONS_UNGROUPED
+   */
+  deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED) {
+    if (this.api.assumptions[ASSUMPTIONS_UNGROUPED] && this.api.assumptions[ASSUMPTIONS_UNGROUPED].length === 0) {
+      delete this.api.assumptions[ASSUMPTIONS_UNGROUPED];
+    }
+  }
+
+  /**
+   * Sort assumptions so Personal Profile is always first
+   */
   putPersonalProfileFirst() {
     if (Object.keys(this.api.assumptions).includes("Personal Profile")) {
       this.api.assumptions = {

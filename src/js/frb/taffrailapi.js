@@ -230,6 +230,9 @@ export default class TaffrailApi {
       });
     });
 
+    this.putPersonalProfileFirst();
+    this.deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED);
+
     this.mapAdviceData();
   }
 
