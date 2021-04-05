@@ -834,14 +834,10 @@ export default class ShowcasePage {
 	 */
   _setValue($container = this.$advice) {
     const { display: { form: { fieldType } } } = this.api;
-    const { display: { answer } } = this.api;
     let { display: { value } } = this.api;
-    // TODO: fix null bools when false
-    // `false` bools come out of the API as `null`
-    const isBooleanFalseValue = value === null && fieldType == "Boolean" && answer == "No";
 
     // if there is no value, don't continue
-    if (!isBooleanFalseValue && value == undefined || value == "\"null\"") { return; }
+    if (value == undefined || value == "\"null\"") { return; }
 
     const $formEls = $container.find("form").find("input,select");
     $formEls.each((i, el) => {
@@ -850,9 +846,6 @@ export default class ShowcasePage {
 
         // for Bools, we need to stringify `true` and `false` to check the radio button
         if (fieldType == "Boolean") {
-          if (isBooleanFalseValue) {
-            value = false;
-          }
           value = String(value);
         }
 
