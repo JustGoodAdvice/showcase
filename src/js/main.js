@@ -1,5 +1,6 @@
 import qs from "querystring";
 import Showcase from "./showcase";
+import ShowcaseHarness from "./showcaseHarness";
 import ShowcaseMobile from "./showcaseMobile";
 import ShowcaseVirtualAsst from "./showcaseVirtualAsst";
 import ShowcaseSalesforce from "./showcaseSalesforce";
@@ -17,6 +18,8 @@ $("main").on("click", "nav.menubar a[data-target]", e => {
     link += "virtual-assistant/";
   } else if (target == "salesforce") {
     link += "salesforce/";
+  } else if (target == "harness") {
+    link += "harness/";
   }
   let querystr = qs.parse(location.search.substr(1));
   if (target == "salesforce") {
@@ -29,6 +32,7 @@ $("main").on("click", "nav.menubar a[data-target]", e => {
 
 const imports = {
   showcase: Showcase,
+  showcaseHarness: ShowcaseHarness,
   showcaseMobile: ShowcaseMobile,
   showcaseVirtualAsst: ShowcaseVirtualAsst,
   showcaseSalesforce: ShowcaseSalesforce,

@@ -362,7 +362,7 @@ export default class {
   }
 
   isDebtCreditCardDebt(payoffDebt) {
-    return payoffDebt && payoffDebt?.data?.variables_map?.Debt_Type_FRB?.value == "credit card";
+    return payoffDebt && payoffDebt?.data?.variables_map?.Debt_Type_FRB?.value.toLowerCase().includes("credit card");
   }
 
   getGoalByName(controllerName) {

@@ -45,6 +45,10 @@ export default class ShowcasePage {
     $("body").tooltip({ selector: "[data-toggle=tooltip]" });
     // mode
     this.primaryAdviceModeEnabled = store.get("primaryAdviceModeEnabled", false);
+    this.adviceEditorModeEnabled = store.get("adviceEditorModeEnabled", false);
+    if (this.adviceEditorModeEnabled) {
+      $("html").addClass("advice-editor-mode-enabled");
+    }
     // events
     this.handleChangeAudience();
     this.handleCopyLink();
@@ -52,6 +56,7 @@ export default class ShowcasePage {
     this.handleShowAllRecommendationsFromPrimaryAdvice();
     this.handleClickOpenRawDataModal();
     this.handleClickTogglePrimaryAdviceMode();
+    this.handleClickToggleAdviceEditorMode();
     this.handleClickShowAllSources();
 
     // inside iframe? screenshot generator helper
@@ -106,8 +111,12 @@ export default class ShowcasePage {
    */
   _loadApi(newFormData, $loadingContainer = this.$loadingContainer, usePlaceholder = true){
     const currFormData = this.api.params;
+    const include = ["filteredVars"];
+    if (location.href.includes("harness")) {
+      include.push("formulaDebug");
+    }
     const formData = _.assign({
-      include: ["filteredVars"],
+      include: include,
       showcase: true
     }, currFormData, qs.parse(newFormData));
     // does link contain referring AI User Request ID (aiUrId)?
@@ -294,11 +303,67 @@ export default class ShowcasePage {
   }
 
   /**
+   * Remove any assumptions without statements
+   */
+  filterAssumptionsWithoutStatement(){
+    Object.keys(this.api.assumptions).forEach((key, idx) => {
+      const arr = this.api.assumptions[key];
+      this.api.assumptions[key] = arr.filter(a => {
+        return a.statement;
+      })
+    });
+  }
+
+  /**
+   * Fix input requests with boolean variables in statements
+   */
+  fixInputRequestsWithBooleanVars() {
+    Object.keys(this.api.assumptions).forEach((key, idx) => {
+      const arr = this.api.assumptions[key];
+      this.api.assumptions[key] = arr.map(a => {
+        const { answer, form: { fieldType, name } } = a;
+        // for input requests using a boolean variable *with variables used in statements*
+        // replace the variable's value (`true` or `false`) with the `answer` (`Yes` or `No`)
+        // where the variable exists in the statement
+        if (fieldType == "Boolean" && a.statement && a.statement_raw) {
+          const h = Handlebars.compile(a.statement_raw)({
+            [name]: answer
+          });
+          a.statement = h;
+        }
+        return a;
+      });
+    });
+  }
+
+  /**
+   * Delete default assumption group if no statements exist
+   * @param {string} ASSUMPTIONS_UNGROUPED
+   */
+  deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED) {
+    if (this.api.assumptions[ASSUMPTIONS_UNGROUPED] && this.api.assumptions[ASSUMPTIONS_UNGROUPED].length === 0) {
+      delete this.api.assumptions[ASSUMPTIONS_UNGROUPED];
+    }
+  }
+
+  /**
+   * Sort assumptions so Personal Profile is always first
+   */
+  putPersonalProfileFirst() {
+    if (Object.keys(this.api.assumptions).includes("Personal Profile")) {
+      this.api.assumptions = {
+        "Personal Profile": this.api.assumptions["Personal Profile"],
+        ...this.api.assumptions
+      }
+    }
+  }
+
+  /**
    * Map reference doc data
    */
   mapReferenceDocuments() {
     let hasMoreThanLimit = false;
-    this.api.adviceset.referenceDocuments = [].concat(this.api.adviceset.referenceDocuments).map((rd, i) => {
+    this.api.adviceset.referenceDocuments = [].concat(this.api.adviceset.referenceDocuments||[]).map((rd, i) => {
       const { _links: { original = "" } } = rd;
       if (original && original != "null") {
         const u = new URL(original);
@@ -319,6 +384,17 @@ export default class ShowcasePage {
 	 * Update variables list
 	 */
   updateVariablesList(){
+    // add formatted value to Booleans
+    this.api.variables = this.api.variables.map(v => {
+      if (v.dataType == "Boolean") {
+        if (v.value === 1) {
+          v.valueFormatted = "Yes";
+        } else if (v.value === 0) {
+          v.valueFormatted = "No";
+        }
+      }
+      return v;
+    });
     // render
     const template = Handlebars.compile($("#tmpl_variablesList").html());
     $("#dataModal .variables").html(template(this.api));
@@ -346,9 +422,9 @@ export default class ShowcasePage {
     // handle taffrail-var
     $("body").find("taffrail-var").each((i, el) => {
       const $el = $(el);
-      const { variableName } = $el.data();
+      const { variableId, variableName } = $el.data();
       // find corresponding question
-      const question = _.flatMap(this.api.assumptions).find((a) => {
+      const question = _.flatMap(this.api.answers).find((a) => {
         // check question rules first, then input requests
         return a.form.questionVariable?.reservedName == variableName || a.form.name == variableName;
       });
@@ -360,6 +436,85 @@ export default class ShowcasePage {
           .attr("data-toggle", "tooltip")
           .attr("title", "Click to change")
         ;
+      } else {
+        // if not a question, check for raw formula
+        if (this.api.formulaDebug) {
+          const source = this.api.formulaDebug.find(f => { return f.id == variableId });
+          if (!source) { console.error("no source found", variableId); return; }
+          const isInSidebar = $el.closest(".advice-debug").length;
+          if (isInSidebar) { return; }
+
+          const varLookup = this.api.variables.find(v => { return v.id == variableId });
+          if (!varLookup) { console.error("no var found", variableId); return; }
+
+          const dictLink = `${this.config.advicebuilder_host}/admin/dictionary?preloadId=${variableId}`;
+
+          const html = `
+            <div class="debug-card">
+              <div>
+                <h5>Variable</h5>
+                <div class="d-flex justify-content-between">
+                  <div class="text-monospace var-name">
+                    <a href="${dictLink}" target="_blank">${varLookup.name}</a>
+                  </div>
+                  <a href="#formula_${variableId}" class="jumptoformula"><i class="fal fa-sort-amount-down-alt"></i></a>
+                </div>
+                <div class="expression">
+                  <h5>Formula</h5>
+                  <div class="d-flex justify-content-between">
+                    <code class="exp cpy">${source.expression}</code>
+                    <code class="value text-right">= ${source.result}</code>
+                  </div>
+                </div>
+
+                <div class="exp-debug">
+                  <h5>Expression debug</h5>
+                  <code class="cpy">${source.expressionDebug}</code>
+                </div>
+              </div>
+            </div>
+          `;
+
+          $el
+            .addClass("active active--calculated")
+            .attr("tabindex", 0)
+            .attr("role", "button")
+            .popover({
+              container: "body",
+              placement: "top",
+              title: "Inspector",
+              content: html,
+              html: true,
+              trigger: "focus"
+            })
+            .on("shown.bs.popover", e => {
+              $(".popover")
+                .find(".cpy")
+                .on("click", e => {
+                  e.preventDefault();
+                  const $el = $(e.currentTarget);
+                  copy($el.text()).then(() => {
+                    $el.tooltip("dispose");
+                  });
+                })
+                .tooltip({ title: "Click to copy" })
+              ;
+              $(".popover")
+                .find("a.jumptoformula")
+                .on("click", e => {
+                  e.preventDefault();
+                  const $el = $(e.currentTarget);
+                  $el.tooltip("dispose");
+                  const link = $el.attr("href");
+                  $("html, body").animate({ scrollTop: $(`${link}`).offset().top - 50 }, 400, () => {
+                    $(`${link}`).addClass("flash");
+                  });
+                })
+                .tooltip({ title: "Jump to formula" })
+              ;
+            })
+          ;
+        }
       }
     });
   }
@@ -580,6 +735,20 @@ export default class ShowcasePage {
   }
 
   /**
+   * Handle clicks to toggle advice editing mode
+   */
+  handleClickToggleAdviceEditorMode() {
+    $("main").on("click", "a[data-action='toggle-edit-advice-mode']", e => {
+      e.preventDefault();
+      const currentlyEnabled = this.adviceEditorModeEnabled;
+      const modeEnabled = !currentlyEnabled ? true : false;
+      store.set("adviceEditorModeEnabled", modeEnabled);
+      this.adviceEditorModeEnabled = modeEnabled;
+      $("html").toggleClass("advice-editor-mode-enabled", modeEnabled);
+    });
+  }
+
+  /**
    * Handle clicks to toggle primnary advice mode
    */
   handleClickShowAllSources() {
@@ -666,12 +835,20 @@ export default class ShowcasePage {
   _setValue($container = this.$advice) {
     const { display: { form: { fieldType } } } = this.api;
     let { display: { value } } = this.api;
-    if (!value || value == "\"null\"") { return; }
+
+    // if there is no value, don't continue
+    if (value == undefined || value == "\"null\"") { return; }
 
     const $formEls = $container.find("form").find("input,select");
     $formEls.each((i, el) => {
       const $el = $(el);
       if ($el.is(":radio")) {
+
+        // for Bools, we need to stringify `true` and `false` to check the radio button
+        if (fieldType == "Boolean") {
+          value = String(value);
+        }
+
         if ($el.prop("value") == value || $el.prop("value") == "\""+value+"\"") {
           $el.prop("checked", true)
         }

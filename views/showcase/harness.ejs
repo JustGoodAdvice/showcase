@@ -3,7 +3,7 @@
   <head>
 		<%- include("partials/_head"); %>
   </head>
-  <body class="showcase showcase--redux">
+  <body class="showcase showcase--redux bg-gradient-primary">
 
 		<main class="container shadow-sm rounded-bottom">
 			<header class="row">
@@ -26,43 +26,50 @@
 								</div>
 							</div>
 						</div>
-						<nav class="my-2 my-md-0 mr-md-3 d-flex align-items-center menubar">
-							<!--
-							<a class="p-2 text-dark" href="#">Features</a>
-							<a class="p-2 text-dark" href="#">Enterprise</a>
-							<a class="p-2 text-dark" href="#">About</a>
-							-->
-							<div class="dropdown" data-toggle="tooltip" title="View options">
-								<a href="#" class="dropdown-toggle text-dark" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<i class="fal fa-window-alt"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-									<h6 class="dropdown-header">VIEWS</h6>
-									<a class="dropdown-item active" href="#" data-target="full"><i class="fal fa-desktop"></i>&nbsp;Main</a>
-									<a class="dropdown-item" href="#" data-target="harness"><i class="fal fa-desktop-alt"></i>&nbsp;Test Harness</a>
-									<a class="dropdown-item" href="#" data-target="mobile"><i class="fal fa-comments"></i>&nbsp;Mobile</a>
-									<a class="dropdown-item" href="#" data-target="asst"><i class="fal fa-phone-laptop"></i>&nbsp;Virtual Assistant</a>
-									<a class="dropdown-item" href="#" data-target="salesforce"><i class="fal fa-desktop-alt"></i>&nbsp;Salesforce</a>
-									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#" data-action="toggle-primary-advice-mode"><i class="fal fa-comment-alt-edit"></i>&nbsp;Toggle Primary Advice Mode</a>
-									<a class="dropdown-item" href="#" data-action="toggle-edit-advice-mode"><i class="fal fa-edit"></i>&nbsp;Toggle Editor Mode</a>
-								</div>
-							</div>
-							<div class="ml-3 dropdown" data-toggle="tooltip" title="Change voice">
-								<a href="#" class="dropdown-toggle text-dark" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<i class="fal fa-microphone-alt"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton2">
-									<h6 class="dropdown-header">VOICES</h6>
-									<div class="audience-switcher">
-										<a class="dropdown-item" href="#" data-audience-id="-1"  data-action="set-audience"><i class="fal fa-microphone-alt"></i>&nbsp;Default</a>
-										<a class="dropdown-item" href="#" data-audience-id="gRGmgTjX7" data-action="set-audience"><i class="fal fa-microphone-alt"></i>&nbsp;Advisor</a>
-									</div>
-								</div>
-							</div>
-							<a href="#" class="ml-3 text-dark" data-action="modal-raw-data" data-toggle="tooltip" title="View data"><i class="fal fa-table"></i></a>
-							<a href="#" class="ml-3 text-dark intercom_messenger_launcher" data-toggle="tooltip" title="Get support"><i class="fal fa-life-ring"></i></a>
-						</nav>
+            <nav class="my-2 my-md-0 mr-md-3 d-flex align-items-center menubar">
+              <!--
+            							<a class="p-2 text-dark" href="#">Features</a>
+            							<a class="p-2 text-dark" href="#">Enterprise</a>
+            							<a class="p-2 text-dark" href="#">About</a>
+            							-->
+              <div class="dropdown" data-toggle="tooltip" title="View options">
+                <a href="#" class="dropdown-toggle text-dark" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  <i class="fal fa-window-alt"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                  <h6 class="dropdown-header">VIEWS</h6>
+                  <a class="dropdown-item" href="#" data-target="full"><i class="fal fa-desktop"></i>&nbsp;Main</a>
+                  <a class="dropdown-item active" href="#" data-target="harness"><i class="fal fa-desktop-alt"></i>&nbsp;Test Harness</a>
+                  <a class="dropdown-item" href="#" data-target="mobile"><i class="fal fa-comments"></i>&nbsp;Mobile</a>
+                  <a class="dropdown-item" href="#" data-target="asst"><i class="fal fa-phone-laptop"></i>&nbsp;Virtual
+                    Assistant</a>
+                  <a class="dropdown-item" href="#" data-target="salesforce"><i class="fal fa-desktop-alt"></i>&nbsp;Salesforce</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#" data-action="toggle-primary-advice-mode"><i class="fal fa-comment-alt-edit"></i>&nbsp;Toggle Primary Advice Mode</a>
+                  <a class="dropdown-item" href="#" data-action="toggle-edit-advice-mode"><i class="fal fa-edit"></i>&nbsp;Toggle Editor Mode</a>
+                </div>
+              </div>
+              <div class="ml-3 dropdown" data-toggle="tooltip" title="Change voice">
+                <a href="#" class="dropdown-toggle text-dark" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  <i class="fal fa-microphone-alt"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton2">
+                  <h6 class="dropdown-header">VOICES</h6>
+                  <div class="audience-switcher">
+                    <a class="dropdown-item" href="#" data-audience-id="-1" data-action="set-audience"><i
+                        class="fal fa-microphone-alt"></i>&nbsp;Default</a>
+                    <a class="dropdown-item" href="#" data-audience-id="gRGmgTjX7" data-action="set-audience"><i
+                        class="fal fa-microphone-alt"></i>&nbsp;Advisor</a>
+                  </div>
+                </div>
+              </div>
+              <a href="#" class="ml-3 text-dark" data-action="modal-raw-data" data-toggle="tooltip" title="View data"><i
+                  class="fal fa-table"></i></a>
+              <a href="#" class="ml-3 text-dark intercom_messenger_launcher" data-toggle="tooltip" title="Get support"><i
+                  class="fal fa-life-ring"></i></a>
+            </nav>
 					</div>
 				</div>
 			</header>
@@ -111,12 +118,12 @@
 				<div class="col-md-7 col-lg-9 advice-outer-container">
 					<div class="center-ph-loader"><%- include("index/loading"); %></div>
 					<div class="row">
-						<div class="col-lg-9 center-col">
+						<div class="col-lg-7 center-col">
 							<div class="advice"></div>
 							<div class="list-all-recommendations"></div>
 						</div>
-						<div class="col-lg-3 right-col">
-							<div class="recommendations-on-this-page"></div>
+						<div class="col-lg-5 right-col">
+							<div class="advice-debug"></div>
 						</div>
 					</div>
 				</div>
@@ -130,7 +137,7 @@
 <%- include("index/inputRequest"); %>
 <%- include("index/advice"); %>
 <%- include("index/recommendations"); %>
-<%- include("index/recommendationsToc"); %>
+<%- include("index/adviceDebugSidebar"); %>
 <%- include("partials/error"); %>
 
 <%- include("index/answers"); %>
@@ -138,7 +145,7 @@
 <%- include("index/variables"); %>
 <%- include("partials/_toast"); %>
 
-<div id="__init" data-page-init="showcase"></div>
+<div id="__init" data-page-init="showcaseHarness"></div>
 
 		<%- include("partials/_footer_js"); %>
   </body>

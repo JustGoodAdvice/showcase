@@ -43,6 +43,10 @@
 	}
 }
 
+.popover {
+	min-width: 25em !important;
+}
+
 .showcase.showcase--redux {
 	background-color: $gray-200;
 
@@ -198,6 +202,15 @@ taffrail-var {
 		&:hover {
 			color: $secondary;
 		}
+
+		&.active--calculated {
+			border-bottom: 1px dotted $warning;
+
+			&:hover {
+				border-bottom: 1px dotted $primary;
+				color: $warning;
+			}
+		}
   }
 }
 
@@ -205,6 +218,11 @@ taffrail-var {
 		min-height: 600px;
 		padding-top: 1rem;
 		width: 100%;
+
+		.rs-context,
+		.rs-context a {
+			color: $gray-600;
+		}
 
 		.question {
 			background-color: $gray-200;
@@ -327,9 +345,11 @@ taffrail-var {
 					font-weight: normal;
 				}
 
-				&:hover {
-					.headline-open-advice-in-ab {
-						display: inline-block;
+				.advice-editor-mode-enabled & {
+					&:hover {
+						.headline-open-advice-in-ab {
+							display: inline-block;
+						}
 					}
 				}
 
@@ -377,6 +397,92 @@ taffrail-var {
 	.recommendations-on-this-page {
 		position: relative;
 	}
+
+	.debug-card {
+		h5 {
+			color: $gray-600;
+			font-size: 80%;
+			text-transform: uppercase;
+		}
+		
+		.var-name {
+			font-size: 90%;
+			margin-bottom: .75rem;
+
+			// max-width: 1px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		code {
+			color: $primary;
+			display: block;
+			font-size: 80%;
+		}
+
+		.jumptoformula {
+			margin-left: .5rem;
+		}
+
+		.expression {
+			.value {
+				color: $secondary;
+				margin-left: .5rem;
+				white-space: nowrap;
+			}
+		}
+
+		.exp-debug {
+			margin-top: 1rem;
+			
+			code {
+				min-height: 2.5rem;
+				overflow-x: scroll;
+				white-space: nowrap;
+			}
+		}
+	}
+
+	.advice-debug {
+		.flash {
+			-webkit-animation-name: flash-animation;
+			-webkit-animation-duration: 3s;
+
+			animation-name: flash-animation;
+			animation-duration: 3s;
+		}
+
+		@-webkit-keyframes flash-animation {  
+				from { background: $warning; }
+				to   { background: default; }
+		}
+
+		@keyframes flash-animation {  
+				from { background: $warning; }
+				to   { background: default; }
+		}
+
+		.var-value {
+			.var {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		}
+
+		code {
+			color: $primary;
+			font-size: 80%;
+		}
+
+		.expression {
+			margin-top: .5rem;
+		}
+		.expression code {
+			color: $gray-500;
+		}
+	}	
 
 	.advice-on-this-page {
 		position: absolute;
@@ -507,13 +613,19 @@ taffrail-var {
 		.variables {
 			font-family: $font-family-monospace;
 			font-size: 12px;
+
 			td:nth-child(1) {
 				max-width: 1px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
+
+				& + td {
+					width: 2rem;
+				}
 			}
-			td:nth-child(2) {
+
+			td.var {
 				max-width: 1px;
 				overflow: hidden;
 				text-overflow: ellipsis;

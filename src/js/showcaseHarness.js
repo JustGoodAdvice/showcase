@@ -5,16 +5,22 @@ import Mousetrap from "mousetrap";
 import qs from "querystring";
 import store from "store";
 import ShowcasePage from "./showcasePage";
+import copy from "clipboard-copy";
 
-export default class showcaseFull extends ShowcasePage {
-
+export default class showcaseHarness extends ShowcasePage {
+  // #region getter/setter
+  // override
+  get baseUrl() {
+    return `/s/${this.api.adviceset.id}/harness`;
+  }
+  // #endregion
   /**
    * One-time initialization
    */
   init() {
     super.init();
     this.initCache();
-    this.AUTO_EXPAND_RECOMMENDATION_COUNT = 4;
+    this.AUTO_EXPAND_RECOMMENDATION_COUNT = 1;
     // get banner
     this.updateAdviceSetDetails();
     // current querystring without "?" prefix
@@ -30,12 +36,11 @@ export default class showcaseFull extends ShowcasePage {
       this.handleClickBack();
       this.handleClickAssumption();
       this.handleClickTaffrailVar();
+      this.handleCopyFormula();
       this.handleCollapseAdviceSummaries();
       this.handleCollapseAssumptionGroup();
-      this.handleClickOnThisPageItem();
       this.listenForUrlChanges();
       this.handleClickExpandControls();
-      this.handleScrollStickySidebar();
       // this.handleResizeChart();
 
       // keyboard shortcuts
@@ -83,7 +88,7 @@ export default class showcaseFull extends ShowcasePage {
     this.updateMainPane();
     this.updateAssumptionsList();
     this.updateRecommendationsList();
-    this.updateOnThisPageRecommendationsList();
+    this.updateAdviceDebugSidebar();
     this.updateVariablesList();
     this.updateTaffrailVarHtml();
   }
@@ -167,6 +172,10 @@ export default class showcaseFull extends ShowcasePage {
     $(document).on("click", "taffrail-var.active", e => {
       e.preventDefault();
       const $this = $(e.currentTarget);
+      const isCalculated = $this.hasClass("active--calculated");
+      if (isCalculated) {
+        return;
+      }
       const { idx } = $this.data();
       $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
@@ -175,19 +184,6 @@ export default class showcaseFull extends ShowcasePage {
       this.api.display = answer;
       this.api.display.idx = answer.idx;
       this.updateMainPane();
-    });
-  }
-
-  /**
-   * Handle clicks on "on this page" table of contents
-   */
-  handleClickOnThisPageItem() {
-    $(".advice-on-this-page").on("click", "li a", e => {
-      const isContentVisible = $(".list-all-recommendations").is(":visible");
-      // if content isn't visible yet, expand it when user clicks on TOC
-      if (!isContentVisible) {
-        $("a[data-action=toggleRecommendations]").trigger("click");
-      }
     });
   }
 
@@ -286,25 +282,6 @@ export default class showcaseFull extends ShowcasePage {
       }
     });
   }
-
-  /**
-   *
-   */
-  handleScrollStickySidebar() {
-    const $sidebar = $(".advice-on-this-page");
-    let timer;
-    $(window).scroll(() => {
-      window.clearTimeout(timer);
-      timer = setTimeout(() => {
-        const scrollTop = $(window).scrollTop();
-        const mainOffsetTop = $(".main-content").offset().top;
-        const moveTo = scrollTop > mainOffsetTop ? (scrollTop - mainOffsetTop) : scrollTop;
-        $sidebar.animate({
-          "top": moveTo
-        });
-      }, 50);
-    });
-  }
   // #endregion
 
   // #region templating
@@ -319,6 +296,7 @@ export default class showcaseFull extends ShowcasePage {
       this._updateForInputRequest();
       $(".list-all-recommendations").addClass("unfocused").removeClass("has-primary-advice");
     } else {
+      $(".rs-context").remove();
       // see `updateRecommendationsList`
     }
   }
@@ -368,6 +346,41 @@ export default class showcaseFull extends ShowcasePage {
    */
   _updateForInputRequest() {
     // render
+
+    // IR belongs to this adviceset or another?
+    const outOfContext = this.api.adviceset._id !== this.api.display.ruleSetId;
+    if (outOfContext) {
+      this.api.display._outOfContext = true;
+
+      new Promise((resolve) => {
+        const outOfContextRuleSetCache = store.get(`taffrail_adviceset_${this.api.display.ruleSetId}`);
+        if (outOfContextRuleSetCache) {
+          return resolve(outOfContextRuleSetCache);
+        } else {
+          return $.ajax({
+            url: `${this.config.api_host}/api/adviceset/${this.api.display.ruleSetId}`,
+            type: "GET",
+            dataType: "json",
+            headers: {
+              "Accept": "application/json; chartset=utf-8",
+              "Authorization": `Bearer ${this.config.api_key}`
+            }
+          }).then(api => { return resolve(api); });
+        }
+      }).then(api => {
+        const { data: { entity: { name, meta: { isStarter = false } } } } = api;
+        store.set(`taffrail_adviceset_${this.api.display.ruleSetId}`, api);
+
+        if (isStarter === true) {
+          const abLink = `${this.config.advicebuilder_host}/advicesets/${this.api.display.ruleSetId}/show`;
+          $(`#context_${this.api.display.ruleSetId}`).html(`<i class="fal fa-tasks"></i>&nbsp;<a href="${abLink}" target=_blank>${name}`);
+        } else {
+          this.api.display._outOfContext = false;
+          $(`#context_${this.api.display.ruleSetId}`).hide();
+        }
+      });
+    }
+
     const str = this.TEMPLATES["InputRequest"](this.api);
     this.$advice.html(str);
 
@@ -458,7 +471,7 @@ export default class showcaseFull extends ShowcasePage {
       "InputRequest": Handlebars.compile($("#tmpl_adviceInputRequest").html()),
       "Advice": Handlebars.compile($("#tmpl_adviceAdvice").html()),
       "Recommendations": Handlebars.compile($("#tmpl_groupedRecommendationsAdviceList").html()),
-      "RecommendationsOnThisPage": Handlebars.compile($("#tmpl_groupedRecommendationsAdviceListTOC").html()),
+      "AdviceDebugSidebar": Handlebars.compile($("#tmpl_adviceDebugSidebar").html()),
       "Assumptions": Handlebars.compile($("#tmpl_assumptionsList").html()),
       "QuestionsAnswers": Handlebars.compile($("#tmpl_answersList").html()),
       "Error": Handlebars.compile($("#tmpl_error").html()),
@@ -565,7 +578,6 @@ export default class showcaseFull extends ShowcasePage {
     this.api._recommendationsExist = _.flatMap(this.api.recommendations).length > 0;
     this.api._referenceDocumentsExist = this.api.adviceset.referenceDocuments.length > 0;
     this.api._showPrimaryPersonalized = (this.api._recommendationsExist && recommendationGroupCount >= 2) || this.api._referenceDocumentsExist;
-    this.api._showsidebar = (this.api._recommendationsExist && recommendationGroupCount >= 2);
 
     // render
     const str = this.TEMPLATES["Recommendations"](this.api);
@@ -577,16 +589,39 @@ export default class showcaseFull extends ShowcasePage {
     this.fetchReferencesOpenGraph();
   }
 
+  handleCopyFormula() {
+    $("body").on("click", ".advice-debug .cpy", e => {
+      e.preventDefault();
+      const $el = $(e.currentTarget);
+      const txt = $el.text();
+      copy(txt);
+    });
+  }
+
   /**
-	 * Update advice list headings by group
+	 * Update advice debug sidebar
 	 */
-  updateOnThisPageRecommendationsList() {
+  updateAdviceDebugSidebar() {
     // render
-    const numGroups = _.flatMap(this.api.recommendations).length;
-    if ((numGroups && numGroups >= 2) || this.api._referenceDocumentsExist) {
-      const str = this.TEMPLATES["RecommendationsOnThisPage"](this.api);
-      $(".recommendations-on-this-page").html(str);
-    }
+    this.api.formulaDebug = _.compact((this.api.formulaDebug||[]).map(f => {
+      const varLookup = this.api.variables.find(v => { return f.id == v.id });
+      if (f.name.toLowerCase().endsWith("_txt")) {
+        return null;
+      }
+      if (f.expression == "1" || f.expression == "0" || f.name.startsWith("IRS")) {
+        // console.log(f)
+        f._hide_result = true;
+        f.expression = "";
+        // f.result_formatted = f.expressionDebug;
+      }
+      if (varLookup) {
+        f.result_formatted = varLookup.valueFormatted || varLookup.value;
+      }
+      return f;
+    }));
+
+    const str = this.TEMPLATES["AdviceDebugSidebar"](this.api);
+    $(".advice-debug").html(str);
   }
 
   /**
