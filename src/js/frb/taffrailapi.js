@@ -214,6 +214,10 @@ export default class TaffrailApi {
       return (a.tagGroup) ? a.tagGroup.name : ASSUMPTIONS_UNGROUPED;
     });
 
+    // fix input requests with boolean variables in statements
+    this.fixInputRequestsWithBooleanVars();
+    this.filterAssumptionsWithoutStatement();
+
     // go through each assumption group and set open/close state
     Object.keys(this.api.assumptions).forEach((key, idx) => {
       // add `_isOpen` flag to each item
@@ -361,6 +365,62 @@ export default class TaffrailApi {
     this.api.adviceset.referenceDocuments_hasMoreThanLimit = hasMoreThanLimit;
 
     this.api.adviceset.referenceDocuments = this.api.adviceset.referenceDocuments.reverse();
+  }
+
+  /**
+   * Remove any assumptions without statements
+   */
+  filterAssumptionsWithoutStatement() {
+    Object.keys(this.api.assumptions).forEach((key, idx) => {
+      const arr = this.api.assumptions[key];
+      this.api.assumptions[key] = arr.filter(a => {
+        return a.statement;
+      })
+    });
+  }
+
+  /**
+   * Fix input requests with boolean variables in statements
+   */
+  fixInputRequestsWithBooleanVars() {
+    Object.keys(this.api.assumptions).forEach((key, idx) => {
+      const arr = this.api.assumptions[key];
+      this.api.assumptions[key] = arr.map(a => {
+        const { answer, form: { fieldType, name } } = a;
+        // for input requests using a boolean variable *with variables used in statements*
+        // replace the variable's value (`true` or `false`) with the `answer` (`Yes` or `No`)
+        // where the variable exists in the statement
+        if (fieldType == "Boolean" && a.statement && a.statement_raw) {
+          const h = Handlebars.compile(a.statement_raw)({
+            [name]: answer
+          });
+          a.statement = h;
+        }
+        return a;
+      });
+    });
+  }
+
+  /**
+   * Delete default assumption group if no statements exist
+   * @param {string} ASSUMPTIONS_UNGROUPED
+   */
+  deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED) {
+    if (this.api.assumptions[ASSUMPTIONS_UNGROUPED] && this.api.assumptions[ASSUMPTIONS_UNGROUPED].length === 0) {
+      delete this.api.assumptions[ASSUMPTIONS_UNGROUPED];
+    }
+  }
+
+  /**
+   * Sort assumptions so Personal Profile is always first
+   */
+  putPersonalProfileFirst() {
+    if (Object.keys(this.api.assumptions).includes("Personal Profile")) {
+      this.api.assumptions = {
+        "Personal Profile": this.api.assumptions["Personal Profile"],
+        ...this.api.assumptions
+      }
+    }
   }
 
   /**
@@ -630,18 +690,6 @@ export default class TaffrailApi {
   }
 
   // #endregion
-
-  // /**
-  //  * Listen on the browser history for POP actions to update the page.
-  //  */
-  // listenForUrlChanges() {
-  //   this.history.listen((location, action) => {
-  //     if (action === "POP" && location.state) {
-  //       this.api = location.state;
-  //       this.updatePanes();
-  //     }
-  //   });
-  // }
 
   /**
    * "Next" button handler
