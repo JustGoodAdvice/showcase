@@ -33,7 +33,7 @@
     "http-errors": "~1.8.0",
     "i": "^0.3.6",
     "inputmask": "^5.0.5",
-    "interactjs": "^1.10.8",
+    "interactjs": "^1.10.11",
     "is-html": "^2.0.0",
     "isbot": "^3.0.26",
     "jquery": "^3.5.1",
