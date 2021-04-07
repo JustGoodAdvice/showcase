@@ -10,7 +10,8 @@ module.exports = {
   },
   entry: {
     main: "./src/js/main.js",
-    frb: "./src/js/entryFrb.js"
+    frb: "./src/js/entryFrb.js",
+    frbwide: "./src/js/entryFrbWide.js"
   },
   output: {
     filename: "[name].bundle.js",

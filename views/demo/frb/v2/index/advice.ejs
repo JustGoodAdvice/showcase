@@ -1,0 +1,56 @@
+<script id="tmpl_adviceAdvice" type="text/x-handlebars-template">
+  <div class="advice-primary">
+    <div class="advice-on-this-page position-static"><h5>{{display.tagGroup.name}}</h5></div>
+    <header class="d-flex justify-content-between icon-row">
+      <h4>{{display.headline}}</h4>
+      <%- include("_dropdown"); %>
+    </header>
+
+    <hr>
+    <p class="summary {{#if display.summary}}summary--exists{{/if}}">
+      {{#if display.summary}}
+        {{display.summary}}
+      {{else}}
+        <small class="text-muted"><em>No summary provided.</em></small>
+      {{/if}}
+    </p>
+    {{#if display.attachment}}
+      {{#if display.attachment._isInteractiveChart}}
+        <section class="advice-attachment advice-chart--interactive" id="{{display.attachment.id}}_{{@index}}" data-id="{{display.attachment.id}}" data-src="{{display.attachment.url}}">
+          <scr{{!}}ipt>
+            var chartFrame = document.createElement('iframe');
+            chartFrame.frameBorder = '0';
+            chartFrame.scrolling = 'no';
+            chartFrame.allowTransparency = 'true';
+            chartFrame.allowFullscreen = 'true';
+            chartFrame.width = '100%';
+            chartFrame.height = '100%';
+            document.getElementById('{{display.attachment.id}}_{{@index}}').appendChild(chartFrame);
+          </scr{{!}}ipt>
+        </section>
+      {{else}}
+        <section class="att">
+          <figure>
+            <img class="advice-attachment img-fluid" src="https://d1d53ugxmopqf1.cloudfront.net/fit-in/1000x563/filters:quality(75)/{{attachment.fileId}}">
+          </figure>
+        </section>
+      {{/if}}
+    {{/if}}
+    {{#if display.actions.length}}
+      {{#each display.actions}}
+        <div><a href="{{url}}" target="_blank" class="btn btn-outline-secondary">{{name}}</a></div>
+      {{/each}}
+    {{/if}}
+
+    {{#if _showPrimaryPersonalized}}
+      <section class="expand-history">
+        <hr />
+        <h4><i class="fal fa-flag"></i> <span class="highlighted">Your personalized advice</span></h4>
+        <p class="intro">In providing this personalized advice, we factored in {{{display._evaluated}}}. Wow! {{#if _recommendationsExist}}There's so much more to show you&mdash;explore all of your personalized recommendations.{{/if}}</p>
+        {{#if _recommendationsExist}}
+        <p><a href="#" data-action="toggleRecommendations" class="btn btn-outline-secondary"><span>Show</span> {{display._recommended}}</a></p>
+        {{/if}}
+      </section>
+    {{/if}}
+  </div>
+</script>

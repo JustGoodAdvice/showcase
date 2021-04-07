@@ -1,0 +1,49 @@
+<div class="bg-white px-2 pb-5 pt-1" style="min-height:593px;">
+  <div data-controller="pay-debt" data-pay-debt-id-value="<%= locals.adviceSetId %>">
+
+    <%- include("../loading"); %>
+
+    <div class="advice"></div>
+
+  </div>
+</div>
+
+<script id="tmpl_advice_pay_debt" type="text/x-handlebars-template">
+  <h6 class="text-warning">{{display.goal.period_from_now}}</h6>
+  {{#each display.advice}}
+  <p>
+    {{#if this.headline_html}}
+      {{{this.headline_html}}}
+    {{else}}
+      {{this.headline}}
+    {{/if}}
+  </p>
+  {{#if this.summary}}
+  <p class="small">
+    {{#if this.summary_html}}
+      {{{this.summary_html}}}
+    {{else}}
+      {{this.summary}}
+    {{/if}}
+  </p>
+  {{/if}}
+  {{/each}}
+
+  <div class="mt-4">
+    <div class="text-center w-75 m-auto">
+      <a href="#" data-action="save-goal" class="btn btn-sm btn-block btn-outline-primary">Save Goal</a>
+    </div>
+  </div>
+
+  {{#if display.goal.tips}}
+  <div class="tips">
+    <h6 class="text-success"><i class="fal fa-lightbulb-on"></i> Pay it off faster</h6>
+    <ul class="list-unstyled">
+      {{#each display.goal.tips}}
+      <li class="position-relative">{{{this.tip}}} <a href="#" class="stretched-link tip-take-action"
+          data-action="{{this.action}}"><i class="fal fa-chevron-right"></i></a></li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+</script>

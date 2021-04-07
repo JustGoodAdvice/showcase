@@ -32,10 +32,10 @@ const PERSONAS = {
   }
 }
 
-router.get("/v2/goal-planning/:start?", botMiddleware, (req, res, next) => {
-  const { start: isStart } = req.params;
+router.get("/v2/goal-planning/start", botMiddleware, (req, res, next) => {
+  const isStart = true;
   const { budgetcreated = 0 } = req.query;
-  return res.render("demo/frb/v2/" + (isStart ? "/screens/start" : "index"), {
+  return res.render("demo/frb/v2/start", {
     layout: req.xhr ? false : "demo/frb/v2/layout",
     adviceSetId: "",
     linkApi: null,
