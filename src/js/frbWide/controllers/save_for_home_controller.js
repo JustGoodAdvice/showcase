@@ -6,7 +6,7 @@ import qs from "querystring";
 import Handlebars from "handlebars";
 import pluralize from "pluralize";
 export default class extends Controller {
-  // static targets = ["goal"];
+  static targets = ["title", "goal"];
   // static values = { id: String };
 
   connect() {
@@ -18,8 +18,6 @@ export default class extends Controller {
     this.reachedGoal = false;
 
     // advicsetId = this.idValue
-
-    // $("#breadcrumb").html("&nbsp;/&nbsp;Save for a home");
 
     this.TaffrailAdvice = new TaffrailAdvice();
     this.TaffrailAdvice.init();
@@ -46,6 +44,7 @@ export default class extends Controller {
       Homeowner_Association_Fees: 0,
       Mortgage_Down_Payment_Pct: .25,
       Mortgage_Interest_Rate: .03,
+      State: "CA"
     }
     const data = qs.stringify(_.assign(defaults, qs.parse(querystring)));
     this.TaffrailAdvice.load(data).then(api => {
@@ -58,6 +57,7 @@ export default class extends Controller {
    * Update 3 panes. This fn is called each time the API updates.
    */
   updatePanes() {
+    this.titleTarget.innerHTML = this.TaffrailAdvice.api.adviceset.title;
     this.TaffrailAdvice.mapData();
     this.updateMainPane();
     this.TaffrailAdvice.updateAssumptionsList();
@@ -65,11 +65,6 @@ export default class extends Controller {
 
   updateMainPane() {
     const { api } = this.TaffrailAdvice;
-    // title
-    // const { variables_map: { Home_Price, Home_Price_Original, Home_Purchase_Time_Frame = { value: 0 } } } = api;
-    // const price = Home_Price_Original?.valueFormatted || Home_Price?.valueFormatted;
-    // const timeFrameYrs = new Date().getFullYear() + Home_Purchase_Time_Frame.value;
-    // this.goalTarget.innerHTML = `I want to buy a home for <span class="text-secondary">${price}</span> by <span class="text-secondary">${timeFrameYrs}</span>`;
     // render
     if (api.display.type == "INPUT_REQUEST") {
       // $(".advice").slideDown(300);
@@ -77,12 +72,9 @@ export default class extends Controller {
     } else {
       // must be advice
       if (api.display._isLast) {
-        // since it's "last", hide the question.
-        // $(".advice").slideUp(300);
-
-        // api.display.advice = api.recommendations["Recommendations"] || [api.display];
+        // override "display" with Advice
+        api.display.advice = [];
       }
-      // $(".goal-result").show();
 
       // use this to use the "Grouped Advice" template
       this.TaffrailAdvice.updateForAdvice();
@@ -100,13 +92,8 @@ export default class extends Controller {
     const { api } = this.TaffrailAdvice;
     const { variables_map: {
       "Can_Afford_House?": Can_Afford_House = { value: false },
-      Goal_HomeSave_Adjust_DownPayment = { value: 0 },
-      Goal_HomeSave_Adjust_Price,
-      Goal_HomeSave_Adjust_Savings,
-      Goal_HomeSave_Adjust_Time,
       Home_Price = { value: 0 },
       Home_Purchase_Time_Frame = { value: 0 },
-      Mortgage_Down_Payment_Savings_Current = { value: 0 },
       Mortgage_Down_Payment_Savings_Monthly = { value: 0 },
       Mortgage_Down_Payment_Savings_Monthly_Needed: DP_Savings_Monthly_Needed = { value: 0 },
       Mortgage_Down_Payment_Pct = { value: 0 },
@@ -127,17 +114,17 @@ export default class extends Controller {
         period_from_now = "This goal is out of reach";
         api.display.advice.shift();
         api.display.advice.unshift({
-          headline_html: `Saving
-              <taffrail-var data-variable-name="Mortgage_Down_Payment_Savings_Monthly">${Mortgage_Down_Payment_Savings_Monthly.valueFormatted}</taffrail-var>
-              per month is not enough to meet your goal in
-              <taffrail-var data-variable-name="Home_Purchase_Time_Frame">${pluralize("year", Home_Purchase_Time_Frame.value, true)}</taffrail-var>,
-               try changing your settings.`,
+          headline_html: `<p class="lead">Saving
+              ${this.TaffrailAdvice.tfvar(Mortgage_Down_Payment_Savings_Monthly)}
+              per month is not enough to meet your goal of 
+              buying a ${this.TaffrailAdvice.tfvar(Home_Price)} home in
+              ${this.TaffrailAdvice.tfvar(Home_Purchase_Time_Frame, pluralize("year", Home_Purchase_Time_Frame.value, true))}.</p>`,
         });
 
       } else {
         if (this.reachedGoal) {
           const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
-          period_from_now += `<span class='text-success'>You got this in ${pluralize("year", totalYrs, true)}!</span>`;
+          period_from_now += `You got this in ${pluralize("year", totalYrs, true)}!`;
         } else {
           if (Time_Frame_Needed.value && Time_Frame_Needed.value > 0) {
             if (Time_Frame_Needed.value <= 12) {
@@ -150,72 +137,32 @@ export default class extends Controller {
 
           // not reaching the goal
           const aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
-          // remove 1st element from array, advice we don't want to display when goal has not been reached
-          api.display.advice.shift();
-          // insert new "you're not there yet..." advice at top of display stack
+
           api.display.advice.unshift({
-            headline_html: "<h6 class='text-uppercase text-secondary' style='font-size:90%;'>How to reach your goal</h6>"
-          });
-          api.display.advice.unshift({
-            headline_html: `By saving
-              <taffrail-var data-variable-name="Mortgage_Down_Payment_Savings_Monthly">${Mortgage_Down_Payment_Savings_Monthly.valueFormatted}</taffrail-var>
+            headline_html: `<p class="lead">By saving
+              ${this.TaffrailAdvice.tfvar(Mortgage_Down_Payment_Savings_Monthly)}
               per month you are <strong>${aboveOrBelow}</strong> the
-              <taffrail-var data-variable-name="Mortgage_Down_Payment_Savings_Monthly_Needed">${DP_Savings_Monthly_Needed.valueFormatted}</taffrail-var>
+              ${this.TaffrailAdvice.tfvar(DP_Savings_Monthly_Needed)}
               required to afford the 
-              <taffrail-var data-variable-name="Mortgage_Down_Payment_Pct">${Mortgage_Down_Payment_Pct.valueFormatted}</taffrail-var>
+              ${this.TaffrailAdvice.tfvar(Mortgage_Down_Payment_Pct)}
               down payment on your 
-              <taffrail-var data-variable-name="Home_Price">${Home_Price.valueFormatted}</taffrail-var>
+              ${this.TaffrailAdvice.tfvar(Home_Price)}
               home in 
-              <taffrail-var data-variable-name="Home_Purchase_Time_Frame">${pluralize("year", Home_Purchase_Time_Frame.value, true)}</taffrail-var>.`,
-          });
-        }
-      }
-
-      const tip_header = "Getting into this home";
-      const tips = [];
-
-      // suggest Tip for user to buy house sooner
-      if (!this.reachedGoal) {
-        if (Can_Afford_House.value) {
-          const totalYrs = (Time_Frame_Needed.value / 12).toFixed(0);
-          tips.push({
-            tip: `Use projected timeline of ${new Date().getFullYear() + Number(totalYrs)}`,
-            action: `Home_Purchase_Time_Frame=${Number(totalYrs) + 1}` // querystring format
-          });
-        }
-        tips.push({
-          tip: `Lower your target price to ${Goal_HomeSave_Adjust_Price.valueFormatted}`,
-          action: `Home_Price=${Goal_HomeSave_Adjust_Price.value}` // querystring format
-        });
-        tips.push({
-          tip: `Cut back on spending to save ${Goal_HomeSave_Adjust_Savings.valueFormatted}`,
-          action: `Mortgage_Down_Payment_Savings_Monthly=${Goal_HomeSave_Adjust_Savings.value}` // querystring format
-        });
-        tips.push({
-          tip: `Contribute an additional ${Goal_HomeSave_Adjust_DownPayment.valueFormatted}`,
-          action: `Mortgage_Down_Payment_Savings_Current=${Mortgage_Down_Payment_Savings_Current.value + Goal_HomeSave_Adjust_DownPayment.value}` // querystring format
-        });
-        if (Goal_HomeSave_Adjust_Time){
-          const adjustmentYears = Number(Math.ceil(Goal_HomeSave_Adjust_Time.value / 12).toFixed(0));
-          const totalAdjustYears = adjustmentYears + (Time_Frame_Desired.value/12);
-          tips.push({
-            tip: `Extend your time frame by ${adjustmentYears} years`,
-            action: `Home_Purchase_Time_Frame=${totalAdjustYears}` // querystring format
+              ${this.TaffrailAdvice.tfvar(Home_Purchase_Time_Frame, pluralize("year", Home_Purchase_Time_Frame.value, true))}.</p>`,
           });
         }
       }
 
       const goal = {
         period_from_now,
-        tip_header,
-        tips
       }
       api.display.goal = goal;
 
       // export data setup for saving to goal
       api.save_to_goal = {
-        advice: [].concat(api.display.advice).map(a => { return _.omit(a, "advice"); }),
-        goal
+        advice: [].concat(api.display.advice),
+        goal,
+        assumptions: api.assumptions
       };
 
     } catch (e) {

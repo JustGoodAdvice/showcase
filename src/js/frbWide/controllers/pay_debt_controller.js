@@ -5,7 +5,7 @@ import Turbolinks from "turbolinks";
 import qs from "querystring";
 import Handlebars from "handlebars";
 export default class extends Controller {
-  // static targets = ["title", "description"];
+  static targets = ["title"];
   // static values = { id: String };
 
   connect() {
@@ -15,13 +15,10 @@ export default class extends Controller {
   initialize() {
     // advicsetId = this.idValue
 
-    // $("#breadcrumb").html("&nbsp;/&nbsp;Pay off debt");
-
     this.TaffrailAdvice = new TaffrailAdvice();
     this.TaffrailAdvice.init();
 
     // when data is updated after page-load, use this fn
-    this.TaffrailAdvice.$loadingContainer = $(".advice-outer-container");
     this.TaffrailAdvice.updateFn = (data, initial = false) => {
       // update content
       this.updatePanes();
@@ -47,6 +44,7 @@ export default class extends Controller {
    * Update 3 panes. This fn is called each time the API updates.
    */
   updatePanes() {
+    this.titleTarget.innerHTML = this.TaffrailAdvice.api.adviceset.title;
     this.TaffrailAdvice.mapData();
     this.updateMainPane();
     this.TaffrailAdvice.updateAssumptionsList();
@@ -61,20 +59,17 @@ export default class extends Controller {
     } else {
       // must be advice
       if (api.display._isLast) {
-        // since it's "last", hide the question.
-        // $(".advice").slideUp(300);
+        // override "display" with Advice
+        const rec = _.cloneDeep(api.recommendations["Our Advice"] || []);
+        api.display.advice = rec.map(a => { a.headline_html = `<p class="lead">${a.headline_html}</p>`; return a; });
       }
-      // override "display" with Advice
-      api.display.advice = api.recommendations["Our Advice"] || [api.display];
-      $(".goal-result").show();
 
       // use this to use the "Grouped Advice" template
-      // this.TaffrailAdvice.updateForAdvice();
+      this.TaffrailAdvice.updateForAdvice();
 
       const { variables_map: {
         Monthly_Interest_Amt = { value: null, valueFormatted: "" },
         Debt_Payoff_Period = { value: null },
-        Debt_Payment_Suggested = { value: null },
       } } = api;
 
       let period_from_now;
@@ -87,39 +82,16 @@ export default class extends Controller {
         period_from_now = `Goal reached in ${new Date().getFullYear() + Number(totalYrs)}`
       }
 
-      const tips = _.compact([].concat(api.recommendations?.Considerations || []).map(r => {
-        let action;
-        if (Debt_Payoff_Period.value >= 6) {
-          action = `Debt_Payment=${Debt_Payment_Suggested.value}` // querystring format`
-        }
-        if (action) {
-          return {
-            tip: r.headline_html || r.headline,
-            action
-          }
-        } else {
-          return null;
-        }
-      }));
-
-      // setup tip to make min payment
-      if (Debt_Payoff_Period.value === null) {
-        tips.push({
-          tip: `Make the <taffrail-var data-variable-name="Monthly_Interest_Amt">${Monthly_Interest_Amt.valueFormatted}</taffrail-var> minimum payment`,
-          action: `Debt_Payment=${Monthly_Interest_Amt.value + 0.01}` // querystring format`
-        });
-      }
-
       const goal = {
         period_from_now,
-        tips
       }
       api.display.goal = goal;
 
       // export data setup for saving to goal
       api.save_to_goal = {
-        advice: api.display.advice.map(a => { return _.omit(a, "advice"); }),
-        goal
+        advice: api.display.advice,
+        goal,
+        assumptions: api.assumptions
       };
 
       const str = Handlebars.compile($("#tmpl_advice_pay_debt").html())(api);

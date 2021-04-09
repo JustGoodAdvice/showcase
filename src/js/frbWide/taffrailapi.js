@@ -1,6 +1,5 @@
 import _ from "lodash";
 import copy from "clipboard-copy";
-// import { createBrowserHistory } from "history";
 import Handlebars from "handlebars";
 import Inputmask from "inputmask";
 import Loading from "../loading";
@@ -11,7 +10,6 @@ import isHtml from "is-html";
 
 export default class TaffrailApi {
   constructor() {
-    // this.history = createBrowserHistory();
 
     // handlebars helpers
     Handlebars.registerHelper("ifEquals", function(arg1, arg2, options) {
@@ -41,9 +39,11 @@ export default class TaffrailApi {
   init() {
     // set the base URL for loading data
     window.jga.api._links = { self: `${this.config.api_host}/api/advice/${this.api.adviceset.id}` }
+
     // helpers
     $("body").tooltip({ selector: "[data-toggle=tooltip]" });
-    this.initCache();
+    this.$loadingContainer = $(".advice-outer-container");
+
     // mode
     this.primaryAdviceModeEnabled = store.get("primaryAdviceModeEnabled", false);
     this.adviceEditorModeEnabled = store.get("adviceEditorModeEnabled", false);
@@ -51,11 +51,17 @@ export default class TaffrailApi {
       $("html").addClass("advice-editor-mode-enabled");
     }
     // events
-    this.handleChangeAudience();
-    this.handleCopyLink();
+    this.initCache();
+    this.handleClickContinue();
+    this.handleClickBack();
+    this.handleClickAssumption();
+    this.handleClickTaffrailVar();
+    this.handleCollapseAssumptionGroup();
+    this.handleCollapseAdviceSummaries();
+    // this.handleChangeAudience();
+    // this.handleCopyLink();
     this.handleClickOpenRawDataModal();
-    this.handleClickToggleAdviceEditorMode();
-    this.handleClickShowAllSources();
+    // this.handleClickShowAllSources();
   }
 
   // #region getter/setter
@@ -76,7 +82,7 @@ export default class TaffrailApi {
   }
 
   get baseUrl() {
-    const prefix = "s";
+    const prefix = "frb/v2/goal-planning/goals/taffrail";
     return `/${prefix}/${this.api.adviceset.id}`;
   }
 
@@ -121,11 +127,17 @@ export default class TaffrailApi {
    */
   load(newFormData, $loadingContainer = this.$loadingContainer, usePlaceholder = true) {
     const currFormData = this.api.params;
+    const userProfileData = window.jga.UserProfile ? _.omit(window.jga.UserProfile.savedProfile, "_name") : {};
     const include = ["filteredVars", "formulaDebug"];
-    const formData = _.assign({
-      include: include,
-      showcase: true
-    }, currFormData, qs.parse(newFormData));
+    const formData = _.assign(
+      {
+        include: include,
+        showcase: true
+      },
+      userProfileData,
+      currFormData,
+      qs.parse(newFormData)
+    );
     // does link contain referring AI User Request ID (aiUrId)?
     this.fromAiUrId = formData.aiUrId;
     // internal JGA: don't include these fields
@@ -359,6 +371,17 @@ export default class TaffrailApi {
     this.mapVariables();
   }
 
+  updatePanes() {
+    // update the window title
+    this.windowTitle = `${this.api.adviceset.title} - POC - Taffrail`;
+    this.updateAssumptionsList();
+    this.updateRecommendationsList();
+    this.updateAdviceDebugSidebar();
+    this.updateVariablesList();
+    this.updateSaveGoalButton();
+    this.updateTaffrailVarHtml();
+  }
+
   /**
    * Remove any assumptions without statements
    */
@@ -416,29 +439,51 @@ export default class TaffrailApi {
   }
 
   /**
-   * Map reference doc data
-   */
-  mapReferenceDocuments() {
-    let hasMoreThanLimit = false;
-    this.api.adviceset.referenceDocuments = [].concat(this.api.adviceset.referenceDocuments || []).map((rd, i) => {
-      const { _links: { original = "" } } = rd;
-      if (original && original != "null") {
-        const u = new URL(original);
-        rd._links.original_without_prefix = `${u.host.replace("www.", "")}${u.pathname}`;
-      }
-      // show only first 6 docs
-      rd._hidden = (i >= 6);
-      hasMoreThanLimit = (i >= 6);
-      return rd;
-    });
+ * Template update for INPUT_REQUEST
+ */
+  updateForInputRequest($container = this.$advice) {
+    // render
+    // eslint-disable-next-line new-cap
+    const str = this.TEMPLATES["InputRequest"](this.api);
+    $container.html(str);
 
-    this.api.adviceset.referenceDocuments_hasMoreThanLimit = hasMoreThanLimit;
+    // hide "next" button unless it's a numeric input
+    // const isRadio = this.api.display.form.fieldType.match(/Radio|Boolean/);
+    // $container.find("button[type=submit]").toggle(!(isRadio && isRadio.length > 0));
 
-    this.api.adviceset.referenceDocuments = this.api.adviceset.referenceDocuments.reverse();
+    // set value
+    this._setValue($container);
+    // // set input masks
+    this._handleInputMasks($container);
+    // // focus input
+    this._focusFirstInput($container);
   }
 
   updateForAdvice() {
-    this.updateRecommendationsList();
+    // unhighlight active assumption/question
+    this._setAssumptionActive("advice");
+  }
+
+  /**
+ * Update assumptions/answers/history list
+ */
+  updateAssumptionsList() {
+    // do we have ANY assumptions/answers yet?
+    // show or hide depending
+    // simple helper for UX
+    this.api._answersExist = this.api.answers.length > 0;
+    $(".assumptions-container > div").css("visibility", this.api._answersExist ? "visible" : "hidden");
+    $(".assumptions-outer-container").toggleClass("assumptions-outer-container--empty", !this.api._answersExist);
+    // only show expand button if there's grouped assumptions besides "ungrouped"
+    $(".assumption-expander").toggle(_.without(Object.keys(this.api.assumptions), "ungrouped").length > 0);
+
+    // render
+    // eslint-disable-next-line new-cap
+    const str = this.TEMPLATES["QuestionsAnswers"](this.api);
+    // eslint-disable-next-line new-cap
+    const strAssump = this.TEMPLATES["Assumptions"](this.api);
+    $(".answers").html(str);
+    $(".assumptions").html(strAssump);
   }
 
   /**
@@ -448,17 +493,13 @@ export default class TaffrailApi {
     // simple helper for UX
     const recommendationGroupCount = Object.keys(this.api.recommendations).length;
     this.api._recommendationsExist = _.flatMap(this.api.recommendations).length > 0;
-    this.api._referenceDocumentsExist = this.api.adviceset.referenceDocuments.length > 0;
+    this.api._referenceDocumentsExist = false;
     this.api._showPrimaryPersonalized = (this.api._recommendationsExist && recommendationGroupCount >= 2) || this.api._referenceDocumentsExist;
 
     // render
+    // eslint-disable-next-line new-cap
     const str = this.TEMPLATES["Recommendations"](this.api);
     $(".list-all-recommendations").html(str);
-
-    // One more step....
-    this._updateForPrimaryAdvice();
-    this._setupChartsAll();
-    this.fetchReferencesOpenGraph();
   }
 
   handleCopyFormula() {
@@ -468,6 +509,19 @@ export default class TaffrailApi {
       const txt = $el.text();
       copy(txt);
     });
+  }
+
+  /**
+   * Change the highlighted assumption in the list based on
+   * active display.
+   */
+  _setAssumptionActive(isAdvice) {
+    const { id } = this.api.display;
+    if (isAdvice) {
+      $(".assumptions, .answers").find("li").removeClass("active");
+    } else {
+      $(".assumptions, .answers").find("li").removeClass("active").end().find(`li[data-id=${id}]`).addClass("active");
+    }
   }
 
   /**
@@ -492,8 +546,23 @@ export default class TaffrailApi {
       return f;
     }));
 
+    // eslint-disable-next-line new-cap
     const str = this.TEMPLATES["AdviceDebugSidebar"](this.api);
     $(".advice-debug").html(str);
+  }
+
+  updateSaveGoalButton() {
+    const profile = window.jga.UserProfile?.savedProfile;
+    if (profile) {
+      const goalExists = store.get("frb_user_goals_" + profile._name);
+      if (goalExists && goalExists.length) {
+        const { controller: controllerName } = $("body").find("div[data-controller]").data();
+        const actualGoalExists = goalExists.find(g => { return g.controllerName == controllerName });
+        if (actualGoalExists) {
+          $(".advice").find("a[data-action='save-goal']").text("Update Goal");
+        }
+      }
+    }
   }
 
   /**
@@ -650,6 +719,178 @@ export default class TaffrailApi {
   }
 
   // #endregion
+  /**
+ * "Next" button handler
+ */
+  handleClickContinue() {
+    // pressing radio button auto-advances to next
+    this.$advice.on("click", ".form-check label.form-check-label", e => {
+      const $lbl = $(e.currentTarget);
+      $lbl.prev("input").prop("checked", true);
+      const $form = $lbl.closest("form");
+      $form.trigger("submit");
+    });
+
+    this.$advice.on("submit", "form", e => {
+      const $form = $(e.currentTarget);
+
+      // this._scrollTop();
+
+      // convert values from masked to unmasked for form submission
+      const $inputs = this._findFormInput($form);
+      $inputs.each((i, el) => {
+        const $input = $(el);
+        const { inputmask } = $input.data();
+
+        if (inputmask) {
+          const unmaskedval = inputmask.unmaskedvalue();
+          inputmask.remove();
+          $input.val(unmaskedval);
+        }
+
+        // while we're here, convert percent to precision value
+        if ($input.is("input[data-type=Percent]")) {
+          $input.val($input.val() / 100);
+        }
+      });
+
+      const data = $form.serialize();
+
+      // push answer to this question into saved user profile
+      if (window.jga.UserProfile) {
+        window.jga.UserProfile.buildProfileWith(qs.parse(data));
+      }
+
+      this.load(data, this.$advice, false).then(api => {
+        // update content
+        this.updateFn(api);
+        this.updatePanes();
+      });
+
+      return false; // don't submit form
+    });
+  }
+
+  /**
+   * "Back" button handler
+   */
+  handleClickBack() {
+    this.$advice.on("click", "a[data-action=back]", e => {
+      e.preventDefault();
+      const { _currIdx } = this.api.display;
+      const display = this.api.answers.find((a) => { return a.idx == _currIdx - 1; });
+      if (!display) { return; }
+      // this._scrollTop();
+      // temp override `display` global prop to insert question into HTML
+      this.api.display = display;
+      // update content
+      this.updateFn();
+      this.updatePanes();
+    });
+  }
+
+  /**
+ * Click handler for assumptions or Q&A
+ */
+  handleClickAssumption() {
+    $(".assumptions-outer-container").on("click", ".a > a, a.statement", e => {
+      e.preventDefault();
+      const $this = $(e.currentTarget);
+      const data = $this.closest("li").data();
+      const { idx, groupId } = data;
+      // do not allow changes to "personal profile" data
+      if (groupId == "pp") {
+        return;
+      }
+      // $("html, body").animate({ scrollTop: this.scrollTo });
+      // temp override `display` global prop to insert question into HTML
+      // when user presses "OK" to keep or change answer, global data is refreshed/restored
+      const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == idx; });
+      this.api.display = answer;
+      this.api.display.idx = answer.idx;
+      this.updateForInputRequest();
+    });
+  }
+
+  /**
+   * click taffrail var
+   */
+  handleClickTaffrailVar() {
+    $(document).on("click", "taffrail-var.active", e => {
+      e.preventDefault();
+      const $this = $(e.currentTarget);
+      $this.tooltip("hide");
+      const isCalculated = $this.hasClass("active--calculated");
+      if (isCalculated) {
+        return;
+      }
+      const { idx } = $this.data();
+      // temp override `display` global prop to insert question into HTML
+      // when user presses "OK" to keep or change answer, global data is refreshed/restored
+      const answer = _.flatMap(this.api.answers).find((a) => { return a.idx == idx; });
+      this.api.display = answer;
+      this.api.display.idx = answer.idx;
+      this.updateForInputRequest();
+    });
+  }
+
+  /**
+   * Listener for opening/closing advice summaries
+   */
+  handleCollapseAdviceSummaries() {
+    $(".list-all-recommendations").on("show.bs.collapse", ".collapse", (e) => {
+      const $this = $(e.currentTarget);
+      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
+      const isGroupHeader = $toggler.hasClass("group-toggler") && $toggler.find("i").length;
+      if (isGroupHeader) {
+        $toggler.find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
+      } else {
+        $toggler.find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
+      }
+    });
+
+    $(".list-all-recommendations").on("hidden.bs.collapse", ".collapse", (e) => {
+      const $this = $(e.currentTarget);
+      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
+      const isGroupHeader = $toggler.hasClass("group-toggler");
+      if (isGroupHeader) {
+        $toggler.find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
+      } else {
+        $toggler.find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
+      }
+    });
+  }
+
+  /**
+   * Listener for opening/closing assumption groups
+   */
+  handleCollapseAssumptionGroup() {
+    $(".assumptions").on("show.bs.collapse", "ol.assumptions-list.collapse", (e) => {
+      const $this = $(e.currentTarget);
+      const { groupId } = $this.find("li").first().data();
+      store.set(`assumption_${groupId}_${this.api.adviceset.id}`, true);
+      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
+      $toggler.find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
+    });
+
+    $(".assumptions").on("hidden.bs.collapse", "ol.assumptions-list.collapse", (e) => {
+      const $this = $(e.currentTarget);
+      const { groupId } = $this.find("li").first().data();
+      store.set(`assumption_${groupId}_${this.api.adviceset.id}`, false);
+      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
+      $toggler.find("i").removeClass("fa-chevron-down").addClass("fa-chevron-right");
+    });
+  }
+
+  /**
+   * Handle clicks to open variable modal
+   */
+  handleClickOpenRawDataModal() {
+    $("main").on("click", "a[data-action='modal-raw-data']", e => {
+      e.preventDefault();
+      $("#dataModal").modal();
+    });
+  }
 
   /**
    * Handle click to generate and copy a short URL
@@ -693,16 +934,6 @@ export default class TaffrailApi {
   }
 
   /**
-   * Handle clicks to open variable modal
-   */
-  handleClickOpenRawDataModal() {
-    $("main").on("click", "a[data-action='modal-raw-data']", e => {
-      e.preventDefault();
-      $("#dataModal").modal();
-    });
-  }
-
-  /**
    * Handle clicks to toggle advice editing mode
    */
   handleClickToggleAdviceEditorMode() {
@@ -713,18 +944,6 @@ export default class TaffrailApi {
       store.set("adviceEditorModeEnabled", modeEnabled);
       this.adviceEditorModeEnabled = modeEnabled;
       $("html").toggleClass("advice-editor-mode-enabled", modeEnabled);
-    });
-  }
-
-  /**
-   * Handle clicks to toggle primnary advice mode
-   */
-  handleClickShowAllSources() {
-    $("main").on("click", "a[data-action='showAllSources']", e => {
-      e.preventDefault();
-      const $btn = $(e.currentTarget);
-      $btn.hide()
-      $("#group_references").find(".card.d-none").removeClass("d-none");
     });
   }
 
@@ -892,6 +1111,23 @@ export default class TaffrailApi {
    */
   _findFormInput($form, types = "input") {
     return $form.find(types).filter(":not(:radio):not(:hidden)");
+  }
+
+  /**
+   * Helper to build taffrail-var HTML
+   * @param {} variable
+   * @param {*} content
+   * @returns
+   */
+  tfvar(variable, content) {
+    if (!content) { content = variable?.valueFormatted || variable.value; }
+    return `<taffrail-var 
+      data-variable-name="${variable.name}" 
+      data-variable-id="${variable.id}" 
+      tabindex=0
+      data-format="${variable.format}"
+      data-raw-value="${variable.value}">
+        ${content}</taffrail-var>`
   }
   // #endregion
 }

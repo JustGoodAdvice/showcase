@@ -5,7 +5,7 @@ import Turbolinks from "turbolinks";
 import qs from "querystring";
 import Handlebars from "handlebars";
 export default class extends Controller {
-  // static targets = ["title", "description"];
+  static targets = ["title"];
   // static values = { id: String };
 
   connect() {
@@ -19,7 +19,6 @@ export default class extends Controller {
     this.TaffrailAdvice.init();
 
     // when data is updated after page-load, use this fn
-    this.TaffrailAdvice.$loadingContainer = $(".advice-outer-container");
     this.TaffrailAdvice.updateFn = (data, initial = false) => {
       // update content
       this.updatePanes();
@@ -45,6 +44,7 @@ export default class extends Controller {
    * Update 3 panes. This fn is called each time the API updates.
    */
   updatePanes() {
+    this.titleTarget.innerHTML = this.TaffrailAdvice.api.adviceset.title;
     this.TaffrailAdvice.mapData();
     this.updateMainPane();
     this.TaffrailAdvice.updateAssumptionsList();
@@ -59,17 +59,19 @@ export default class extends Controller {
     } else {
       // must be advice
       if (api.display._isLast) {
-        // since it's "last", hide the question.
-        // $(".advice").slideUp(300);
-
         // save "budget"
         const prof = window.jga.UserProfile.savedProfile;
         const budget = _.omit(api.params, "State", "include", "showcase");
         window.jga.UserProfile.savedProfile = _.assign(prof, budget, { budgetcreated: true });
         $(document).trigger("pushnotification", ["budget", { message: "Savings budget saved!" }]);
-      }
 
-      $(".goal-result").show();
+        api.save_to_goal = {
+          advice: [api.display],
+          assumptions: api.assumptions
+        };
+        console.log(api)
+        window.goals.saveGoal("profile", api);
+      }
 
       const str = Handlebars.compile($("#tmpl_advice_profile").html())(api);
       this.TaffrailAdvice.$advice.html(str);
