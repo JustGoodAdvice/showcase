@@ -13,7 +13,26 @@ const PERSONAS = {
     Salary: 150000,
     Expenses_Monthly: 6000,
     Income_Monthly: 10000,
-    budgetcreated: true
+    budgetcreated: true,
+
+    // home
+    Mortgage_Down_Payment_Savings_Current: 30000,
+    Mortgage_Down_Payment_Savings_Monthly: 1000,
+
+    // debt
+    Debt_Type: "credit card",
+    Debt_Balance: 10000,
+    Debt_Payment_Is_Minimum: true,
+
+    // retirement
+    Current_Retirement_Savings: 50000,
+    "401K?": true,
+    "401K_Company_Match?": true,
+    "401K_Tier1_Match_Pct": 0.5,
+    "401K_Tier1_Up_To_Pct": 0.06,
+    "401K_Contribution_Current_Pct": .08,
+    "IRA?": false,
+    Monthly_Retirement_Savings_Other_Current: 0,
   },
   "Billy & Barbara": {
     _name: "Billy & Barbara",
@@ -24,7 +43,28 @@ const PERSONAS = {
     Salary: 200000,
     Expenses_Monthly: 10000,
     Income_Monthly: 19000,
-    budgetcreated: true
+    budgetcreated: true,
+
+    // home
+    Mortgage_Down_Payment_Savings_Current: 100000,
+    Mortgage_Down_Payment_Savings_Monthly: 2000,
+
+    // debt
+    Debt_Type: "student loan",
+    Debt_Balance: 150000,
+    Debt_Payment: 2125,
+    Debt_Payment_Is_Minimum: true,
+
+    // retirement
+    Current_Retirement_Savings: 150000,
+    "401K?": true,
+    "401K_Company_Match?": true,
+    "401K_Tier1_Match_Pct": 0.5,
+    "401K_Tier1_Up_To_Pct": 0.06,
+    "401K_Contribution_Current_Pct": .13,
+    "IRA?": true,
+    Monthly_IRA_Contribution_Current: 500,
+    Monthly_Retirement_Savings_Other_Current: 0,
   },
   "Client w/o settings": {
     _name: "Client w/o settings",

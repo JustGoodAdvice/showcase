@@ -111,15 +111,19 @@ export default class extends Controller {
       }
 
       if (cannotAffordHouse) {
-        period_from_now = "This goal is out of reach";
-        api.display.advice.shift();
-        api.display.advice.unshift({
-          headline_html: `<p class="lead">Saving
-              ${this.TaffrailAdvice.tfvar(Mortgage_Down_Payment_Savings_Monthly)}
-              per month is not enough to meet your goal of 
-              buying a ${this.TaffrailAdvice.tfvar(Home_Price)} home in
-              ${this.TaffrailAdvice.tfvar(Home_Purchase_Time_Frame, pluralize("year", Home_Purchase_Time_Frame.value, true))}.</p>`,
-        });
+        period_from_now = api.recommendations["Our Advice"][0].headline;
+        api.display.advice = [{
+          headline_html: `<p class="lead">${api.recommendations["Our Advice"][0].summary_html}</p>`
+        }];
+        
+        // api.display.advice.shift();
+        // api.display.advice.unshift({
+        //   headline_html: `<p class="lead">Saving
+        //       ${this.TaffrailAdvice.tfvar(Mortgage_Down_Payment_Savings_Monthly)}
+        //       per month is not enough to meet your goal of 
+        //       buying a ${this.TaffrailAdvice.tfvar(Home_Price)} home in
+        //       ${this.TaffrailAdvice.tfvar(Home_Purchase_Time_Frame, pluralize("year", Home_Purchase_Time_Frame.value, true))}.</p>`,
+        // });
 
       } else {
         if (this.reachedGoal) {

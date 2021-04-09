@@ -151,7 +151,7 @@ export default class extends Controller {
       const str = Handlebars.compile($("#tmpl_advice_save_retirement").html())(api);
       this.TaffrailAdvice.$advice.html(str);
 
-      $(".advice").find("a[data-action='save-goal']").toggle(this.reachedGoal);
+      // $(".advice").find("a[data-action='save-goal']").toggle(this.reachedGoal);
     }
 
   }

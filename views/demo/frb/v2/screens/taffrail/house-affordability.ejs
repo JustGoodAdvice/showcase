@@ -14,21 +14,21 @@
   <header class="goal">
     <h4 class="">{{{display.goal.period_from_now}}}</h4>
     {{#each display.advice}}
-    <p>
-      {{#if this.headline_html}}
-      {{{this.headline_html}}}
-      {{else}}
-      {{this.headline}}
-      {{/if}}
-    </p>
-    {{#if this.summary}}
-    <p class="small">
-      {{#if this.summary_html}}
-      {{{this.summary_html}}}
-      {{else}}
-      {{this.summary}}
-      {{/if}}
-    </p>
+      <p>
+        {{#if this.headline_html}}
+        {{{this.headline_html}}}
+        {{else}}
+        {{this.headline}}
+        {{/if}}
+      </p>
+      {{#if this.summary}}
+      <p class="small">
+        {{#if this.summary_html}}
+        {{{this.summary_html}}}
+        {{else}}
+        {{this.summary}}
+        {{/if}}
+      </p>
     {{/if}}
     {{/each}}
   

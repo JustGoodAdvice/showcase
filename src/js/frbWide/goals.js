@@ -272,7 +272,7 @@ export default class {
                 console.log(`IRA would NOT be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
               }
               let iraContribution = remainderToContributeToRetirement;
-              let otherContribution = Monthly_Retirement_Savings_Other_Current.value;
+              let otherContribution = Monthly_Retirement_Savings_Other_Current?.value || 0;
 
               if (willMaxIra) {
                 iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
