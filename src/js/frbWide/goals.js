@@ -5,6 +5,7 @@ import store from "store";
 import Handlebars from "handlebars";
 import numeral from "numeral";
 import qs from "querystring";
+import copy from "clipboard-copy";
 export default class {
   constructor(profile, isFirstLoad = false) {
     if (!profile) {
@@ -16,6 +17,9 @@ export default class {
     console.log(`Profile for "${this.profile._name}" present, current state is:`, this.profile)
 
     this.STORAGE_KEY = "frb_user_goals_" + this.profile._name;
+
+    this.allVariables = [];
+    this.formulaDebug = [];
 
     if (isFirstLoad) {
       this.handleClickSaveGoal();
@@ -123,9 +127,31 @@ export default class {
     const payoffDebt = this.getGoalByName("pay-debt");
     const saveRetirement = this.getGoalByName("retirement");
     const debtIsCreditCardDebt = this.isDebtCreditCardDebt(payoffDebt);
+    // RESET FORMULADEBUG
+    this.formulaDebug = [];
+    this.pushToFormulaDebug({
+      name: "isOverBudget",
+      expression: `${this.availableCash} < 0`,
+      result: isOverBudget
+    });
 
     if (isOverBudget) {
       console.group("Over budget");
+      // pay only minimum payment
+      if (payoffDebt && debtIsCreditCardDebt) {
+        const {
+          Debt_Payment = { value: 0 },
+          Debt_Payment_Additional = { value: 0 }
+        } = payoffDebt.data.variables_map;
+
+        if (Debt_Payment_Additional.value > 0) {
+          console.log("Decreasing debt payment to minimum payment only");
+          queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
+            Debt_Payment_Additional: 0,
+            Debt_Payment_Is_Minimum: true
+          }));
+        }
+      }
       // if you have a home goal, reduce this first
       if (saveForHome) {
         const cost = this.getCostFor("save-for-home");
@@ -133,18 +159,28 @@ export default class {
           Goal_HomeSave_Adjust_Price = { value: 0 },
         } = saveForHome.data.variables_map;
         const newMonthlyDownPaymentSavings = cost + this.availableCash;
-        console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings}, then adjusting price below ${Goal_HomeSave_Adjust_Price.value}`);
-        queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
-          Mortgage_Down_Payment_Savings_Monthly: newMonthlyDownPaymentSavings
-        }).then(() => {
-          const { Goal_HomeSave_Adjust_Price = { value: 0 }, } = this.getGoalByName("save-for-home").data.variables_map;
-          console.group("Over budget still... ");
-          console.log(`Adjusting target price to ${Goal_HomeSave_Adjust_Price.value}`)
-          console.groupEnd();
-          return this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
-            Home_Price: Goal_HomeSave_Adjust_Price.value
-          });
-        }));
+        console.log(`Try decreasing down payment savings to $${newMonthlyDownPaymentSavings}...`);
+        if (newMonthlyDownPaymentSavings >= 0) {
+          console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings}, then adjusting price below ${Goal_HomeSave_Adjust_Price.value}`);
+          queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
+            Mortgage_Down_Payment_Savings_Monthly: newMonthlyDownPaymentSavings
+          }).then(() => {
+            const { Goal_HomeSave_Adjust_Price = { value: 0 }, } = this.getGoalByName("save-for-home").data.variables_map;
+            console.group("Over budget still... ");
+            console.log(`Adjusting target price to ${Goal_HomeSave_Adjust_Price.value}`)
+            console.groupEnd();
+            return this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
+              Home_Price: Goal_HomeSave_Adjust_Price.value
+            });
+          }));
+        } else {
+          alert("Your budget is stretched, you should try to buy a home later. Delete your Save for Home goal.");
+        }
+      }
+      // reduce retirement savings next
+      if (saveRetirement) {
+        // const cost = this.getCostFor("retirement");
+        // const
       }
       console.groupEnd();
     } else {
@@ -172,7 +208,8 @@ export default class {
 
         console.log(`Increasing debt payment to $${amNeededToPayOffDebtInHalfTime.toFixed(2)}`);
         queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
-          Debt_Payment: amNeededToPayOffDebtInHalfTime
+          Debt_Payment_Additional: amNeededToPayOffDebtInHalfTime,
+          Debt_Payment_Is_Minimum: false
         }));
 
         budget -= Number(Debt_Payment_Diff.value.toFixed(2));
@@ -182,6 +219,10 @@ export default class {
       const remainder = budget;
       console.log(`Remainder is $${remainder}`);
       if (remainder > 25) {
+        // no retirement but saving for home
+        // if (!saveRetirement && saveForHome) {
+
+        // }
         if (saveRetirement) {
           console.group("Retirement");
           const {
@@ -284,7 +325,7 @@ export default class {
   _OPTIMIZE_REFRESH_GOAL(goal, params = {}){
     const { id: goalId, controllerName, data } = goal;
     const $container = $(`#heading_${goalId}`); // card-header
-    const $summary = $container.find(".card-header-summary");
+    const $summary = $container.find("p.lead");
     $summary.html("Optimizing...");
 
     return $.ajax({
@@ -353,16 +394,33 @@ export default class {
 
   get startingCash() {
     const cash = Number(this.monthlyIncome) - Number(this.monthlyExpenses);
-    return Number(cash.toFixed(2));
+    const n = Number(cash.toFixed(2));
+    this.pushToFormulaDebug({
+      name: "startingCash",
+      expression: `${Number(this.monthlyIncome)}-${Number(this.monthlyExpenses)}`,
+      result: cash
+    });
+    return n;
   }
 
   get availableCash() {
     const cash = this.startingCash - this.costOfGoals;
-    return Number(cash.toFixed(2));
+    const n = Number(cash.toFixed(2));
+    this.pushToFormulaDebug({
+      name: "availableCash",
+      expression: `${this.startingCash}-${this.costOfGoals}`,
+      result: cash
+    });
+    return n;
   }
 
   get percentAllocated() {
     const p = this.costOfGoals / this.startingCash;
+    this.pushToFormulaDebug({
+      name: "percentAllocated",
+      expression: `${this.costOfGoals}/${this.startingCash}*100`,
+      result: p * 100
+    });
     return p;
   }
 
@@ -382,13 +440,13 @@ export default class {
     const { data: { variables_map = {} } } = goal;
     const {
       Current_Monthly_Savings = { value: 0 },
-      Debt_Payment = { value: 0 },
+      Debt_Payment_Total = { value: 0 },
       Mortgage_Down_Payment_Savings_Monthly = { value: 0 }
     } = variables_map;
 
     switch (controllerName) {
       case "pay-debt":
-        cost += Number(Debt_Payment.value.toFixed(2));
+        cost += Number(Debt_Payment_Total.value.toFixed(2));
         break;
       case "save-for-home":
         cost += Number(Mortgage_Down_Payment_Savings_Monthly.value.toFixed(2));
@@ -398,6 +456,12 @@ export default class {
         break;
     }
 
+    this.pushToFormulaDebug({
+      name: "costForGoal: " + controllerName,
+      expression: `${cost}`,
+      result: cost
+    });
+
     return cost;
   }
 
@@ -406,7 +470,11 @@ export default class {
     cost += this.getCostFor("pay-debt");
     cost += this.getCostFor("save-for-home");
     cost += this.getCostFor("retirement");
-
+    this.pushToFormulaDebug({
+      name: "costOfGoals",
+      expression: `${this.getCostFor("pay-debt")}+${this.getCostFor("save-for-home")}+${this.getCostFor("retirement")}`,
+      result: cost
+    });
     return cost;
   }
 
@@ -444,6 +512,7 @@ export default class {
 
     this.renderStartPageAssumptions(showBudget);
     this.renderStartPageDebug(showBudget);
+    this.updateTaffrailVarHtml();
   }
 
   renderStartPageAssumptions(showBudget) {
@@ -457,47 +526,38 @@ export default class {
     const debt = this.getGoalByName("pay-debt")?.data?.save_to_goal?.assumptions || {};
     const home = this.getGoalByName("save-for-home")?.data?.save_to_goal?.assumptions || {};
     const retire = this.getGoalByName("retirement")?.data?.save_to_goal?.assumptions || {};
-    const profile = this.getGoalByName("profile")?.data?.save_to_goal?.assumptions || {};
+    const profileAssump = this.getGoalByName("profile")?.data?.save_to_goal?.assumptions || {};
 
     Object.keys(debt).forEach(k => {
       if (!assumptions[k]) {
         assumptions[k] = debt[k];
       } else {
-        assumptions[k] = _.merge(_.keyBy(assumptions[k], (s) => { return s.form.name; }), _.keyBy(debt[k], (s) => { return s.form.name; }));
+        assumptions[k] = _.unionBy(assumptions[k], debt[k], (a) => { return a.form.name; });
       }
     });
     Object.keys(home).forEach(k => {
       if (!assumptions[k]) {
         assumptions[k] = home[k];
       } else {
-        assumptions[k] = _.merge(_.keyBy(assumptions[k], (s) => { return s.form.name; }), _.keyBy(home[k], (s) => { return s.form.name; }));
+        assumptions[k] = _.unionBy(assumptions[k], home[k], (a) => { return a.form.name; });
       }
     });
     Object.keys(retire).forEach(k => {
       if (!assumptions[k]) {
         assumptions[k] = retire[k];
       } else {
-        assumptions[k] = _.merge(_.keyBy(assumptions[k], (s) => { return s.form.name; }), _.keyBy(retire[k], (s) => { return s.form.name; }));
+        assumptions[k] = _.unionBy(assumptions[k], retire[k], (a) => { return a.form.name; });
       }
     });
-    Object.keys(profile).forEach(k => {
+    Object.keys(profileAssump).forEach(k => {
       if (!assumptions[k]) {
-        const arr = profile[k];
-        assumptions[k] = Array.isArray(arr) ? arr : [];
+        assumptions[k] = profileAssump[k];
       } else {
-        assumptions[k] = _.merge(_.keyBy(assumptions[k], (s) => { return s.form.name; }), _.keyBy(profile[k], (s) => { return s.form.name; }));
+        assumptions[k] = _.unionBy(assumptions[k], profileAssump[k], (a) => { return a.form.name; });
       }
     });
 
-    // open all assumptions
-    Object.keys(assumptions).forEach(a => {
-      const arr = assumptions[a];
-      if (Array.isArray(arr)){
-        _.first(arr)._isOpen = true;
-      }
-    });
-
-    // console.log("assumptions", assumptions)
+    this.allAssumptions = assumptions;
 
     // do we have ANY assumptions/answers yet?
     // show or hide depending
@@ -537,11 +597,166 @@ export default class {
   }
 
   renderStartPageDebug(showBudget) {
+    const debug = _.sortBy(_.compact(_.flatMap(this.savedGoals.map(goal => {
+      return goal.data.formulaDebug;
+    }))), o => { return o.name; });
+    const allVariables = _.compact(_.flatMap(this.savedGoals.map(goal => {
+      return goal.data.variables;
+    })));
 
+    this.allVariables = allVariables;
+    this.formulaDebug = this.formulaDebug.concat(debug);
+
+    this.updateAdviceDebugSidebar();
+  }
+
+  pushToFormulaDebug(obj) {
+    const { id, name, expression, expressionDebug, result, result_formatted } = obj;
+
+    // if item exists, update it
+    const index = _.findIndex(this.formulaDebug, (fd) => { return fd.name == name; });
+    if (index > -1) {
+      this.formulaDebug.splice(index, 1, obj)
+    } else {
+      this.formulaDebug.unshift({
+        id,
+        name,
+        expression,
+        expressionDebug,
+        result,
+        result_formatted,
+      });
+    }
+  }
+
+  /**
+ * Update inline HTML for taffrail variables
+ */
+  updateTaffrailVarHtml() {
+    // handle taffrail-var
+    $("body").find("taffrail-var").each((i, el) => {
+      const $el = $(el);
+      const { variableId, variableName } = $el.data();
+      // find corresponding question
+      const question = _.flatMap(this.allAssumptions).find((a) => {
+        // check question rules first, then input requests
+        return a.form.questionVariable?.reservedName == variableName || a.form.name == variableName;
+      });
+      if (question) {
+        $el
+          .addClass("active active--not-linked")
+        ;
+      } else {
+        // if not a question, check for raw formula
+        if (this?.formulaDebug) {
+          const source = this.formulaDebug.find(f => { return f.id == variableId });
+          if (!source) { console.error("no source found", variableId); return; }
+          const isInSidebar = $el.closest(".advice-debug").length;
+          if (isInSidebar) { return; }
+
+          const varLookup = this.allVariables.find(v => { return v.id == variableId });
+          if (!varLookup) { console.error("no var found", variableId); return; }
+
+          const html = `
+            <div class="debug-card">
+              <div>
+                <h5>Variable</h5>
+                <div class="d-flex justify-content-between">
+                  <div class="text-monospace var-name">
+                    <a href="#">${varLookup.name}</a>
+                  </div>
+                  <a href="#formula_${variableId}" class="jumptoformula"><i class="fal fa-sort-amount-down-alt"></i></a>
+                </div>
+                <div class="expression">
+                  <h5>Formula</h5>
+                  <div class="d-flex justify-content-between">
+                    <code class="exp cpy">${source.expression}</code>
+                    <code class="value text-right">= ${source.result}</code>
+                  </div>
+                </div>
+
+                <div class="exp-debug">
+                  <h5>Expression debug</h5>
+                  <code class="cpy">${source.expressionDebug}</code>
+                </div>
+              </div>
+            </div>
+          `;
+
+          $el
+            .addClass("active active--calculated")
+            .attr("tabindex", 0)
+            .attr("role", "button")
+            .popover({
+              container: "body",
+              placement: "top",
+              title: "Inspector",
+              content: html,
+              html: true,
+              trigger: "focus"
+            })
+            .on("shown.bs.popover", e => {
+              $(".popover")
+                .find(".cpy")
+                .on("click", e => {
+                  e.preventDefault();
+                  const $el = $(e.currentTarget);
+                  copy($el.text()).then(() => {
+                    $el.tooltip("dispose");
+                  });
+                })
+                .tooltip({ title: "Click to copy" })
+              ;
+              $(".popover")
+                .find("a.jumptoformula")
+                .on("click", e => {
+                  e.preventDefault();
+                  const $el = $(e.currentTarget);
+                  $el.tooltip("dispose");
+                  const link = $el.attr("href");
+                  $("html, body").animate({ scrollTop: $(`${link}`).offset().top - 50 }, 400, () => {
+                    $(`${link}`).addClass("flash");
+                  });
+                })
+                .tooltip({ title: "Jump to formula" })
+              ;
+            })
+          ;
+        }
+      }
+    });
+  }
+
+  /**
+ * Update advice debug sidebar
+ */
+  updateAdviceDebugSidebar() {
+    // render
+    this.formulaDebug = (this.formulaDebug || []).map(f => {
+      const varLookup = this.allVariables.find(v => { return f.id == v.id });
+      if (f.name.toLowerCase().endsWith("_txt")) {
+        return null;
+      }
+      if (f.expression == "1" || f.expression == "0" || f.name.startsWith("IRS")) {
+        // console.log(f)
+        f._hide_result = true;
+        f.expression = "";
+        // f.result_formatted = f.expressionDebug;
+      }
+      if (varLookup) {
+        f.result_formatted = varLookup.valueFormatted || varLookup.value;
+      }
+      return f;
+    });
+
+    const str = Handlebars.compile($("#tmpl_adviceDebugSidebar").html())({ formulaDebug: this.formulaDebug });
+    $(".advice-debug").html(str);
   }
 
   resetGoals() {
-    this.savedGoals = [];
+    // this.savedGoals = [];
+    const profile = this.getGoalByName("profile");
+    this.savedGoals = [profile];
   }
 
   deleteGoal(id) {
@@ -556,7 +771,7 @@ export default class {
       "pay-debt": "Payoff debt",
       "profile": "Profile"
     }
-    const data = _.pick(api, "adviceset", "params", "paramsAsQueryStr", "variables_map", "save_to_goal", "_links");
+    const data = _.pick(api, "adviceset", "params", "paramsAsQueryStr", "variables_map", "variables", "save_to_goal", "_links", "formulaDebug");
     const { save_to_goal } = data;
     const { advice } = save_to_goal;
     const [headline] = advice;

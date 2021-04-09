@@ -69,7 +69,6 @@ export default class extends Controller {
           advice: [api.display],
           assumptions: api.assumptions
         };
-        console.log(api)
         window.goals.saveGoal("profile", api);
       }
 

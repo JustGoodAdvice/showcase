@@ -797,11 +797,7 @@ export default class TaffrailApi {
       e.preventDefault();
       const $this = $(e.currentTarget);
       const data = $this.closest("li").data();
-      const { idx, groupId } = data;
-      // do not allow changes to "personal profile" data
-      if (groupId == "pp") {
-        return;
-      }
+      const { idx } = data;
       // $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored

@@ -8,24 +8,23 @@ const PERSONAS = {
   "Doug": {
     _name: "Doug",
     State: "CA",
-    // Marital_Status: "single",
-    // Age_Now: 25,
-    // Salary: 150000,
-    // // Annual_Expenses: 100000,
-    // Expenses_Monthly: 100000 / 12,
-    // Income_Monthly: 14000,
-    budgetcreated: false
+    Marital_Status: "single",
+    Age_Now: 25,
+    Salary: 150000,
+    Expenses_Monthly: 6000,
+    Income_Monthly: 10000,
+    budgetcreated: true
   },
   "Billy & Barbara": {
     _name: "Billy & Barbara",
     State: "CA",
-    // Marital_Status: "Married",
-    // Age_Now: 32,
-    // Salary: 200000,
-    // // Annual_Expenses: 130000,
-    // Expenses_Monthly: 130000 / 12,
-    // Income_Monthly: 20000,
-    budgetcreated: false
+    Marital_Status: "married",
+    Age_Now: 32,
+    Age_Spouse: 32,
+    Salary: 200000,
+    Expenses_Monthly: 10000,
+    Income_Monthly: 19000,
+    budgetcreated: true
   },
   "Client w/o settings": {
     _name: "Client w/o settings",

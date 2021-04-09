@@ -1,5 +1,6 @@
 import _ from "lodash";
 import store from "store";
+import Turbolinks from "turbolinks";
 import UserGoals from "./goals";
 export default class {
   constructor(){
@@ -63,7 +64,9 @@ export default class {
     this.savedProfile = profile;
     this.activateCurrentPersona();
     // this.emit("activated", { profile, message: `Profile set for ${profile._name}` });
-    window.location.reload();
+
+    // go to profile to force "profile" goal save
+    Turbolinks.visit("/frb/v2/goal-planning/goals/taffrail/JUsIoPDhkNcvs1zb8UErR1I");
   }
 
   deactivatePersona() {
