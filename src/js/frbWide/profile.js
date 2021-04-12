@@ -46,6 +46,8 @@ export default class {
         if (confirm("Changing personas will erase a saved profile.")) {
           this.activatePersona(selectPersona);
         }
+      } else {
+        this.activatePersona(selectPersona);
       }
     });
   }
