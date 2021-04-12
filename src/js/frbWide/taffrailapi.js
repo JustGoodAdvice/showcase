@@ -7,6 +7,7 @@ import pluralize from "pluralize";
 import qs from "querystring";
 import store from "store";
 import isHtml from "is-html";
+import numeral from "numeral";
 
 export default class TaffrailApi {
   constructor() {
@@ -550,7 +551,10 @@ export default class TaffrailApi {
         // f.result_formatted = f.expressionDebug;
       }
       if (varLookup) {
-        f.result_formatted = varLookup.valueFormatted || varLookup.value;
+        f.result_formatted = f.result;
+        if (varLookup.format) {
+          f.result_formatted = numeral(f.result).format(varLookup.format);
+        }
       }
       return f;
     }));
