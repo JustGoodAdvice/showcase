@@ -103,18 +103,26 @@ export default class extends Controller {
       const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
 
       if (this.reachedGoal && Current_Monthly_Savings.value > Monthly_Savings_Needed.value) {
-        // remove 1st element from array, advice we don't want to display when goal has not been reached
-        // api.display.advice.shift();
-        // insert "you're already there.."
-        api.display.advice.unshift({
-          headline_html: `<p class="lead">By saving
-             ${this.TaffrailAdvice.tfvar(Current_Monthly_Savings)}
-            per month you are <strong>${aboveOrBelow}</strong> the
-            ${this.TaffrailAdvice.tfvar(Monthly_Savings_Needed)}
-             required to retire comfortably by age 
-             ${this.TaffrailAdvice.tfvar(Retirement_Age)}, in
-             ${this.TaffrailAdvice.tfvar(Retirement_Year_Target)}.</p>`,
-        });
+        if (Monthly_Savings_Needed.value > 0) {
+          // remove 1st element from array, advice we don't want to display when goal has not been reached
+          // api.display.advice.shift();
+          // insert "you're already there.."
+          api.display.advice.unshift({
+            headline_html: `<p class="lead">By saving
+              ${this.TaffrailAdvice.tfvar(Current_Monthly_Savings)}
+              per month you are <strong>${aboveOrBelow}</strong> the
+              ${this.TaffrailAdvice.tfvar(Monthly_Savings_Needed)}
+              required to retire comfortably by age 
+              ${this.TaffrailAdvice.tfvar(Retirement_Age)}, in
+              ${this.TaffrailAdvice.tfvar(Retirement_Year_Target)}.</p>`,
+          });
+        } else {
+          api.display.advice.unshift({
+            headline_html: `<p class="lead">You are saving enough to retire comfortably by age 
+              ${this.TaffrailAdvice.tfvar(Retirement_Age)}, in
+              ${this.TaffrailAdvice.tfvar(Retirement_Year_Target)}.</p>`
+          });
+        }
       }
 
       // not reaching the goal
