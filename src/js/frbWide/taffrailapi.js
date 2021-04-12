@@ -634,7 +634,7 @@ export default class TaffrailApi {
         // if not a question, check for raw formula
         if (this.api.formulaDebug) {
           const source = this.api.formulaDebug.find(f => { return f.id == variableId });
-          if (!source) { console.error("no source found", variableId); return; }
+          if (!source) { /* console.error("no source found", variableId);*/ return; }
           const isInSidebar = $el.closest(".advice-debug").length;
           if (isInSidebar) { return; }
 
