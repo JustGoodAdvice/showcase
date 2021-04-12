@@ -373,6 +373,7 @@ export default class TaffrailApi {
   }
 
   updateMainPane() {
+    $("#showcase_url").prop("href", `/s/${this.api.adviceset.id}/?${this.api.paramsAsQueryStr}`).prop("target", "_blank");
     this._setCurrentIdx();
     if (this.api.display.type == "INPUT_REQUEST") {
       this.updateForInputRequest();
