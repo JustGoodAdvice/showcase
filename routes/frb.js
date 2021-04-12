@@ -34,6 +34,7 @@ const PERSONAS = {
     "401K_Tier1_Up_To_Pct": 0.03,
     "401K_Contribution_Current_Pct": .08,
     "IRA?": false,
+    "401K_Tiers": 1,
     Monthly_Retirement_Savings_Other_Current: 0,
   },
   "Billy & Barbara": {
@@ -65,6 +66,7 @@ const PERSONAS = {
     "401K_Company_Match?": true,
     "401K_Tier1_Match_Pct": 0.5,
     "401K_Tier1_Up_To_Pct": 0.06,
+    "401K_Tiers": 1,
     "401K_Contribution_Current_Pct": .13,
     "IRA?": true,
     Monthly_IRA_Contribution_Current: 500,
