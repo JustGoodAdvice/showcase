@@ -111,6 +111,9 @@ export default class extends Controller {
       if (cannotAffordHouse) {
         period_from_now = api.recommendations["Our Advice"][0].headline;
         api.display.advice = [{
+          ...api.recommendations["Our Advice"][0],
+          // when you cannot afford the house, the period_from_now is set to headline
+          // so we need to change the headline HTML to be the summary
           headline_html: `<p class="lead">${api.recommendations["Our Advice"][0].summary_html}</p>`
         }];
         
@@ -161,8 +164,17 @@ export default class extends Controller {
       api.display.goal = goal;
 
       // export data setup for saving to goal
+      let adv = _.cloneDeep(api.display.advice);
+      if (cannotAffordHouse) {
+        adv[0].headline_html = api.recommendations["Our Advice"][0].headline_html;
+        adv = adv.concat([{
+          // mock up a "reaching your goal" advice
+          id: _.uniqueId(`${api.recommendations["Our Advice"][0].id}____`),
+          headline_html: api.recommendations["Our Advice"][0].summary_html
+        }]);
+      }
       api.save_to_goal = {
-        advice: [].concat(api.display.advice).concat(api.recommendations["Reaching Your Goal"] || []),
+        advice: [].concat(adv).concat(api.recommendations["Reaching Your Goal"] || []),
         goal,
         assumptions: api.assumptions
       };

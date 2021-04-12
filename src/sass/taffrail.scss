@@ -219,6 +219,10 @@ taffrail-var {
   }
 }
 
+.card .headline {
+	@extend .lead;
+}
+
 	.advice-outer-container {
 		min-height: 600px;
 		padding-top: 1rem;
