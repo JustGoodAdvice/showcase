@@ -96,12 +96,13 @@ router.get("/v2/goal-planning/start", botMiddleware, (req, res, next) => {
 router.get("/v2/goal-planning/goals/:goal", (req, res, next) => {
   const { goal } = req.params;
 
+  const baseUrl = "/frb/v2/goal-planning/goals/taffrail";
   if (goal == "saveforhome") {
-    res.redirect("/frb/v2/goal-planning/goals/taffrail/JU-24nfNyguvAjZQiBbqLuf");
+    res.redirect(`${baseUrl}/JU-24nfNyguvAjZQiBbqLuf`);
   } else if (goal == "saveforretirement") {
-    res.redirect("/frb/v2/goal-planning/goals/taffrail/JUGzB62H3ERLF4P_TJ9ObJs");
+    res.redirect(`${baseUrl}/JUGzB62H3ERLF4P_TJ9ObJs`);
   } else if (goal == "paydowndebt") {
-    res.redirect("/frb/v2/goal-planning/goals/taffrail/JU5DZn-v5x1Pc8dasRn1UXk");
+    res.redirect(`${baseUrl}/JU5DZn-v5x1Pc8dasRn1UXk`);
   } else {
 
     return res.render(`demo/frb/v2/screens/goals/${goal}`, {
@@ -144,6 +145,9 @@ router.get("/v2/goal-planning/goals/taffrail/:adviceSetId", botMiddleware, (req,
   if (adviceSetView[adviceSetId]) {
     view = "demo/frb/v2/screens/taffrail/" + adviceSetView[adviceSetId];
   }
+
+  // tell turbolinks to update the page URL after server-side redirect
+  res.header("Turbolinks-Location", "/frb" + req.path);
 
   return res.render(view, {
     layout: req.xhr ? false : "demo/frb/v2/layout",
