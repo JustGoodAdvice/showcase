@@ -81,7 +81,6 @@
   {{#if goals}}
   <div class="accordion" id="accordionExample">
     {{#each goals}}
-      
       <div class="card mb-1">
         <div class="card-header" id="heading_{{this.id}}">
           <h2 class="mb-0">
@@ -92,13 +91,31 @@
                 <i class="fal fa-chevron-down"></i>
               </div>
             </a>
-            <p>{{{this.headline.headline_html}}}</p>
+            <div class="goal-headline goal-headline-user">
+              <div class="badge badge-secondary" style="font-size:.75rem">User-created</div>
+              <div class="headline">
+                {{{this.headline.headline_html}}}
+              </div>
+            </div>
+            {{#if this.headline_optimized.headline_html}}
+            <div class="goal-headline goal-headline-optimized">
+              <div class="badge badge-success" style="font-size:.75rem">Optimized</div>
+              <div class="headline">
+                {{{this.headline_optimized.headline_html}}}
+              </div>
+            </div>
+            {{/if}}
           </h2>
         </div>
     
         <div id="collapse_{{this.id}}" class="collapse" aria-labelledby="heading_{{this.id}}" data-parent="#accordionExample">
           <div class="card-body">
-            <h6>Reaching your goal</h6>
+            <h6>Reaching your goal 
+              
+              {{#if this.headline_optimized.headline_html}}
+                <span class="badge badge-success reaching-your-goal-optimized" style="font-size:.75rem">Optimized</span>
+              {{/if}}
+              </h6>
             <ul>
             {{#each this.data.display}}
               <li>
