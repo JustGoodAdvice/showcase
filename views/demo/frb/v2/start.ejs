@@ -2,7 +2,7 @@
   <!-- delete state when hitting start -->
   <script>delete window.jga.api;</script>
 
-  <section class="mt-1 mb-3" id="budget_start" style="display: none;">
+  <section class="mt-1 mb-3" id="budget_start" style="display: none;" data-turbolinks="false_X">
     <p>Help us create your savings budget with a few quick questions.</p>
     <div class="list-group">
       <a href="/frb/v2/goal-planning/goals/taffrail/JUsIoPDhkNcvs1zb8UErR1I"
@@ -11,7 +11,7 @@
   </section>
 
   <h6 class="text-brand">Choose Goal</h6>
-  <div class="goal-tiles list-group list-group-horizontal">
+  <div class="goal-tiles list-group list-group-horizontal" data-turbolinks="false_X">
     <a href="/frb/v2/goal-planning/goals/saveforhome" class="list-group-item list-group-item-action flex-fill">
       <i class="fal fa-home-alt"></i>
       <span>Save for a home</span>
@@ -92,31 +92,24 @@
                 <i class="fal fa-chevron-down"></i>
               </div>
             </a>
-            <p class="lead">{{{this.headline.headline_html}}}</p>
+            <p>{{{this.headline.headline_html}}}</p>
           </h2>
         </div>
     
         <div id="collapse_{{this.id}}" class="collapse" aria-labelledby="heading_{{this.id}}" data-parent="#accordionExample">
           <div class="card-body">
+            <h6>Reaching your goal</h6>
+            <ul>
             {{#each this.data.display}}
-            <p>
+              <li>
                 {{#if this.headline_html}}
                 {{{this.headline_html}}}
                 {{else}}
                 {{this.headline}}
                 {{/if}}
-              </p>
-              {{#if this.summary}}
-              <p class="small">
-                {{#if this.summary_html}}
-                {{{this.summary_html}}}
-                {{else}}
-                {{this.summary}}
-                {{/if}}
-              </p>
-              {{/if}}
-
+              </li>
             {{/each}}
+            </ul>
 
             <div class="btns">
               <a class="btn btn-sm btn-outline-primary" href="/frb/v2/goal-planning/goals/taffrail/{{this.data.adviceset.id}}?{{this.data.paramsAsQueryStr}}" role="button"><i class="fal fa-pencil-ruler"></i> Edit Goal</a>

@@ -48,16 +48,14 @@ export default class extends Controller {
    */
   updatePanes() {
     this.TaffrailAdvice.mapData();
+    this.TaffrailAdvice.updateMainPane();
     this.updateMainPane();
     this.TaffrailAdvice.updateAssumptionsList();
   }
 
   updateMainPane() {
     // render
-    if (this.TaffrailAdvice.api.display.type == "INPUT_REQUEST") {
-      // $(".advice").slideDown(300);
-      this.TaffrailAdvice.updateForInputRequest();
-    } else {
+    if (this.TaffrailAdvice.api.display.type != "INPUT_REQUEST") {
       // must be advice
       if (this.TaffrailAdvice.api.display._isLast) {
         // since it's "last", hide the question.

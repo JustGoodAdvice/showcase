@@ -66,6 +66,7 @@ export default class extends Controller {
   updatePanes() {
     this.titleTarget.innerHTML = this.TaffrailAdvice.api.adviceset.title;
     this.TaffrailAdvice.mapData();
+    this.TaffrailAdvice.updateMainPane();
     this.updateMainPane();
     this.TaffrailAdvice.updateAssumptionsList();
   }
@@ -74,11 +75,7 @@ export default class extends Controller {
   updateMainPane() {
     const { api } = this.TaffrailAdvice;
     // render
-    if (api.display.type == "INPUT_REQUEST") {
-      // $(".advice").slideDown(300);
-      this.TaffrailAdvice.updateForInputRequest();
-    } else {
-
+    if (api.display.type != "INPUT_REQUEST") {
       const { variables_map: {
         "401K_Contribution_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
         "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
@@ -143,7 +140,7 @@ export default class extends Controller {
 
       // export data setup for saving to goal
       api.save_to_goal = {
-        advice: api.display.advice.concat(api.recommendations["Our Advice"]),
+        advice: api.display.advice.concat(api.recommendations["Reaching Your Goal"] || []),
         goal,
         assumptions: api.assumptions
       };

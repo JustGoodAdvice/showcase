@@ -11,25 +11,27 @@ const PERSONAS = {
     Marital_Status: "single",
     Age_Now: 25,
     Salary: 150000,
-    Expenses_Monthly: 6000,
+    Expenses_Monthly: 7000,
     Income_Monthly: 10000,
     budgetcreated: true,
 
     // home
     Mortgage_Down_Payment_Savings_Current: 30000,
     Mortgage_Down_Payment_Savings_Monthly: 1000,
+    Home_Price: 750000,
+    Home_Purchase_Time_Frame: 4,
 
     // debt
-    Debt_Type: "credit card",
-    Debt_Balance: 10000,
+    Debt_Type_FRB: "credit card",
+    Debt_Balance: 15000,
     Debt_Payment_Is_Minimum: true,
 
     // retirement
     Current_Retirement_Savings: 50000,
     "401K?": true,
     "401K_Company_Match?": true,
-    "401K_Tier1_Match_Pct": 0.5,
-    "401K_Tier1_Up_To_Pct": 0.06,
+    "401K_Tier1_Match_Pct": 1,
+    "401K_Tier1_Up_To_Pct": 0.03,
     "401K_Contribution_Current_Pct": .08,
     "IRA?": false,
     Monthly_Retirement_Savings_Other_Current: 0,
@@ -48,9 +50,11 @@ const PERSONAS = {
     // home
     Mortgage_Down_Payment_Savings_Current: 100000,
     Mortgage_Down_Payment_Savings_Monthly: 2000,
+    Home_Price: 1000000,
+    Home_Purchase_Time_Frame: 5,
 
     // debt
-    Debt_Type: "student loan",
+    Debt_Type_FRB: "student loan",
     Debt_Balance: 150000,
     Debt_Payment: 2125,
     Debt_Payment_Is_Minimum: true,
@@ -91,15 +95,25 @@ router.get("/v2/goal-planning/start", botMiddleware, (req, res, next) => {
 // TURBO
 router.get("/v2/goal-planning/goals/:goal", (req, res, next) => {
   const { goal } = req.params;
-  return res.render(`demo/frb/v2/screens/goals/${goal}`, {
-    layout: req.xhr ? false : "demo/frb/v2/layout",
-    adviceSetId: "",
-    linkApi: null,
-    linkAdviceBuilder: null,
-    PERSONAS: PERSONAS,
-    inApp: true,
-    greenScreen: true,
-  });
+
+  if (goal == "saveforhome") {
+    res.redirect("/frb/v2/goal-planning/goals/taffrail/JU-24nfNyguvAjZQiBbqLuf");
+  } else if (goal == "saveforretirement") {
+    res.redirect("/frb/v2/goal-planning/goals/taffrail/JUGzB62H3ERLF4P_TJ9ObJs");
+  } else if (goal == "paydowndebt") {
+    res.redirect("/frb/v2/goal-planning/goals/taffrail/JU5DZn-v5x1Pc8dasRn1UXk");
+  } else {
+
+    return res.render(`demo/frb/v2/screens/goals/${goal}`, {
+      layout: req.xhr ? false : "demo/frb/v2/layout",
+      adviceSetId: "",
+      linkApi: null,
+      linkAdviceBuilder: null,
+      PERSONAS: PERSONAS,
+      inApp: true,
+      greenScreen: true,
+    });
+  }
 });
 
 router.get("/v2/goal-planning/goals/taffrail/:adviceSetId", botMiddleware, (req, res, next) => {

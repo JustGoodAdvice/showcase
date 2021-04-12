@@ -46,6 +46,7 @@ export default class extends Controller {
   updatePanes() {
     this.titleTarget.innerHTML = this.TaffrailAdvice.api.adviceset.title;
     this.TaffrailAdvice.mapData();
+    this.TaffrailAdvice.updateMainPane();
     this.updateMainPane();
     this.TaffrailAdvice.updateAssumptionsList();
   }
@@ -53,10 +54,7 @@ export default class extends Controller {
   updateMainPane() {
     const { api } = this.TaffrailAdvice;
     // render
-    if (api.display.type == "INPUT_REQUEST") {
-      // $(".advice").slideDown(300);
-      this.TaffrailAdvice.updateForInputRequest();
-    } else {
+    if (api.display.type != "INPUT_REQUEST") {
       // must be advice
       if (api.display._isLast) {
         // save "budget"

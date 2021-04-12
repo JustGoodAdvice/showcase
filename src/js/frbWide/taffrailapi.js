@@ -371,6 +371,15 @@ export default class TaffrailApi {
     this.mapVariables();
   }
 
+  updateMainPane() {
+    this._setCurrentIdx();
+    if (this.api.display.type == "INPUT_REQUEST") {
+      this.updateForInputRequest();
+    } else {
+      // see controllers which `updateForAdvice`
+    }
+  }
+
   updatePanes() {
     // update the window title
     this.windowTitle = `${this.api.adviceset.title} - POC - Taffrail`;
@@ -784,8 +793,7 @@ export default class TaffrailApi {
       // temp override `display` global prop to insert question into HTML
       this.api.display = display;
       // update content
-      this.updateFn();
-      this.updatePanes();
+      this.updateMainPane();
     });
   }
 
@@ -804,7 +812,7 @@ export default class TaffrailApi {
       const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == idx; });
       this.api.display = answer;
       this.api.display.idx = answer.idx;
-      this.updateForInputRequest();
+      this.updateMainPane();
     });
   }
 
@@ -826,7 +834,7 @@ export default class TaffrailApi {
       const answer = _.flatMap(this.api.answers).find((a) => { return a.idx == idx; });
       this.api.display = answer;
       this.api.display.idx = answer.idx;
-      this.updateForInputRequest();
+      this.updateMainPane();
     });
   }
 
