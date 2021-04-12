@@ -41,7 +41,12 @@ export default class {
         this.deactivatePersona();
         return;
       }
-      this.activatePersona(selectPersona);
+
+      if (this.savedProfile?.budgetcreated) {
+        if (confirm("Changing personas will erase a saved profile.")) {
+          this.activatePersona(selectPersona);
+        }
+      }
     });
   }
 
