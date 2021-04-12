@@ -82,6 +82,7 @@ export default class extends Controller {
 
       const goal = {
         period_from_now,
+        canOptimize: true
       }
       api.display.goal = goal;
 

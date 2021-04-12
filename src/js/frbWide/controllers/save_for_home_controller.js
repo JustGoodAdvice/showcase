@@ -100,12 +100,15 @@ export default class extends Controller {
       // Home_Price
     } } = api;
 
+    let canOptimize = true;
+
     try {
       let period_from_now = "";
       this.reachedGoal = Can_Afford_House.value && Time_Frame_Needed.value <= Time_Frame_Desired.value;
       const cannotAffordHouse = !Can_Afford_House.value;
       if (cannotAffordHouse) {
         this.reachedGoal = false;
+        canOptimize = false;
       }
 
       if (cannotAffordHouse) {
@@ -160,6 +163,7 @@ export default class extends Controller {
 
       const goal = {
         period_from_now,
+        canOptimize
       }
       api.display.goal = goal;
 

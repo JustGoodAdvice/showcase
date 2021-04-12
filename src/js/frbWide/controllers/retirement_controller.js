@@ -87,6 +87,8 @@ export default class extends Controller {
         Retirement_Savings_Needed = { value: 0, valueFormatted: "$0" }
       } } = api;
 
+      let canOptimize = true;
+
       // must be advice
       if (api.display._isLast) {
         // override "display" with Advice
@@ -107,6 +109,7 @@ export default class extends Controller {
           // remove 1st element from array, advice we don't want to display when goal has not been reached
           // api.display.advice.shift();
           // insert "you're already there.."
+          canOptimize = false;
           api.display.advice.unshift({
             headline_html: `<p class="lead">By saving
               ${this.TaffrailAdvice.tfvar(Current_Monthly_Savings)}
@@ -117,6 +120,7 @@ export default class extends Controller {
               ${this.TaffrailAdvice.tfvar(Retirement_Year_Target)}.</p>`,
           });
         } else {
+          canOptimize = false;
           api.display.advice.unshift({
             headline_html: `<p class="lead">You are saving enough to retire comfortably by age 
               ${this.TaffrailAdvice.tfvar(Retirement_Age)}, in
@@ -142,7 +146,7 @@ export default class extends Controller {
 
       const goal = {
         retirement_year,
-     
+        canOptimize
       }
       api.display.goal = goal;
 
