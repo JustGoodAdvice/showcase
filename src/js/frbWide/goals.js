@@ -194,7 +194,7 @@ export default class {
 
       if (payoffDebt && debtIsCreditCardDebt) {
         const {
-          // Debt_Payment = { value: 0 },
+          Debt_Payment = { value: 0 },
           Debt_Payment_Additional = { value: 0 },
           Debt_Payment_Diff = { value: 0 }
         } = payoffDebt.data.variables_map;
@@ -206,13 +206,13 @@ export default class {
           newPmt = Debt_Payment_Additional.value + budget;
         }
 
-        console.log(`Increasing debt payment to $${newPmt.toFixed(2)}`);
+        console.log(`Increasing debt additional payment to $${newPmt.toFixed(2)}`);
         queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
           Debt_Payment_Additional: newPmt,
           Debt_Payment_Is_Minimum: false
         }));
 
-        budget -= Number(newPmt.toFixed(2));
+        budget -= (Debt_Payment.value + Number(newPmt.toFixed(2)));
       }
 
       // if there's enough left over, figure out how much to increase 401k contribution by
@@ -247,53 +247,62 @@ export default class {
 
             let overMaxByPct = 0;
             let remainderToContributeToRetirement = 0;
-            if (newContributionPct >= Number(_401K_Contribution_Max_Pct.value.toFixed(2))) {
+            if (newContributionPct > Number(_401K_Contribution_Max_Pct.value.toFixed(2))) {
               overMaxByPct = Number((newContributionPct - _401K_Contribution_Max_Pct.value).toFixed(2));
               console.log(`...but max 401k contribution percentage over by ${overMaxByPct}`);
             }
+            console.log("overMaxByPct",overMaxByPct)
+            // if (overMaxByPct <= 0) {
+            //   console.log(`Increase 401k contribution to ${newContributionPct}`);
+            //   queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+            //     "401K_Contribution_Current_Pct": newContributionPct
+            //   }));
 
-            if (overMaxByPct <= 0) {
-              console.log(`Increase 401k contribution to ${newContributionPct}`);
-              queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
-                "401K_Contribution_Current_Pct": newContributionPct
-              }));
-
-              budget -= increase401kContributionBy;
-            } else {
-              newContributionPct -= overMaxByPct;
-              remainderToContributeToRetirement = (onePctOf401kContributionMonthly * overMaxByPct) * 100;
-
-              console.log(`401k contribution increase adjusted down because client will now max at ${newContributionPct}`);
-              console.log(`Funds remaining to apply to retirement action plan: ${remainderToContributeToRetirement}`);
-
-              const willMaxIra = remainderToContributeToRetirement > Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
-              if (willMaxIra) {
-                console.log(`IRA would be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
-              } else {
-                console.log(`IRA would NOT be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
-              }
-              let iraContribution = remainderToContributeToRetirement;
-              let otherContribution = Monthly_Retirement_Savings_Other_Current?.value || 0;
-
-              if (willMaxIra) {
-                iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
-                otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
-                console.log("willMaxIra values", otherContribution, iraContribution, remainderToContributeToRetirement)
-              }
-
-              console.log(`IRA contribution ${iraContribution}`);
-              console.log(`Other savings ${otherContribution}`);
-
-              const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection"; // API input
-              queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
-                "401K_Contribution_Current_Pct": newContributionPct,
-                [hasIraRuleId]: 1,
-                Monthly_IRA_Contribution_Current: iraContribution,
-                Monthly_Retirement_Savings_Other_Current: otherContribution,
-              }));
-
-              budget -= (iraContribution + otherContribution);
+            //   budget -= increase401kContributionBy;
+            // } else {
+            console.log("budget", budget)
+            budget -= increase401kContributionBy;
+            newContributionPct -= overMaxByPct;
+            remainderToContributeToRetirement = (onePctOf401kContributionMonthly * overMaxByPct) * 100;
+            if (remainderToContributeToRetirement == 0 && budget > 0) {
+              remainderToContributeToRetirement = budget;
             }
+            console.log("budget2", budget)
+            console.log("increase401kContributionBy", increase401kContributionBy)
+            console.log("newContributionPct", newContributionPct)
+            console.log("onePctOf401kContributionMonthly", onePctOf401kContributionMonthly)
+
+            console.log(`401k contribution increase adjusted down because client will now max at ${newContributionPct}`);
+            console.log(`Funds remaining to apply to retirement action plan: ${remainderToContributeToRetirement}`);
+
+            const willMaxIra = remainderToContributeToRetirement > Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
+            if (willMaxIra) {
+              console.log(`IRA would be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
+            } else {
+              console.log(`IRA would NOT be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
+            }
+            let iraContribution = remainderToContributeToRetirement;
+            let otherContribution = Monthly_Retirement_Savings_Other_Current?.value || 0;
+
+            if (willMaxIra) {
+              iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
+              otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
+              console.log("willMaxIra values", otherContribution, iraContribution, remainderToContributeToRetirement)
+            }
+
+            console.log(`IRA contribution ${iraContribution}`);
+            console.log(`Other savings ${otherContribution}`);
+
+            const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection"; // API input
+            queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+              "401K_Contribution_Current_Pct": newContributionPct,
+              [hasIraRuleId]: 1,
+              Monthly_IRA_Contribution_Current: iraContribution,
+              Monthly_Retirement_Savings_Other_Current: otherContribution,
+            }));
+
+            budget -= (iraContribution + otherContribution);
+            // }
           } else {
             // maxed 401k, stick rest into IRA & other
             const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection";
@@ -506,6 +515,7 @@ export default class {
     const { data: { variables_map = {} } } = goal;
     const {
       Current_Monthly_Savings = { value: 0 },
+      "401K_Match_Monthly": _401K_Match_Monthly = { value: 0 },
       Debt_Payment_Total = { value: 0 },
       Mortgage_Down_Payment_Savings_Monthly = { value: 0 }
     } = variables_map;
@@ -518,6 +528,7 @@ export default class {
         cost += Number(Mortgage_Down_Payment_Savings_Monthly.value.toFixed(2));
         break;
       case "retirement":
+        // cost += (Number(Current_Monthly_Savings.value.toFixed(2)) - Number(_401K_Match_Monthly.value.toFixed(2)));
         cost += Number(Current_Monthly_Savings.value.toFixed(2));
         break;
     }
