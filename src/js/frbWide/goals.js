@@ -194,25 +194,25 @@ export default class {
 
       if (payoffDebt && debtIsCreditCardDebt) {
         const {
-          Debt_Payment = { value: 0 },
-          // Debt_Payment_Diff = { value: 0 }
-        } = payoffDebt.data.variables_map;
-        let {
-          Debt_Payment_Suggested: { value: amNeededToPayOffDebtInHalfTime = 0 },
+          // Debt_Payment = { value: 0 },
+          Debt_Payment_Additional = { value: 0 },
+          Debt_Payment_Diff = { value: 0 }
         } = payoffDebt.data.variables_map;
 
-        if (amNeededToPayOffDebtInHalfTime > budget) {
-          console.log(`Paying the suggested amount (${amNeededToPayOffDebtInHalfTime}) is not an option (over budget)`);
-          amNeededToPayOffDebtInHalfTime = Debt_Payment.value + budget;
+        let newPmt = Debt_Payment_Additional.value + Debt_Payment_Diff.value;
+
+        if (newPmt > budget) {
+          console.log(`Paying the suggested amount (${newPmt}) is not an option (over budget)`);
+          newPmt = Debt_Payment_Additional.value + budget;
         }
 
-        console.log(`Increasing debt payment to $${amNeededToPayOffDebtInHalfTime.toFixed(2)}`);
+        console.log(`Increasing debt payment to $${newPmt.toFixed(2)}`);
         queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
-          Debt_Payment_Additional: amNeededToPayOffDebtInHalfTime,
+          Debt_Payment_Additional: newPmt,
           Debt_Payment_Is_Minimum: false
         }));
 
-        budget -= Number(amNeededToPayOffDebtInHalfTime.toFixed(2));
+        budget -= Number(newPmt.toFixed(2));
       }
 
       // if there's enough left over, figure out how much to increase 401k contribution by
