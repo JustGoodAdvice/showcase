@@ -137,28 +137,15 @@ export default class {
 
     if (isOverBudget) {
       console.group("Over budget");
-      // pay only minimum payment
-      if (payoffDebt && debtIsCreditCardDebt) {
-        const {
-          // Debt_Payment = { value: 0 },
-          Debt_Payment_Additional = { value: 0 }
-        } = payoffDebt.data.variables_map;
+      const budget = this.availableCash;
 
-        if (Debt_Payment_Additional.value > 0) {
-          console.log("Decreasing debt payment to minimum payment only");
-          queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
-            Debt_Payment_Additional: 0,
-            Debt_Payment_Is_Minimum: true
-          }));
-        }
-      }
       // if you have a home goal, reduce this first
       if (saveForHome) {
         const cost = this.getCostFor("save-for-home");
         const {
           Goal_HomeSave_Adjust_Price = { value: 0 },
         } = saveForHome.data.variables_map;
-        const newMonthlyDownPaymentSavings = cost + this.availableCash;
+        const newMonthlyDownPaymentSavings = cost + budget;
         console.log(`Try decreasing down payment savings to $${newMonthlyDownPaymentSavings}...`);
         if (newMonthlyDownPaymentSavings >= 0) {
           console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings}, then adjusting price below ${Goal_HomeSave_Adjust_Price.value}`);
@@ -363,7 +350,7 @@ export default class {
 
     const currentPreOptimizedAdvice = _.first(data.save_to_goal.advice);
 
-    console.log(`_OPTIMIZE_REFRESH_GOAL: ${controllerName}`);
+    // console.log(`_OPTIMIZE_REFRESH_GOAL: ${controllerName}`);
     return $.ajax({
       url: data._links.base,
       data: _.assign(data.params, params),
@@ -519,7 +506,7 @@ export default class {
     const { data: { variables_map = {} } } = goal;
     const {
       Current_Monthly_Savings = { value: 0 },
-      "401K_Match_Monthly": _401K_Match_Monthly = { value: 0 },
+      // "401K_Match_Monthly": _401K_Match_Monthly = { value: 0 },
       Debt_Payment_Total = { value: 0 },
       Mortgage_Down_Payment_Savings_Monthly = { value: 0 }
     } = variables_map;
