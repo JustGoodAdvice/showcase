@@ -379,6 +379,9 @@ export default class {
           Home_Price = { value: 0 },
         } = data.variables_map;
         // not reaching the goal
+        if (Mortgage_Down_Payment_Savings_Monthly.value == null) { Mortgage_Down_Payment_Savings_Monthly.value = 0; }
+        if (DP_Savings_Monthly_Needed.value == null) { DP_Savings_Monthly_Needed.value = 0; }
+
         let aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
         if (Mortgage_Down_Payment_Savings_Monthly.value.toFixed(0) == DP_Savings_Monthly_Needed.value.toFixed(0)) {
           aboveOrBelow = "at";
