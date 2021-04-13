@@ -144,7 +144,10 @@ export default class extends Controller {
           }
 
           // not reaching the goal
-          const aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
+          let aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
+          if (Mortgage_Down_Payment_Savings_Monthly.value.toFixed(0) == DP_Savings_Monthly_Needed.value.toFixed(0)) {
+            aboveOrBelow = "at";
+          }
 
           api.display.advice.unshift({
             headline_html: `<p class="lead">By saving

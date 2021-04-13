@@ -140,7 +140,7 @@ export default class {
       // pay only minimum payment
       if (payoffDebt && debtIsCreditCardDebt) {
         const {
-          Debt_Payment = { value: 0 },
+          // Debt_Payment = { value: 0 },
           Debt_Payment_Additional = { value: 0 }
         } = payoffDebt.data.variables_map;
 
@@ -391,7 +391,10 @@ export default class {
           Home_Price = { value: 0 },
         } = data.variables_map;
         // not reaching the goal
-        const aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
+        let aboveOrBelow = (Mortgage_Down_Payment_Savings_Monthly.value < DP_Savings_Monthly_Needed.value) ? "below" : "above";
+        if (Mortgage_Down_Payment_Savings_Monthly.value.toFixed(0) == DP_Savings_Monthly_Needed.value.toFixed(0)) {
+          aboveOrBelow = "at";
+        }
 
         groupedAdvice["Our Advice"].unshift({
           headline_html: `<p class="lead">By saving
@@ -438,7 +441,7 @@ export default class {
       }
 
       // put advice in specific array order (pre-optimized, optimized, else)
-      data.advice = [].concat(groupedAdvice["Our Advice"]).concat(groupedAdvice["Reaching Your Goal"]).map(a => {
+      data.advice = _.compact([].concat(groupedAdvice["Our Advice"]).concat(groupedAdvice["Reaching Your Goal"])).map(a => {
         a.isOptimized = true;
         return a;
       })
