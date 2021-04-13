@@ -194,7 +194,7 @@ export default class {
 
       if (payoffDebt && debtIsCreditCardDebt) {
         const {
-          Debt_Payment = { value: 0 },
+          // Debt_Payment = { value: 0 },
           Debt_Payment_Additional = { value: 0 },
           Debt_Payment_Diff = { value: 0 }
         } = payoffDebt.data.variables_map;
@@ -212,7 +212,8 @@ export default class {
           Debt_Payment_Is_Minimum: false
         }));
 
-        budget -= (Debt_Payment.value + Number(newPmt.toFixed(2)));
+        // subtract only the diff from the current and the suggested payment
+        budget -= Number(Debt_Payment_Diff.value.toFixed(2));
       }
 
       // if there's enough left over, figure out how much to increase 401k contribution by
@@ -260,17 +261,17 @@ export default class {
 
             //   budget -= increase401kContributionBy;
             // } else {
-            console.log("budget", budget)
+            // console.log("budget", budget)
             budget -= increase401kContributionBy;
             newContributionPct -= overMaxByPct;
             remainderToContributeToRetirement = (onePctOf401kContributionMonthly * overMaxByPct) * 100;
             if (remainderToContributeToRetirement == 0 && budget > 0) {
               remainderToContributeToRetirement = budget;
             }
-            console.log("budget2", budget)
-            console.log("increase401kContributionBy", increase401kContributionBy)
-            console.log("newContributionPct", newContributionPct)
-            console.log("onePctOf401kContributionMonthly", onePctOf401kContributionMonthly)
+            // console.log("budget2", budget)
+            // console.log("increase401kContributionBy", increase401kContributionBy)
+            // console.log("newContributionPct", newContributionPct)
+            // console.log("onePctOf401kContributionMonthly", onePctOf401kContributionMonthly)
 
             console.log(`401k contribution increase adjusted down because client will now max at ${newContributionPct}`);
             console.log(`Funds remaining to apply to retirement action plan: ${remainderToContributeToRetirement}`);
