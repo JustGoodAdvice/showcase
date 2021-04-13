@@ -27,6 +27,7 @@ export default class {
       this.handleClickResetGoals();
       this.handleClickOptimizeGoals();
       this.handleCollapseAssumptionGroup();
+      this.handleClickAssumption();
       this.activateCurrentGoals();
       this.renderBudgetAndGoals();
     } else {
@@ -637,6 +638,16 @@ export default class {
     $(".assumption-expander").toggle(_.without(Object.keys(assumptions), "ungrouped").length > 0);
     const strAssump = Handlebars.compile($("#tmpl_assumptionsList").html())({ _answersExist, assumptions });
     $(".assumptions").html(strAssump);
+  }
+
+  /**
+ * Click handler for assumptions or Q&A
+ */
+  handleClickAssumption() {
+    $(".assumptions-outer-container").on("click", ".a > a, a.statement", e => {
+      e.preventDefault();
+      return false;
+    });
   }
 
   /**
