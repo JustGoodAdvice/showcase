@@ -868,7 +868,7 @@ export default class {
     const { save_to_goal } = data;
     const { advice } = save_to_goal;
     const [headline] = advice;
-    let [,headline_optimized] = advice;
+    let [,headline_optimized = {}] = advice;
     if (!headline_optimized.isOptimized) {
       headline_optimized = null;
     }
