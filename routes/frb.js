@@ -59,7 +59,6 @@ const PERSONAS = {
     // debt
     Debt_Type_FRB: "credit card",
     Debt_Balance: 8000,
-    Debt_Payment: 375,
     Debt_Payment_Additional: 192,
     Debt_Payment_Is_Minimum: false,
     Debt_Interest_APR: .154,
