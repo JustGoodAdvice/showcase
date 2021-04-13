@@ -44,7 +44,7 @@ export default class extends Controller {
    * Update 3 panes. This fn is called each time the API updates.
    */
   updatePanes() {
-    this.titleTarget.innerHTML = this.TaffrailAdvice.api.adviceset.title;
+    this.titleTarget.innerHTML = this.TaffrailAdvice.api?.adviceset?.title || "";
     this.TaffrailAdvice.mapData();
     this.TaffrailAdvice.updateMainPane();
     this.updateMainPane();
