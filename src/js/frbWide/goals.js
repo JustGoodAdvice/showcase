@@ -312,7 +312,7 @@ export default class {
           console.groupEnd();
         } else if (saveForHome) {
           console.group("Save for home");
-          const cost = this.getCostFor("save-for-home");
+          // const cost = this.getCostFor("save-for-home");
           const {
             Goal_HomeSave_Adjust_Savings = { value: 0 },
             Mortgage_Down_Payment_Savings_Monthly = { value: 0 },
@@ -397,49 +397,42 @@ export default class {
         });
       }
 
+      if (controllerName == "retirement") {
+        let reachedGoal = false;
+        const { variables_map: {
+          Current_Monthly_Savings = { value: 0 },
+          Monthly_Savings_Needed = { value: 0 },
+          Future_Value_Of_Savings_Total = { value: 0 },
+          Retirement_Age = { value: 65 },
+          Retirement_Year_Target,
+          Retirement_Savings_Needed = { value: 0, valueFormatted: "$0" }
+        } } = data;
+        // get percent difference between what is needed and what client is saving
+        // anything less than 3% difference is "on track"
+        const [RSN, FVT] = [Retirement_Savings_Needed.value, Future_Value_Of_Savings_Total.value]
+        const pctDiff = 100 * (FVT - RSN) / ((FVT + RSN) / 2);
+        reachedGoal = pctDiff >= -3;
+
+        if (!reachedGoal) {
+          const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
+          groupedAdvice["Our Advice"].unshift({
+            headline_html: `<p class="lead">By saving
+             ${this.tfvar(Current_Monthly_Savings)}
+            per month you are <strong>${aboveOrBelow}</strong> the
+            ${this.tfvar(Monthly_Savings_Needed)}
+             required to retire comfortably by age 
+             ${this.tfvar(Retirement_Age)}, in
+             ${this.tfvar(Retirement_Year_Target)}.</p>`,
+          })
+        }
+      }
+
       // put advice in specific array order (pre-optimized, optimized, else)
       data.advice = [].concat(groupedAdvice["Our Advice"]).concat(groupedAdvice["Reaching Your Goal"]).map(a => {
         a.isOptimized = true;
         return a;
       })
       data.advice.unshift(currentPreOptimizedAdvice);
-
-      // let reachedGoal = controllerName == "pay-debt" ? true : false;
-
-
-
-      // if (controllerName == "retirement_____X") {
-      //   const { variables_map: {
-      //     Current_Monthly_Savings = { value: 0 },
-      //     Monthly_Savings_Needed = { value: 0 },
-      //     Future_Value_Of_Savings_Total = { value: 0 },
-      //     Retirement_Age = { value: 65 },
-      //     Retirement_Year_Target,
-      //     Retirement_Savings_Needed = { value: 0, valueFormatted: "$0" }
-      //   } } = data;
-      //   // console.log(data)
-      //   // get percent difference between what is needed and what client is saving
-      //   // anything less than 3% difference is "on track"
-      //   const [RSN, FVT] = [Retirement_Savings_Needed.value, Future_Value_Of_Savings_Total.value]
-      //   const pctDiff = 100 * (FVT - RSN) / ((FVT + RSN) / 2);
-      //   reachedGoal = pctDiff >= -3;
-
-      //   if (!reachedGoal) {
-      //     const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
-      //     // remove 1st element from array, advice we don't want to display when goal has not been reached
-      //     data.advice.shift();
-      //     // new mechanical text
-      //     data.advice.unshift({
-      //       headline_html: `By saving
-      //         <taffrail-var data-variable-name="Current_Monthly_Savings">${Current_Monthly_Savings.valueFormatted}</taffrail-var>
-      //         per month you are <strong>${aboveOrBelow}</strong> the
-      //         <taffrail-var data-variable-name="Monthly_Savings_Needed">${Monthly_Savings_Needed.valueFormatted}</taffrail-var>
-      //         required to retire comfortably by age
-      //         <taffrail-var data-variable-name="Retirement_Age">${Retirement_Age.value}</taffrail-var>, in
-      //         <taffrail-var data-variable-name="Retirement_Year_Target">${Retirement_Year_Target.value}</taffrail-var>.`,
-      //     });
-      //   }
-      // }
 
       const assumptions = _.groupBy(answers, (a) => {
         return (a.tagGroup) ? a.tagGroup.name : "Assumptions";
