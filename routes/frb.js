@@ -25,6 +25,7 @@ const PERSONAS = {
     Debt_Type_FRB: "credit card",
     Debt_Balance: 15000,
     Debt_Payment_Is_Minimum: true,
+    Debt_Interest_APR: .19,
 
     // retirement
     Current_Retirement_Savings: 50000,
