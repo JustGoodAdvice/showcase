@@ -24,7 +24,10 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        // add any modules here that need transpilation
+        // debug, async-es are 2 that require it so far!!!
+        // https://github.com/webpack/webpack/issues/2031#issuecomment-219040479
+        exclude: /node_modules\/(?!(debug|async-es)\/).*/,
         use: {
           loader: "babel-loader",
           options: {

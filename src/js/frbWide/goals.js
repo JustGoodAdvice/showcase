@@ -6,6 +6,7 @@ import Handlebars from "handlebars";
 import numeral from "numeral";
 import qs from "querystring";
 import copy from "clipboard-copy";
+import async from "async-es";
 export default class {
   constructor(profile, isFirstLoad = false) {
     if (!profile) {
@@ -136,210 +137,273 @@ export default class {
       result: isOverBudget
     });
 
-    if (isOverBudget) {
-      console.group("Over budget");
-      const budget = this.availableCash;
+    async.series([
+      // eslint-disable-next-line complexity
+      (cbSeries) => {
+        if (isOverBudget) {
+          console.group("Over budget");
+          let budget = this.availableCash;
 
-      // if you have a home goal, reduce this first
-      if (saveForHome) {
-        const cost = this.getCostFor("save-for-home");
-        const {
-          Goal_HomeSave_Adjust_Price = { value: 0 },
-        } = saveForHome.data.variables_map;
-        const newMonthlyDownPaymentSavings = cost + budget;
-        console.log(`Try decreasing down payment savings to $${newMonthlyDownPaymentSavings}...`);
-        if (newMonthlyDownPaymentSavings >= 0) {
-          console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings}, then adjusting price below ${Goal_HomeSave_Adjust_Price.value}`);
-          queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
-            Mortgage_Down_Payment_Savings_Monthly: newMonthlyDownPaymentSavings
-          }).then(() => {
-            const { Goal_HomeSave_Adjust_Price = { value: 0 }, } = this.getGoalByName("save-for-home").data.variables_map;
-            console.group("Over budget still... ");
-            console.log(`Adjusting target price to ${Goal_HomeSave_Adjust_Price.value}`)
+          async.waterfall([
+            (callback) => {
+              // if you have a home goal, reduce this first
+              if (saveForHome) {
+                console.group("Save for home");
+                const cost = this.getCostFor("save-for-home");
+                const {
+                  Goal_HomeSave_Adjust_Price = { value: 0 },
+                } = saveForHome.data.variables_map;
+                let newMonthlyDownPaymentSavings = budget + cost;
+                console.log(`Try decreasing down payment savings to $${newMonthlyDownPaymentSavings}...`);
+
+                if (newMonthlyDownPaymentSavings < 0) {
+                  // client is way over budget, can't save for house right now
+                  newMonthlyDownPaymentSavings = 0;
+                  console.log("Not enough budget, reducing down payment savings to ZERO");
+                  console.log(`Will decrease down payment savings to $${newMonthlyDownPaymentSavings}`);
+                }
+
+                // find the home_price amount they *can* afford with new down payment
+                // before running "_OPTIMIZE_REFRESH_GOAL"
+                console.log(`With new down payment savings $${newMonthlyDownPaymentSavings}, how much can they afford?`);
+                let newPrice;
+                this._preload_goal(saveForHome, {
+                  Mortgage_Down_Payment_Savings_Monthly: newMonthlyDownPaymentSavings
+                }).then(preloadedData => {
+                  const Goal_HomeSave_Adjust_Price = preloadedData.variables.find(v => { return v.name == "Goal_HomeSave_Adjust_Price"; });
+                  newPrice = Goal_HomeSave_Adjust_Price.value;
+                }).then(() => {
+                  console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings}, then adjusting price to ${newPrice}`);
+                  queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
+                    Mortgage_Down_Payment_Savings_Monthly: newMonthlyDownPaymentSavings,
+                    Home_Price: newPrice
+                  }));
+
+                  // if new monthly savings is 0, client is way over budget
+                  // so remove the full cost of this goal (amount they're currently saving pre-opt)
+                  if (newMonthlyDownPaymentSavings == 0) {
+                    budget += cost;
+                  } else {
+                    budget += newMonthlyDownPaymentSavings;
+                  }
+
+                  console.groupEnd();
+                  return callback(budget);
+                });
+              } else {
+                return callback(budget);
+              }
+            }
+          ], (budget) => {
+            console.log(`Remaining budget: ${budget}`);
+            if (budget < 0) {
+              console.log(`Still over budget, ${budget} remains`);
+              // reduce additional payment on CC next
+              if (payoffDebt && debtIsCreditCardDebt) {
+                console.group("Credit card debt");
+                const {
+                  Debt_Payment_Additional = { value: 0 },
+                } = payoffDebt.data.variables_map;
+
+                console.log(`${Debt_Payment_Additional.value} being paid to credit card debt.`);
+                if (Debt_Payment_Additional.value > 0) {
+                  const reduceBudgetBy = Debt_Payment_Additional.value;
+                  console.log(`Decreasing debt additional payment to $0, down from $${Debt_Payment_Additional.value}`);
+                  queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
+                    Debt_Payment_Additional: 0,
+                    Debt_Payment_Is_Minimum: false
+                  }));
+                  budget += reduceBudgetBy;
+                }
+                console.groupEnd();
+              }
+
+              // reduce retirement savings next
+              if (budget < 0) {
+                console.log(`Still over budget, ${budget} remains`);
+              }
+              if (saveRetirement) {
+                // const cost = this.getCostFor("retirement");
+              }
+            }
+
             console.groupEnd();
-            return this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
-              Home_Price: Goal_HomeSave_Adjust_Price.value
-            });
-          }));
+            return cbSeries();
+          });
         } else {
-          alert("Your budget is stretched, you should try to buy a home later. Delete your Save for Home goal.");
-        }
-      }
-      // reduce retirement savings next
-      if (saveRetirement) {
-        // const cost = this.getCostFor("retirement");
-        // const
-      }
-      console.groupEnd();
-    } else {
-      // under budget
+          // under budget
 
-      /**
-       * CC debt and Retirement: pay off CC in 1/2 time and allocate rest to retirement
-       */
-      console.group("Under budget");
-      let budget = this.availableCash;
+          /**
+           * CC debt and Retirement: pay off CC in 1/2 time and allocate rest to retirement
+           */
+          console.group("Under budget");
+          let budget = this.availableCash;
 
-      if (payoffDebt && debtIsCreditCardDebt) {
-        const {
-          // Debt_Payment = { value: 0 },
-          Debt_Payment_Additional = { value: 0 },
-          Debt_Payment_Diff = { value: 0 }
-        } = payoffDebt.data.variables_map;
+          if (payoffDebt && debtIsCreditCardDebt) {
+            const {
+              // Debt_Payment = { value: 0 },
+              Debt_Payment_Additional = { value: 0 },
+              Debt_Payment_Diff = { value: 0 }
+            } = payoffDebt.data.variables_map;
 
-        let newPmt = Debt_Payment_Additional.value + Debt_Payment_Diff.value;
+            let newPmt = Debt_Payment_Additional.value + Debt_Payment_Diff.value;
 
-        if (newPmt > budget) {
-          console.log(`Paying the suggested amount (${newPmt}) is not an option (over budget)`);
-          newPmt = Debt_Payment_Additional.value + budget;
-        }
-
-        console.log(`Increasing debt additional payment to $${newPmt.toFixed(2)}`);
-        queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
-          Debt_Payment_Additional: newPmt,
-          Debt_Payment_Is_Minimum: false
-        }));
-
-        // subtract only the diff from the current and the suggested payment
-        budget -= Number(Debt_Payment_Diff.value.toFixed(2));
-      }
-
-      // if there's enough left over, figure out how much to increase 401k contribution by
-      console.log(`Remainder is $${budget}`);
-      if (budget > 25) {
-        // no retirement but saving for home
-        // if (!saveRetirement && saveForHome) {
-
-        // }
-        if (saveRetirement) {
-          console.group("Retirement");
-          const {
-            "401K_Contribution_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
-            "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
-            Monthly_Retirement_Savings_Other_Current = { value: 0 },
-            Monthly_IRA_Contribution_Max = { value: 0 },
-            Salary = { value: 0 },
-          } = saveRetirement.data.variables_map;
-
-          const onePctOf401kContributionMonthly = Number((Number(Salary.value) * .01 / 12).toFixed(2));
-
-          if (_401K_Contribution_Current_Pct.value < _401K_Contribution_Max_Pct.value) {
-            console.log(`Remainder is > $25 and client is not yet maxing 401k (${_401K_Contribution_Current_Pct.value} of ${_401K_Contribution_Max_Pct.value}%)`);
-            let increase401kContributionBy = 0;
-            let increase401kContributionPct = 0;
-            while (increase401kContributionBy < (budget - onePctOf401kContributionMonthly)) {
-              increase401kContributionBy += onePctOf401kContributionMonthly;
-              increase401kContributionPct += .01;
-            }
-            let newContributionPct = Number(_401K_Contribution_Current_Pct.value.toFixed(2)) + increase401kContributionPct;
-            console.log(`Increase 401k contribution by $${increase401kContributionBy} or ${increase401kContributionPct} to ${newContributionPct}`);
-
-            let overMaxByPct = 0;
-            let remainderToContributeToRetirement = 0;
-            if (newContributionPct > Number(_401K_Contribution_Max_Pct.value.toFixed(2))) {
-              overMaxByPct = Number((newContributionPct - _401K_Contribution_Max_Pct.value).toFixed(2));
-              console.log(`...but max 401k contribution percentage over by ${overMaxByPct}`);
-            }
-            console.log("overMaxByPct",overMaxByPct)
-            // if (overMaxByPct <= 0) {
-            //   console.log(`Increase 401k contribution to ${newContributionPct}`);
-            //   queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
-            //     "401K_Contribution_Current_Pct": newContributionPct
-            //   }));
-
-            //   budget -= increase401kContributionBy;
-            // } else {
-            // console.log("budget", budget)
-            budget -= increase401kContributionBy;
-            newContributionPct -= overMaxByPct;
-            remainderToContributeToRetirement = (onePctOf401kContributionMonthly * overMaxByPct) * 100;
-            if (remainderToContributeToRetirement == 0 && budget > 0) {
-              remainderToContributeToRetirement = budget;
-            }
-            // console.log("budget2", budget)
-            // console.log("increase401kContributionBy", increase401kContributionBy)
-            // console.log("newContributionPct", newContributionPct)
-            // console.log("onePctOf401kContributionMonthly", onePctOf401kContributionMonthly)
-
-            console.log(`401k contribution increase adjusted down because client will now max at ${newContributionPct}`);
-            console.log(`Funds remaining to apply to retirement action plan: ${remainderToContributeToRetirement}`);
-
-            const willMaxIra = remainderToContributeToRetirement > Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
-            if (willMaxIra) {
-              console.log(`IRA would be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
-            } else {
-              console.log(`IRA would NOT be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
-            }
-            let iraContribution = remainderToContributeToRetirement;
-            let otherContribution = Monthly_Retirement_Savings_Other_Current?.value || 0;
-
-            if (willMaxIra) {
-              iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
-              otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
-              console.log("willMaxIra values", otherContribution, iraContribution, remainderToContributeToRetirement)
+            if (newPmt > budget) {
+              console.log(`Paying the suggested amount (${newPmt}) is not an option (over budget)`);
+              newPmt = Debt_Payment_Additional.value + budget;
             }
 
-            console.log(`IRA contribution ${iraContribution}`);
-            console.log(`Other savings ${otherContribution}`);
-
-            const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection"; // API input
-            queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
-              "401K_Contribution_Current_Pct": newContributionPct,
-              [hasIraRuleId]: 1,
-              Monthly_IRA_Contribution_Current: iraContribution,
-              Monthly_Retirement_Savings_Other_Current: otherContribution,
+            console.log(`Increasing debt additional payment to $${newPmt.toFixed(2)}`);
+            queue.push(this._OPTIMIZE_REFRESH_GOAL(payoffDebt, {
+              Debt_Payment_Additional: newPmt,
+              Debt_Payment_Is_Minimum: false
             }));
 
-            budget -= (iraContribution + otherContribution);
+            // subtract only the diff from the current and the suggested payment
+            budget -= Number(Debt_Payment_Diff.value.toFixed(2));
+          }
+
+          // if there's enough left over, figure out how much to increase 401k contribution by
+          console.log(`Remainder is $${budget}`);
+          if (budget > 25) {
+            // no retirement but saving for home
+            // if (!saveRetirement && saveForHome) {
+
             // }
-          } else {
-            // maxed 401k, stick rest into IRA & other
-            const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection";
-            const iraContribution = budget > Monthly_IRA_Contribution_Max.value ? Monthly_IRA_Contribution_Max.value : budget;
-            const otherContribution = Math.abs(budget - iraContribution);
-            console.log(`401k is already maxed, apply remainder to IRA $(${iraContribution}) and other (${otherContribution})`);
-            queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
-              "401K_Contribution_Current_Pct": _401K_Contribution_Max_Pct.value,
-              [hasIraRuleId]: 1,
-              Monthly_IRA_Contribution_Current: iraContribution,
-              Monthly_Retirement_Savings_Other_Current: otherContribution,
-            }));
+            if (saveRetirement) {
+              console.group("Retirement");
+              const {
+                "401K_Contribution_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
+                "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
+                Monthly_Retirement_Savings_Other_Current = { value: 0 },
+                Monthly_IRA_Contribution_Max = { value: 0 },
+                Salary = { value: 0 },
+              } = saveRetirement.data.variables_map;
 
-            budget -= (iraContribution + otherContribution);
+              const onePctOf401kContributionMonthly = Number((Number(Salary.value) * .01 / 12).toFixed(2));
+
+              if (_401K_Contribution_Current_Pct.value < _401K_Contribution_Max_Pct.value) {
+                console.log(`Remainder is > $25 and client is not yet maxing 401k (${_401K_Contribution_Current_Pct.value} of ${_401K_Contribution_Max_Pct.value}%)`);
+                let increase401kContributionBy = 0;
+                let increase401kContributionPct = 0;
+                while (increase401kContributionBy < (budget - onePctOf401kContributionMonthly)) {
+                  increase401kContributionBy += onePctOf401kContributionMonthly;
+                  increase401kContributionPct += .01;
+                }
+                let newContributionPct = Number(_401K_Contribution_Current_Pct.value.toFixed(2)) + increase401kContributionPct;
+                console.log(`Increase 401k contribution by $${increase401kContributionBy} or ${increase401kContributionPct} to ${newContributionPct}`);
+
+                let overMaxByPct = 0;
+                let remainderToContributeToRetirement = 0;
+                if (newContributionPct > Number(_401K_Contribution_Max_Pct.value.toFixed(2))) {
+                  overMaxByPct = Number((newContributionPct - _401K_Contribution_Max_Pct.value).toFixed(2));
+                  console.log(`...but max 401k contribution percentage over by ${overMaxByPct}`);
+                }
+                console.log("overMaxByPct", overMaxByPct)
+                // if (overMaxByPct <= 0) {
+                //   console.log(`Increase 401k contribution to ${newContributionPct}`);
+                //   queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+                //     "401K_Contribution_Current_Pct": newContributionPct
+                //   }));
+
+                //   budget -= increase401kContributionBy;
+                // } else {
+                // console.log("budget", budget)
+                budget -= increase401kContributionBy;
+                newContributionPct -= overMaxByPct;
+                remainderToContributeToRetirement = (onePctOf401kContributionMonthly * overMaxByPct) * 100;
+                if (remainderToContributeToRetirement == 0 && budget > 0) {
+                  remainderToContributeToRetirement = budget;
+                }
+                // console.log("budget2", budget)
+                // console.log("increase401kContributionBy", increase401kContributionBy)
+                // console.log("newContributionPct", newContributionPct)
+                // console.log("onePctOf401kContributionMonthly", onePctOf401kContributionMonthly)
+
+                console.log(`401k contribution increase adjusted down because client will now max at ${newContributionPct}`);
+                console.log(`Funds remaining to apply to retirement action plan: ${remainderToContributeToRetirement}`);
+
+                const willMaxIra = remainderToContributeToRetirement > Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
+                if (willMaxIra) {
+                  console.log(`IRA would be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
+                } else {
+                  console.log(`IRA would NOT be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
+                }
+                let iraContribution = remainderToContributeToRetirement;
+                let otherContribution = 0;
+                if (Monthly_Retirement_Savings_Other_Current?.value != null) {
+                  otherContribution = Monthly_Retirement_Savings_Other_Current.value;
+                }
+                if (willMaxIra) {
+                  iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
+                  otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
+                  console.log("willMaxIra values", otherContribution, iraContribution, remainderToContributeToRetirement)
+                }
+
+                console.log(`IRA contribution ${iraContribution}`);
+                console.log(`Other savings ${otherContribution}`);
+
+                const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection"; // API input
+                queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+                  "401K_Contribution_Current_Pct": newContributionPct,
+                  [hasIraRuleId]: 1,
+                  Monthly_IRA_Contribution_Current: iraContribution,
+                  Monthly_Retirement_Savings_Other_Current: otherContribution,
+                }));
+
+                budget -= (iraContribution + otherContribution);
+                // }
+              } else {
+                // maxed 401k, stick rest into IRA & other
+                const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection";
+                const iraContribution = budget > Monthly_IRA_Contribution_Max.value ? Monthly_IRA_Contribution_Max.value : budget;
+                const otherContribution = Math.abs(budget - iraContribution);
+                console.log(`401k is already maxed, apply remainder to IRA $(${iraContribution}) and other (${otherContribution})`);
+                queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
+                  "401K_Contribution_Current_Pct": _401K_Contribution_Max_Pct.value,
+                  [hasIraRuleId]: 1,
+                  Monthly_IRA_Contribution_Current: iraContribution,
+                  Monthly_Retirement_Savings_Other_Current: otherContribution,
+                }));
+
+                budget -= (iraContribution + otherContribution);
+              }
+              console.groupEnd();
+            } else if (saveForHome) {
+              console.group("Save for home");
+              // const cost = this.getCostFor("save-for-home");
+              const {
+                Goal_HomeSave_Adjust_Savings = { value: 0 },
+                Mortgage_Down_Payment_Savings_Monthly = { value: 0 },
+              } = saveForHome.data.variables_map;
+
+              console.log(`Remaining available budget is ${budget}`);
+              if (budget < Goal_HomeSave_Adjust_Savings.value) {
+                console.log(`Available budget is less than savings adjustment needed (${Goal_HomeSave_Adjust_Savings.value}) for home`);
+                console.log(`Apply available cash $${budget} to down payment savings on top of existing $${Mortgage_Down_Payment_Savings_Monthly.value}...`);
+                queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
+                  Mortgage_Down_Payment_Savings_Monthly: Mortgage_Down_Payment_Savings_Monthly.value + budget
+                }));
+                budget = 0;
+              }
+
+              console.groupEnd();
+            }
           }
-          console.groupEnd();
-        } else if (saveForHome) {
-          console.group("Save for home");
-          // const cost = this.getCostFor("save-for-home");
-          const {
-            Goal_HomeSave_Adjust_Savings = { value: 0 },
-            Mortgage_Down_Payment_Savings_Monthly = { value: 0 },
-          } = saveForHome.data.variables_map;
-
-          console.log(`Remaining available budget is ${budget}`);
-          if (budget < Goal_HomeSave_Adjust_Savings.value){
-            console.log(`Available budget is less than savings adjustment needed (${Goal_HomeSave_Adjust_Savings.value}) for home`);
-            console.log(`Apply available cash $${budget} to down payment savings on top of existing $${Mortgage_Down_Payment_Savings_Monthly.value}...`);
-            queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
-              Mortgage_Down_Payment_Savings_Monthly: Mortgage_Down_Payment_Savings_Monthly.value + budget
-            }));
-            budget = 0;
-          }
 
           console.groupEnd();
+          return cbSeries();
         }
       }
-
-      console.groupEnd();
-    }
-
-    Promise.all(queue).then(() => {
-      window.jga.UserProfile.savedProfile = _.assign(this.profile, { optimizedOnce: true });
-      this.renderBudgetAndGoals();
-      this.emit("opto", { message: "Your Action Plan is optimized." });
-    }).catch(err => {
-      console.error(err);
-      this.emit("opto", { message: err.message });
+    ]).then(() => {
+      Promise.all(queue).then(() => {
+        window.jga.UserProfile.savedProfile = _.assign(this.profile, { optimizedOnce: true });
+        this.renderBudgetAndGoals();
+        this.emit("opto", { message: "Your Action Plan is optimized." });
+      }).catch(err => {
+        console.error(err);
+        this.emit("opto", { message: err.message });
+      });
     });
   }
 
@@ -449,6 +513,18 @@ export default class {
       }
 
       this.saveGoal(controllerName, data, goalId);
+    });
+  }
+
+  _preload_goal(goal, params = {}) {
+    const { data, controllerName } = goal;
+    console.log(`Need to preload API for ${controllerName}`);
+
+    return $.ajax({
+      url: data._links.base,
+      data: _.assign(data.params, params),
+    }).then(api => {
+      return api.data;
     });
   }
 
@@ -884,7 +960,7 @@ export default class {
     if (!headline_optimized.isOptimized) {
       headline_optimized = null;
     }
-    console.log(advice)
+    // console.log(advice)
     // console.log(data);
 
     // remove headline item from data.display[] so we don't dupe

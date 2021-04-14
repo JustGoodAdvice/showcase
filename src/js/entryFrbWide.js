@@ -1,3 +1,4 @@
+import "regenerator-runtime/runtime.js"; // see https://github.com/babel/babel/issues/9849#issuecomment-487040428
 import "@stimulus/polyfills"
 import { Application } from "stimulus"
 import { definitionsFromContext } from "stimulus/webpack-helpers"
