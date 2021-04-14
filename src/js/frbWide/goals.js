@@ -173,7 +173,7 @@ export default class {
                   const Goal_HomeSave_Adjust_Price = preloadedData.variables.find(v => { return v.name == "Goal_HomeSave_Adjust_Price"; });
                   newPrice = Goal_HomeSave_Adjust_Price.value;
                 }).then(() => {
-                  console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings}, then adjusting price to ${newPrice}`);
+                  console.log(`Decreasing down payment savings to $${newMonthlyDownPaymentSavings} AND adjusting price to ${newPrice}`);
                   queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
                     Mortgage_Down_Payment_Savings_Monthly: newMonthlyDownPaymentSavings,
                     Home_Price: newPrice
