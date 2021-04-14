@@ -517,13 +517,16 @@ export default class {
 
     switch (controllerName) {
       case "pay-debt":
+        if (!Debt_Payment_Total.value) { Debt_Payment_Total.value = 0; }
         cost += Number(Debt_Payment_Total.value.toFixed(2));
         break;
       case "save-for-home":
+        if (!Mortgage_Down_Payment_Savings_Monthly.value) { Mortgage_Down_Payment_Savings_Monthly.value = 0; }
         cost += Number(Mortgage_Down_Payment_Savings_Monthly.value.toFixed(2));
         break;
       case "retirement":
         // cost += (Number(Current_Monthly_Savings.value.toFixed(2)) - Number(_401K_Match_Monthly.value.toFixed(2)));
+        if (!Current_Monthly_Savings.value) { Current_Monthly_Savings.value = 0; }
         cost += Number(Current_Monthly_Savings.value.toFixed(2));
         break;
     }
