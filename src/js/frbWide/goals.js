@@ -150,9 +150,6 @@ export default class {
               if (saveForHome) {
                 console.group("Save for home");
                 const cost = this.getCostFor("save-for-home");
-                const {
-                  Goal_HomeSave_Adjust_Price = { value: 0 },
-                } = saveForHome.data.variables_map;
                 let newMonthlyDownPaymentSavings = budget + cost;
                 console.log(`Try decreasing down payment savings to $${newMonthlyDownPaymentSavings}...`);
 
@@ -280,6 +277,14 @@ export default class {
                 Salary = { value: 0 },
               } = saveRetirement.data.variables_map;
 
+              if (_401K_Contribution_Current_Pct.value == null) {
+                _401K_Contribution_Current_Pct.value = 0;
+              }
+
+              if (Monthly_Retirement_Savings_Other_Current.value == null) {
+                Monthly_Retirement_Savings_Other_Current.value = 0;
+              }
+
               const onePctOf401kContributionMonthly = Number((Number(Salary.value) * .01 / 12).toFixed(2));
 
               if (_401K_Contribution_Current_Pct.value < _401K_Contribution_Max_Pct.value) {
@@ -330,10 +335,7 @@ export default class {
                   console.log(`IRA would NOT be maxed with remainder $${remainderToContributeToRetirement} to contribute`);
                 }
                 let iraContribution = remainderToContributeToRetirement;
-                let otherContribution = 0;
-                if (Monthly_Retirement_Savings_Other_Current?.value != null) {
-                  otherContribution = Monthly_Retirement_Savings_Other_Current.value;
-                }
+                let otherContribution = Monthly_Retirement_Savings_Other_Current.value;
                 if (willMaxIra) {
                   iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
                   otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
