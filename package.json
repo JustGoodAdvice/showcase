@@ -17,6 +17,7 @@
     "@sentry/browser": "^6.2.5",
     "@sentry/node": "^6.2.5",
     "@stimulus/polyfills": "^2.0.0",
+    "async-es": "^3.2.0",
     "bitly": "^7.1.2",
     "bootstrap": "^4.6",
     "clipboard-copy": "^4.0.1",
@@ -48,6 +49,7 @@
     "placeholder-loading": "^0.4.0",
     "pluralize": "^8.0.0",
     "popper.js": "^1.16.1",
+    "regenerator-runtime": "^0.13.5",
     "stimulus": "^2.0.0",
     "store": "^2.0.12",
     "turbolinks": "^5.2.0"

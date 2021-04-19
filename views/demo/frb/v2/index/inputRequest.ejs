@@ -1,0 +1,91 @@
+<script id="tmpl_adviceInputRequest" type="text/x-handlebars-template">
+	{{#if display._outOfContext}}
+		<h5 class="mb-3 rs-context" id="context_{{display.ruleSetId}}"><span class="text-muted">...</span></h5>
+	{{/if}}
+	<div class="question">
+		<header class="mb-1 d-flex align-items-center justify-content-between">
+			<h4 class="mb-0 mr-2">{{display.question}}</h4>
+			<%- include("_dropdown"); %>
+		</header>
+		{{#if display.explanation}}
+			<div class="explanation">
+				<p>{{display.explanation}}</p>
+			</div>
+		{{/if}}
+		<hr>
+		<form data-id="{{display.id}}">
+
+			<div class="form-group">
+
+				{{#ifEquals display.form.fieldType "Radio"}}
+				
+					{{#each display.form.values}}
+						<div class="custom-control custom-radio">
+							<input type="radio" name="{{../display.form.name}}" value="{{value}}" id="{{id}}" class="custom-control-input" required>
+							<label class="custom-control-label" for="{{id}}">{{label}}
+							{{#if helpText}}
+							<small class="form-text text-muted">{{helpText}}</small>
+							{{/if}}
+							</label>
+						</div>
+					{{/each}}
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Boolean"}}
+
+					<div class="custom-control custom-radio">
+						<input type="radio" name="{{display.form.name}}" value="true" id="yes_{{display.id}}" class="custom-control-input required">
+						<label class="custom-control-label" for="yes_{{display.id}}">Yes</label>
+					</div>
+					<div class="custom-control custom-radio">
+						<input type="radio" name="{{display.form.name}}" value="false" id="no_{{display.id}}" class="custom-control-input" required>
+						<label class="custom-control-label" for="no_{{display.id}}">No</label>
+					</div>
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Number"}}
+				
+					<input type="text" class="form-control w-50" id="{{display.id}}" name="{{display.form.name}}" autocomplete="off" required>
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Percent"}}
+				
+					<input type="text" class="form-control w-50" id="{{display.id}}" name="{{display.form.name}}" data-type="{{display.form.fieldType}}" autocomplete="off" required>
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Freetext"}}
+				
+					<input type="text" class="form-control w-50" id="{{display.id}}" name="{{display.form.name}}" autocomplete="off" required>
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "MultipleChoice"}}
+				
+					{{#each display.form.values}}
+						<div class="custom-control custom-radio">
+							<input type="radio" name="{{../display.form.name}}" value="{{@this}}" id="{{../display.id}}_{{@index}}" class="custom-control-input" required>
+							<label class="custom-control-label" for="{{../display.id}}_{{@index}}">{{@this}}
+							{{#if helpText}}
+							<small class="form-text text-muted">{{helpText}}</small>
+							{{/if}}
+							</label>
+						</div>
+					{{/each}}
+
+				{{/ifEquals}}
+
+			</div>
+
+			<div class="continue">
+				{{#unless display._isFirst}}
+					<a href="#" class="btn btn-outline-primary" data-action="back">Back</a>
+				{{/unless}}
+				<button type="submit" data-id="{{display.id}}" class="btn btn-primary">Next</button>
+			</div>
+		</form>
+	</div>
+</script>

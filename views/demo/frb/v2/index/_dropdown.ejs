@@ -1,0 +1,44 @@
+<div class="dropdown">
+	<a class="text-muted" href="#" role="button" id="dropdownMenuLink{{display.id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<i class="fal fa-ellipsis-h"></i>
+	</a>
+	<div class="dropdown-menu" aria-labelledby="dropdownMenuLink{{display.id}}">
+		<a href="#" class="dropdown-item copy-url">
+			<i class="fal fa-link"></i> Copy Link
+		</a>
+		{{#if display}}
+			<div class="dropdown-divider"></div>
+			<div class="dropdown-header">ADVICE BUILDER</div>
+			<a href="#" class="dropdown-item copy-url-with-scenario">
+				<i class="fal fa-save"></i> Save as Scenario
+			</a>
+			<a href="{{this.config.advicebuilder_host}}/advicesets/{{display.ruleSetId}}/rules/{{display.ruleId}}/show?selectedNodeId={{display.id}}" class="dropdown-item" target="_blank">
+				<i class="fal fa-pencil"></i> Edit in Advice Builder
+			</a>
+			<a href="{{this.config.advicebuilder_host}}/advicesets/{{adviceset._id}}/rules/{{display.ruleId}}/debug?{{paramsAsQueryStr}}" class="dropdown-item" target="_blank">
+				<i class="fal fa-debug"></i> Debug
+			</a>
+			<a href="{{_links.self}}" class="dropdown-item" target="_blank">
+				<i class="fal fa-code"></i> Open API
+			</a>
+		{{else}}
+			<a class="dropdown-item" href="#" data-expand="advice"><i class="fal fa-plus-square"></i> <span>Expand</span> Advice</a>
+			<div class="dropdown-divider"></div>
+			<div class="dropdown-header">ADVICE BUILDER</div>
+			<a href="#" class="dropdown-item copy-url-with-scenario">
+				<i class="fal fa-save"></i> Save as Scenario
+			</a>
+			{{#if this.0.tagGroup.id}}
+			<a href="{{../config.advicebuilder_host}}/admin/tags/{{this.0.tagGroup.id}}/edit" class="dropdown-item" target="_blank">
+				<i class="fal fa-pencil"></i> Edit Group
+			</a>
+			{{/if}}
+			<a href="{{../config.advicebuilder_host}}/advicesets/{{../adviceset._id}}/rules/{{this.0.ruleId}}/debug?{{../paramsAsQueryStr}}" class="dropdown-item" target="_blank">
+				<i class="fal fa-debug"></i> Debug
+			</a>
+			<a href="{{../_links.self}}" class="dropdown-item" target="_blank">
+				<i class="fal fa-code"></i> Open API
+			</a>
+		{{/if}}
+	</div>
+</div>

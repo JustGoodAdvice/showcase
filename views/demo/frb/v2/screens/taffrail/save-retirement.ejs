@@ -1,0 +1,46 @@
+<div class="bg-white px-2 pb-5 pt-1" style="min-height:593px;">
+  <div data-controller="retirement" data-retirement-id-value="<%= locals.adviceSetId %>">
+    <h3 data-retirement-target="title" class="mb-3"></h3>
+    <%- include("../loading"); %>
+
+    <div class="advice"></div>
+
+  </div>
+</div>
+
+<script id="tmpl_advice_save_retirement" type="text/x-handlebars-template">
+  <header class="goal">
+    <h4 class="">{{display.goal.retirement_year}}</h4>
+
+    {{#each display.advice}}
+      <p>
+        {{#if this.headline_html}}
+        {{{this.headline_html}}}
+        {{else}}
+        {{this.headline}}
+        {{/if}}
+      </p>
+      {{#if this.summary}}
+      <p class="small">
+        {{#if this.summary_html}}
+        {{{this.summary_html}}}
+        {{else}}
+        {{this.summary}}
+        {{/if}}
+      </p>
+      {{/if}}
+    {{/each}}
+
+    <div class="text-center w-75 mx-auto my-3">
+      <a href="#" data-action="save-goal" class="btn btn-block btn-primary">Save Goal</a>
+      <br>
+      <div><i class="fal fa-chevron-left"></i> <a href="/frb/v2/goal-planning/start"> Back to Summary</a></div>
+    </div>
+    <hr>
+  </header>
+
+  <div class="list-all-recommendations">
+    
+  </div>
+  
+</script>

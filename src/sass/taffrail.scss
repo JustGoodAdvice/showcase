@@ -211,7 +211,16 @@ taffrail-var {
 				color: $warning;
 			}
 		}
+
+		&.active--not-linked {
+			border-bottom: 1px dotted $primary;
+			cursor: default;
+		}
   }
+}
+
+.card .headline {
+	@extend .lead;
 }
 
 	.advice-outer-container {

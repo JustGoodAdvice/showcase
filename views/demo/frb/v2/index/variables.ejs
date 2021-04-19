@@ -1,0 +1,19 @@
+<script id="tmpl_variablesList" type="text/x-handlebars-template">
+	{{#each variables}}
+		<tr>
+			<td class="text-right" title="{{value}}">
+				{{#if valueFormatted}}
+					{{valueFormatted}}
+				{{else}}
+					{{toString value}}
+				{{/if}}
+			</td>
+			<td>&nbsp;</td>
+			<td class="var">
+				<a href="{{../config.advicebuilder_host}}/admin/dictionary?preloadId={{id}}" target="_blank" title="{{name}}">
+					{{name}}
+				</a>
+			</td>
+		</tr>
+	{{/each}}
+</script>
