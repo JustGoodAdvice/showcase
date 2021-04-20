@@ -33,7 +33,7 @@
   <meta name="turbolinks-cache-control" content="no-cache">
   <meta name="turbolinks-root" content="/frb">
 
-  <script>window.jga = window.jga || {}; window.jga.config = { cdn_host: "<%= locals.CDN_HOST %>", web_host: "<%= locals.WEB_HOST %>", api_host: "<%= locals.API_HOST %>", advicebuilder_host: "<%= locals.ADVICEBUILDER_HOST %>", api_key: "<%= locals.API_KEY %>" };</script>
+  <script>window.jga = window.jga || {}; window.jga.config = { cdn_host: "<%= locals.CDN_HOST %>", web_host: "<%= locals.WEB_HOST %>", api_host: "<%= locals.API_HOST %>", advicebuilder_host: "<%= locals.ADVICEBUILDER_HOST %>", api_engine_host: "<%= locals.API_ENGINE_HOST %>", api_catalog_host: "<%= locals.API_CATALOG_HOST %>", api_key: "<%= locals.API_KEY %>" };</script>
   
   <%- include("_header_js"); %>
   <script>window.jga.PERSONAS = <%- JSON.stringify(PERSONAS); %></script>

@@ -16,63 +16,64 @@ export default class showcaseFull extends ShowcasePage {
     this.initCache();
     this.AUTO_EXPAND_RECOMMENDATION_COUNT = 4;
     // get banner
-    this.updateAdviceSetDetails();
-    // current querystring without "?" prefix
-    const querystring = location.search.substr(1);
-    this._loadApi(querystring, $(".row .advice")).then(api => {
-      // on page load, save current state without API params
-      const currQs = qs.stringify(_.omit(qs.parse(querystring), this.paramsToOmit));
-      this.history.replace(`${this.baseUrl}/?${currQs}`, this.api);
-      // DOM updates
-      this.updatePanes();
-      // events
-      this.handleClickContinue();
-      this.handleClickBack();
-      this.handleClickAssumption();
-      this.handleClickTaffrailVar();
-      this.handleCollapseAdviceSummaries();
-      this.handleCollapseAssumptionGroup();
-      this.handleClickOnThisPageItem();
-      this.listenForUrlChanges();
-      this.handleClickExpandControls();
-      this.handleScrollStickySidebar();
-      // this.handleResizeChart();
+    this.updateAdviceSetDetails().then(() => {
+      // current querystring without "?" prefix
+      const querystring = location.search.substr(1);
+      return this._loadApi(querystring, $(".row .advice")).then(api => {
+        // on page load, save current state without API params
+        const currQs = qs.stringify(_.omit(qs.parse(querystring), this.paramsToOmit));
+        this.history.replace(`${this.baseUrl}/?${currQs}`, this.api);
+        // DOM updates
+        this.updatePanes();
+        // events
+        this.handleClickContinue();
+        this.handleClickBack();
+        this.handleClickAssumption();
+        this.handleClickTaffrailVar();
+        this.handleCollapseAdviceSummaries();
+        this.handleCollapseAssumptionGroup();
+        this.handleClickOnThisPageItem();
+        this.listenForUrlChanges();
+        this.handleClickExpandControls();
+        this.handleScrollStickySidebar();
+        // this.handleResizeChart();
 
-      // keyboard shortcuts
-      // screenshot
-      Mousetrap.bind("p s", () => {
-        const link = `/s/${window.jga.api.adviceset.id}/__cleanshot`;
-        const querystr = qs.parse(location.search.substr(1));
-        window.location.href = `${link}?${qs.stringify(querystr)}`;
-      });
-      // expand/collapse advice
-      Mousetrap.bind("a", () => {
-        $("a[data-expand=advice]").trigger("click");
-      });
-      // expand/collapse assumptions
-      Mousetrap.bind("s", () => {
-        $("a[data-expand=assumptions]").trigger("click");
-      });
-      // show toast with keyboard shortcut map
-      Mousetrap.bind("?", () => {
-        this.showToast(undefined,{
-          title: "Keyboard Shortcuts",
-          message: "Press <code>a</code> to expand advice.<br>Press <code>s</code> to expand assumptions.",
-          delay: 5000
+        // keyboard shortcuts
+        // screenshot
+        Mousetrap.bind("p s", () => {
+          const link = `/s/${window.jga.api.adviceset.id}/__cleanshot`;
+          const querystr = qs.parse(location.search.substr(1));
+          window.location.href = `${link}?${qs.stringify(querystr)}`;
         });
+        // expand/collapse advice
+        Mousetrap.bind("a", () => {
+          $("a[data-expand=advice]").trigger("click");
+        });
+        // expand/collapse assumptions
+        Mousetrap.bind("s", () => {
+          $("a[data-expand=assumptions]").trigger("click");
+        });
+        // show toast with keyboard shortcut map
+        Mousetrap.bind("?", () => {
+          this.showToast(undefined,{
+            title: "Keyboard Shortcuts",
+            message: "Press <code>a</code> to expand advice.<br>Press <code>s</code> to expand assumptions.",
+            delay: 5000
+          });
+        });
+
+        // when data is updated after page-load, use this fn
+        this.$loadingContainer = $(".advice-outer-container");
+        this.scrollTo = 0;
+
+        this.updateFn = (data) => {
+          // update content
+          this.updatePanes();
+          // save state
+          this.history.push(`${this.baseUrl}/?${qs.stringify(_.omit(this.api.params, this.paramsToOmit))}`, this.api);
+        }
       });
     });
-
-    // when data is updated after page-load, use this fn
-    this.$loadingContainer = $(".advice-outer-container");
-    this.scrollTo = 0;
-
-    this.updateFn = (data) => {
-      // update content
-      this.updatePanes();
-      // save state
-      this.history.push(`${this.baseUrl}/?${qs.stringify(_.omit(this.api.params, this.paramsToOmit))}`, this.api);
-    }
   }
 
   /**
@@ -481,7 +482,7 @@ export default class showcaseFull extends ShowcasePage {
 
     const data = { adviceset: {} }
 
-    $.ajax({
+    return $.ajax({
       url: this.api.adviceset._links.self,
       type: "GET",
       dataType: "json",
@@ -491,6 +492,8 @@ export default class showcaseFull extends ShowcasePage {
       }
     }).then(api => {
       const { data: { aiUserRequests = [], adviceScenarios, entity, publishing, owner, tags } } = api;
+
+      this.config.adviceset = api.data;
 
       data.adviceset = {
         title: entity.name,
@@ -506,6 +509,8 @@ export default class showcaseFull extends ShowcasePage {
         publishing,
         tags
       });
+
+      console.log(this.api.adviceset)
 
       // check for referring AI UserRequest ID on querystring
       // and find matching question for banner
