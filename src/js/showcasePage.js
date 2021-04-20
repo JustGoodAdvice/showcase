@@ -801,12 +801,14 @@ export default class ShowcasePage {
     this.config.api_channel = channel;
 
     // add version # to end of string
+    let version = "";
     let hasPublishedVersion = false;
     const { publishing: { publishedVersion } = {} } = this.api.adviceset;
-    let version = "";
     // console.log("setActiveApiChannel",this.api.adviceset)
-    if (channel == "published" && publishedVersion && publishedVersion !== null) {
-      version = ` (v${publishedVersion})`;
+    if (publishedVersion && publishedVersion !== null) {
+      if (channel == "published") {
+        version = ` (v${publishedVersion})`;
+      }
       hasPublishedVersion = true;
     }
 

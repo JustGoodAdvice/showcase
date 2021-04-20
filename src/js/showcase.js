@@ -20,6 +20,9 @@ export default class showcaseFull extends ShowcasePage {
       // current querystring without "?" prefix
       const querystring = location.search.substr(1);
       return this._loadApi(querystring, $(".row .advice")).then(api => {
+        if (!api) {
+          return Promise.reject(new Error("API unavailable"));
+        }
         // on page load, save current state without API params
         const currQs = qs.stringify(_.omit(qs.parse(querystring), this.paramsToOmit));
         this.history.replace(`${this.baseUrl}/?${currQs}`, this.api);
@@ -509,8 +512,6 @@ export default class showcaseFull extends ShowcasePage {
         publishing,
         tags
       });
-
-      console.log(this.api.adviceset)
 
       // check for referring AI UserRequest ID on querystring
       // and find matching question for banner
