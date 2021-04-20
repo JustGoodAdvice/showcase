@@ -26,7 +26,7 @@ export default class ShowcasePage {
       if (text && !text.includes("<taffrail-var") && !isHtml(text)) {
         text = Handlebars.Utils.escapeExpression(text);
       }
-      text = text.replace(/(\r\n|\n|\r)/gm, "<br>");
+      text = String(text).replace(/(\r\n|\n|\r)/gm, "<br>");
       return new Handlebars.SafeString(text);
     });
 
@@ -50,6 +50,7 @@ export default class ShowcasePage {
       $("html").addClass("advice-editor-mode-enabled");
     }
     // events
+    this.handleChangeApiChannel();
     this.handleChangeAudience();
     this.handleCopyLink();
     this.handleCopyLinkAndSaveScenario();
@@ -109,7 +110,7 @@ export default class ShowcasePage {
    * @param {boolean} usePlaceholder
    * @returns Promise<jqXHR>
    */
-  _loadApi(newFormData, $loadingContainer = this.$loadingContainer, usePlaceholder = true){
+  _loadApi(newFormData = "", $loadingContainer = this.$loadingContainer, usePlaceholder = true){
     const currFormData = this.api.params;
     const include = ["filteredVars"];
     if (location.href.includes("harness")) {
@@ -123,6 +124,18 @@ export default class ShowcasePage {
     this.fromAiUrId = formData.aiUrId;
     // internal JGA: don't include these fields
     delete formData.returnFields;
+
+    // get user preference for API channel selection
+    this.config.api_channel = store.get("api_channel", "published");
+
+    // is this rule published?
+    // if so, switch, by default, to the published channel
+    const { publishing: { publishedVersion } = {} } = this.api.adviceset;
+    if (this.config.api_channel == "published" && publishedVersion !== null && this.api?._links?.self) {
+      this.api._links.self = this.api._links.self.replace(this.config.api_host, this.config.api_engine_host);
+    } else {
+      this.config.api_channel = "preview";
+    }
 
     const [apiUrlWithoutQuerystring] = this.api._links.self.split("?");
     const loadingId = Loading.show($loadingContainer, undefined, usePlaceholder);
@@ -147,7 +160,9 @@ export default class ShowcasePage {
       }
       // update global!
       this.api = api.data;
+      this.api.adviceset = _.extend(this.config?.adviceset, api.data.adviceset);
       this.setActiveAudience(formData.audienceId);
+      this.setActiveApiChannel();
       Loading.hide(loadingId);
       return api;
     }).catch((jqXHR) => {
@@ -777,11 +792,59 @@ export default class ShowcasePage {
   }
 
   /**
+   * Set the active channel in the switcher
+   */
+  setActiveApiChannel(channel = this.config.api_channel) {
+    const $switcher = $(".channel-switcher");
+    const $channelItems = $switcher.find(`a[data-channel=${channel}]`);
+
+    this.config.api_channel = channel;
+
+    // add version # to end of string
+    let version = "";
+    let hasPublishedVersion = false;
+    const { publishing: { publishedVersion } = {} } = this.api.adviceset;
+    // console.log("setActiveApiChannel",this.api.adviceset)
+    if (publishedVersion && publishedVersion !== null) {
+      if (channel == "published") {
+        version = ` (v${publishedVersion})`;
+      }
+      hasPublishedVersion = true;
+    }
+
+    $channelItems.addClass("active").siblings().removeClass("active");
+
+    if (!hasPublishedVersion) {
+      $switcher.find("[data-channel=published]").hide();
+    }
+
+    $("span[data-channel-name]").text(`${_.startCase(_.camelCase(channel))}${version}`); // capitalize 1st letter
+  }
+
+  /**
+   * Handle changing API channel
+   */
+  handleChangeApiChannel() {
+    $("main").on("click", "a[data-action=set-channel]", e => {
+      const $el = $(e.currentTarget);
+      const { channel } = $el.data();
+      store.set("api_channel", channel);
+      this.showToast(undefined, {
+        title: "Hang tight!",
+        message: `Changing to ${channel} channel. Refreshing in 3 seconds...`
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    });
+  }
+
+  /**
    * Set the active audience in the switcher
    */
   setActiveAudience(audienceId = -1) {
     const $switcher = $(".audience-switcher");
-    const $audItem = $(`a[data-audience-id=${audienceId}]`);
+    const $audItem = $switcher.find(`a[data-audience-id=${audienceId}]`);
     this.api.audienceType = {
       id: audienceId,
       name: $audItem.text() || "Default"
