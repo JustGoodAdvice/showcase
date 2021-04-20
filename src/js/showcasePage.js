@@ -826,6 +826,7 @@ export default class ShowcasePage {
    */
   handleChangeApiChannel() {
     $("main").on("click", "a[data-action=set-channel]", e => {
+      e.preventDefault();
       const $el = $(e.currentTarget);
       const { channel } = $el.data();
       store.set("api_channel", channel);
