@@ -25,7 +25,7 @@ export default class TaffrailApi {
       if (text && !text.includes("<taffrail-var") && !isHtml(text)) {
         text = Handlebars.Utils.escapeExpression(text);
       }
-      text = text.replace(/(\r\n|\n|\r)/gm, "<br>");
+      text = String(text).replace(/(\r\n|\n|\r)/gm, "<br>");
       return new Handlebars.SafeString(text);
     });
 
@@ -143,6 +143,9 @@ export default class TaffrailApi {
     this.fromAiUrId = formData.aiUrId;
     // internal JGA: don't include these fields
     delete formData.returnFields;
+
+    // USE PUBLISHED CHANNEL
+    this.api._links.self = this.api._links.self.replace(this.config.api_host, this.config.api_engine_host);
 
     const [apiUrlWithoutQuerystring] = this.api._links.self.split("?");
     const loadingId = Loading.show($loadingContainer, undefined, usePlaceholder);
