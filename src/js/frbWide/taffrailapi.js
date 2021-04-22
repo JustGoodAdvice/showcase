@@ -38,6 +38,9 @@ export default class TaffrailApi {
    * Page onload, one time
    */
   init() {
+    // use the "published" channel by default
+    this.config.api_channel = "published";
+
     // set the base URL for loading data
     window.jga.api._links = { self: `${this.config.api_host}/api/advice/${this.api.adviceset.id}` }
 
@@ -145,7 +148,9 @@ export default class TaffrailApi {
     delete formData.returnFields;
 
     // USE PUBLISHED CHANNEL
-    this.api._links.self = this.api._links.self.replace(this.config.api_host, this.config.api_engine_host);
+    if (this.config.api_channel == "published") {
+      this.api._links.self = this.api._links.self.replace(this.config.api_host, this.config.api_engine_host);
+    }
 
     const [apiUrlWithoutQuerystring] = this.api._links.self.split("?");
     const loadingId = Loading.show($loadingContainer, undefined, usePlaceholder);
