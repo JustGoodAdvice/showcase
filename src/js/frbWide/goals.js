@@ -270,7 +270,7 @@ export default class {
             if (saveRetirement) {
               console.group("Retirement");
               const {
-                "401K_Contribution_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
+                "401K_Deferral_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
                 "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
                 Monthly_Retirement_Savings_Other_Current = { value: 0 },
                 Monthly_IRA_Contribution_Max = { value: 0 },
@@ -339,6 +339,9 @@ export default class {
                 if (willMaxIra) {
                   iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
                   otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
+                  if (isNaN(otherContribution)) {
+                    otherContribution = 0;
+                  }
                   console.log("willMaxIra values", otherContribution, iraContribution, remainderToContributeToRetirement)
                 }
 
