@@ -1,0 +1,48 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<% if (locals.api) { %>
+  <title>
+    <%= locals.api.data.adviceset.title %> - <%= locals.api.data.adviceset.owner.name %>
+  </title>
+  <meta name="description" content="<%= api.data.adviceset.description %>">
+<% } %>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="application-name" content="Taffrail">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Taffrail">
+<meta name="robots" content="index,follow">
+<meta name="google" content="nositelinkssearchbox">
+
+<link href="//fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,200;0,300;0,400;0,500;1,400&display=swap&family=IBM+Plex+Serif:wght@300" rel="stylesheet">
+<link rel="stylesheet" href="/dist/css/launch.css" />
+
+<!--favicons-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+<script>window.jga = window.jga || {}; window.jga.config = { 
+  api_channel: "published", 
+  cdn_host: "<%= locals.CDN_HOST %>", 
+  web_host: "<%= locals.WEB_HOST %>", 
+  api_host: "<%= locals.API_HOST %>", 
+  advicebuilder_host: "<%= locals.ADVICEBUILDER_HOST %>", 
+  api_engine_host: "<%= locals.API_ENGINE_HOST %>", 
+  api_catalog_host: "<%= locals.API_CATALOG_HOST %>", 
+  api_key: "<%= locals.API_KEY %>"
+};</script>
+<% if (locals.GTAG_ID) { %>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="//www.googletagmanager.com/gtag/js?id=<%= GTAG_ID %>"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', '<%= GTAG_ID %>');
+</script>
+<% } %>

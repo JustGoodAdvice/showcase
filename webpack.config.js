@@ -10,6 +10,7 @@ module.exports = {
   },
   entry: {
     main: "./src/js/main.js",
+    launch: "./src/js/launch/entry.js",
     frb: "./src/js/entryFrb.js",
     frbwide: "./src/js/entryFrbWide.js"
   },
