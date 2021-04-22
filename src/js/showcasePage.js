@@ -324,8 +324,8 @@ export default class ShowcasePage {
     Object.keys(this.api.assumptions).forEach((key, idx) => {
       const arr = this.api.assumptions[key];
       this.api.assumptions[key] = arr.filter(a => {
-        return a.statement;
-      })
+        return _.has(a, "statement");
+      });
     });
   }
 
@@ -352,13 +352,14 @@ export default class ShowcasePage {
   }
 
   /**
-   * Delete default assumption group if no statements exist
-   * @param {string} ASSUMPTIONS_UNGROUPED
+   * Delete assumption group if no items exist
    */
-  deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED) {
-    if (this.api.assumptions[ASSUMPTIONS_UNGROUPED] && this.api.assumptions[ASSUMPTIONS_UNGROUPED].length === 0) {
-      delete this.api.assumptions[ASSUMPTIONS_UNGROUPED];
-    }
+  deleteEmptyAssumptionGroups() {
+    Object.keys(this.api.assumptions).forEach((key, idx) => {
+      if (this.api.assumptions[key] && this.api.assumptions[key].length === 0) {
+        delete this.api.assumptions[key];
+      }
+    });
   }
 
   /**

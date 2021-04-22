@@ -425,7 +425,6 @@ export default class showcaseFull extends ShowcasePage {
     // fix input requests with boolean variables in statements
     this.fixInputRequestsWithBooleanVars();
     this.filterAssumptionsWithoutStatement();
-
     // go through each assumption group and set open/close state
     Object.keys(this.api.assumptions).forEach((key, idx) => {
       const arr = this.api.assumptions[key];
@@ -444,7 +443,7 @@ export default class showcaseFull extends ShowcasePage {
     });
 
     this.putPersonalProfileFirst();
-    this.deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED);
+    this.deleteEmptyAssumptionGroups();
 
     this.mapAdviceData();
     this.mapReferenceDocuments();

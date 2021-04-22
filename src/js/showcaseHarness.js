@@ -454,7 +454,7 @@ export default class showcaseHarness extends ShowcasePage {
     });
 
     this.putPersonalProfileFirst();
-    this.deleteEmptyDefaultAssumptionGroup(ASSUMPTIONS_UNGROUPED);
+    this.deleteEmptyAssumptionGroups();
 
     this.mapAdviceData();
     this.mapReferenceDocuments();
