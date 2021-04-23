@@ -233,8 +233,8 @@ export default class {
           /**
            * CC debt and Retirement: pay off CC in 1/2 time and allocate rest to retirement
            */
-          console.group("Under budget");
           let budget = this.availableCash;
+          console.group(`Under budget, ${budget} available`);
 
           if (payoffDebt && debtIsCreditCardDebt) {
             const {
@@ -257,7 +257,7 @@ export default class {
             }));
 
             // subtract only the diff from the current and the suggested payment
-            budget -= Number(Debt_Payment_Diff.value.toFixed(2));
+            budget -= newPmt;// Number(Debt_Payment_Diff.value.toFixed(2));
           }
 
           // if there's enough left over, figure out how much to increase 401k contribution by
@@ -338,7 +338,7 @@ export default class {
                 let otherContribution = Monthly_Retirement_Savings_Other_Current.value;
                 if (willMaxIra) {
                   iraContribution = Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
-                  otherContribution = Number(otherContribution + (iraContribution - remainderToContributeToRetirement).toFixed(2));
+                  otherContribution = Number(otherContribution + (remainderToContributeToRetirement - iraContribution));
                   if (isNaN(otherContribution)) {
                     otherContribution = 0;
                   }
@@ -374,7 +374,8 @@ export default class {
                 budget -= (iraContribution + otherContribution);
               }
               console.groupEnd();
-            } else if (saveForHome) {
+            }
+            if (saveForHome) {
               console.group("Save for home");
               // const cost = this.getCostFor("save-for-home");
               const {
@@ -383,14 +384,28 @@ export default class {
               } = saveForHome.data.variables_map;
 
               console.log(`Remaining available budget is ${budget}`);
-              if (budget < Goal_HomeSave_Adjust_Savings.value) {
-                console.log(`Available budget is less than savings adjustment needed (${Goal_HomeSave_Adjust_Savings.value}) for home`);
-                console.log(`Apply available cash $${budget} to down payment savings on top of existing $${Mortgage_Down_Payment_Savings_Monthly.value}...`);
+              console.log(`Recommended savings adjustment is ${Goal_HomeSave_Adjust_Savings.value}`);
+              if (budget > 0) {
+                console.log(`Budget is ${budget}, applying the entire balance to home`);
                 queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
                   Mortgage_Down_Payment_Savings_Monthly: Mortgage_Down_Payment_Savings_Monthly.value + budget
                 }));
-                budget = 0;
               }
+
+              // if (Goal_HomeSave_Adjust_Savings.value < budget) {
+              //   console.log(`Available budget is less than savings adjustment needed (${Goal_HomeSave_Adjust_Savings.value}) for home`);
+              //   console.log(`Apply available cash $${budget} to down payment savings on top of existing $${Mortgage_Down_Payment_Savings_Monthly.value}...`);
+              //   queue.push(this._OPTIMIZE_REFRESH_GOAL(saveForHome, {
+              //     Mortgage_Down_Payment_Savings_Monthly: Mortgage_Down_Payment_Savings_Monthly.value + budget
+              //   }));
+              //   budget = 0;
+              // } else {
+              //   // const newMonthlyDownPaymentSavings = Goal_HomeSave_Adjust_Savings.value - budget;
+              //   console.log(`Available budget ${budget} is less than savings adjustment needed ${Goal_HomeSave_Adjust_Savings.value}`);
+              //   console.log(`New monthly down payment savings is ${budget}`);
+
+
+              // }
 
               console.groupEnd();
             }
