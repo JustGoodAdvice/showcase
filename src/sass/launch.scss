@@ -1,12 +1,179 @@
-@import 'variables';
-@import '../../node_modules/bootstrap/scss/bootstrap';
+// @import 'variables';
+
+// font awesome config
+$fa-font-path: "../../@fortawesome/fontawesome-pro/webfonts";
+$fa-font-size-base: 13px;
+
+$enable-gradients: true;
+
+$colors: (
+  'gray': #979DAC,
+  'gray-light': lighten(#979DAC, 25%),
+  'gray-dark': #5C677D,
+	'red': #EC2D3A,
+	'blue-dark': #12142d
+);
+
+$theme-colors: (
+  'primary': #1C2145,
+  'secondary': #3956EF,
+  'tertiary': #67DFBA
+);
+
+$primary: map-get($theme-colors, 'primary');
+$secondary: map-get($theme-colors, 'secondary');
+$tertiary: map-get($theme-colors, 'tertiary');
+$rust: #EC9E38;
+$gray: map-get($colors, 'gray');
+$gray-light: map-get($colors, 'gray-light');
+$gray-dark: map-get($colors, 'gray-dark');
+$blue-dark: map-get($colors, 'blue-dark');
+
+$btn-focus-box-shadow: none;
+$enable-shadows: true;
+
+$font-family-sans-serif: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$headings-font-family: 'IBM Plex Serif', $font-family-sans-serif !default;
+
+$accordion-bg: transparent;
+$accordion-button-active-bg: $gray-light;
+$list-group-bg: transparent;
+$list-group-hover-bg: $gray-light;
+
+@import '../../node_modules/bootstrap5/scss/bootstrap';
 @import '../../node_modules/@fortawesome/fontawesome-pro/scss/fontawesome';
 @import '../../node_modules/@fortawesome/fontawesome-pro/scss/light';
+@import '../../node_modules/@fortawesome/fontawesome-pro/scss/brands';
 @import "../../node_modules/placeholder-loading/src/scss/placeholder-loading";
 
+.ph-item {
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+// allow 2nd line in html tooltips
+.tooltip {
+  .line2 {
+    border-top: 1px solid $white;
+    display: block;
+    font-size: 90%;
+    margin-top: 4px;
+    padding-top: 4px;
+  }
+}
+
+taffrail-var {
+  &.mark {
+    border-radius: $border-radius;
+
+    &.active {
+      background-color: lighten($rust, 35%);
+      cursor: pointer;
+
+      &:hover {
+        background-color: lighten($rust, 25%);
+      }
+    }
+  }
+}
+
+html {
+  height: 100%;
+}
+
 body.launch {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   header.banner {
     background-color: $primary;
+    // background: $primary url("/img/Taffrail_LifeRing_NoWaves_Reversed@2x.png") 20px -30px no-repeat;
+    // // background-size: 758.5px 757px;
+    // background-size: 379.25px 378.5px;
+    // min-height: 3rem;
+
+    nav {
+      padding: .5rem 0;
+    }
+  }
+
+  .wrap {
+    display: flex;
+    align-items: stretch;
+    flex: 1 1 100%;
+  }
+
+  .split-columns {
+    display: flex;
+    height: 100%;
+    min-height: 100%;
+    
+    main {
+      padding-top: 2rem;
+    }
+
+    aside {
+      background-color: $gray-200;
+      padding-top: 2rem;
+    }
+  }
+
+  main {
+    // background: transparent url("/img/Taffrail_LifeRing_NoWaves_Navy@2x.png") right -77px no-repeat;
+    // background-size: 379.25px 378.5px;
+    // margin-top: 2rem;
+    min-height: 30rem;
+  }
+
+  .settings-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding: 0 1.25rem;
+
+    li {
+
+      i[class*='fa-'] {
+        border-radius: 50%;
+        box-shadow: 0px 0px 2px $gray-500;
+        border: solid $gray-200;
+        line-height: 1.7em;
+        width: 2em;
+        height: 2em;
+        text-align: center;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      /*
+      a {
+        display: block;
+        justify-content: center;
+        width: 100%;
+      }
+
+      i[class*='fa-'] {
+        border-radius: 60px;
+        box-shadow: 0px 0px 2px $gray-500;
+        padding: .5rem;
+        width: 100%;
+      }*/
+    }
+  }
+
+  .advice-set-details {
+    .title a {
+      text-decoration: none;
+    }
+  }
+
+  aside {
+    .list-group-flush {
+      margin-left: -1.25rem;
+      margin-right: -1.25rem;
+    }
   }
 }

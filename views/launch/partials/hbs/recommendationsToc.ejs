@@ -1,0 +1,17 @@
+<script id="tmpl_groupedRecommendationsAdviceListTOC" type="text/x-handlebars-template">
+	{{#if _showsidebar}}
+		<div class="advice-on-this-page">
+			<h5>On This Page</h5>
+			<ul class="list-unstyled">
+				{{#if _recommendationsExist}}
+					{{#each recommendations}}
+						<li><a href="#group_{{@key}}">{{@key}}</a></li>
+					{{/each}}
+				{{/if}}
+				{{#if _referenceDocumentsExist}}
+					<li><a href="#group_references">References & Sources</a></li>
+				{{/if}}
+			</ul>
+		</div>
+	{{/if}}
+</script>

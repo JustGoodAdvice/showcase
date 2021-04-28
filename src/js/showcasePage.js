@@ -42,7 +42,15 @@ export default class ShowcasePage {
     // set the base URL for loading data
     window.jga.api._links = { self: `${this.config.api_host}/api/advice/${this.api.adviceset.id}` }
     // helpers
-    $("body").tooltip({ selector: "[data-toggle=tooltip]" });
+    if (bootstrap.Tooltip) {
+      // v5
+      new bootstrap.Tooltip(document.body, {
+        selector: "[data-toggle=tooltip]",
+        html: true
+      });
+    } else {
+      $("body").tooltip({ selector: "[data-toggle=tooltip]", html: true });
+    }
     // mode
     this.primaryAdviceModeEnabled = store.get("primaryAdviceModeEnabled", false);
     this.adviceEditorModeEnabled = store.get("adviceEditorModeEnabled", false);
@@ -445,12 +453,18 @@ export default class ShowcasePage {
         return a.form.questionVariable?.reservedName == variableName || a.form.name == variableName;
       });
       if (question) {
+        let tooltipLabel;
+        if (question?.statement) {
+          tooltipLabel = `${question.question}<span class='line2'>${question.statement}</span>`;
+        } else {
+          tooltipLabel = `${question.question}<span class='line2'>Click to change</span>`;
+        }
         $el
           .addClass("active")
           .data("idx", question.idx)
           .attr("data-idx", question.idx)
           .attr("data-toggle", "tooltip")
-          .attr("title", "Click to change")
+          .attr("title", tooltipLabel)
         ;
       } else {
         // if not a question, check for raw formula

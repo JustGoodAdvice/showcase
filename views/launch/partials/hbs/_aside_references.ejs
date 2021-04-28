@@ -1,0 +1,16 @@
+<div class="adviceset-references"></div>
+
+<script id="tmpl_advicesetReferenceDocs" type="text/x-handlebars-template">
+{{#if _referenceDocumentsExist}}
+  <p>Personalized references and sources.</p>
+  <div class="advice-group references" id="group_references">
+    <ul class="list-group list-group-flush">
+      {{#each adviceset.referenceDocuments}}
+      <li class="list-group-item list-group-item-action">
+        <a class="source-url" href="{{url}}" target="_blank">{{name}}</a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}
+</script>

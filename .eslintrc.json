@@ -42,6 +42,8 @@
   },
   "globals": {
     "$": true,
+    "jQuery": true,
+    "bootstrap": true,
     "Promise": true
   }
 }
