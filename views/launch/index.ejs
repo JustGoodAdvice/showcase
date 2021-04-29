@@ -57,7 +57,7 @@
               <% const accords = [
                 {
                   title: "Questions",
-                  template: "",
+                  template: "partials/hbs/_aside_user_questions",
                 },
                 {
                   title: "References",
@@ -77,8 +77,11 @@
                 }
               ] %>
 
-              <% accords.forEach((accordion, i) => { %> 
-                <div class="accordion-item">
+              <% accords.forEach((accordion, i) => { %>
+                <% if (i==0) { %>
+                  <h5 class="ps-3 mt-5">Advice Set</h5>  
+                <% } %>
+                <div class="accordion-item <% if (i == 0) { %>accordion-item--first<% } %>">
                   <h2 class="accordion-header" id="flush-heading<%=i %>">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<%=i %>" aria-expanded="false" aria-controls="flush-collapse<%=i %>">
                       <%= accordion.title %>
@@ -111,7 +114,6 @@
     <%- include("partials/hbs/inputRequest"); %>
     <%- include("partials/hbs/advice"); %>
     <%- include("partials/hbs/recommendations"); %>
-    <%- include("partials/hbs/recommendationsToc"); %>
     <%# include("partials/error"); %>
 
     <%- include("partials/hbs/answers"); %>

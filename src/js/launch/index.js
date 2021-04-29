@@ -29,7 +29,6 @@ export default class extends ShowcasePage {
         this.handleClickTaffrailVar();
         this.handleCollapseAdviceSummaries();
         this.handleCollapseAssumptionGroup();
-        this.handleClickOnThisPageItem();
         this.listenForUrlChanges();
         this.handleClickExpandControls();
         // this.handleResizeChart();
@@ -83,10 +82,10 @@ export default class extends ShowcasePage {
       "AdviceSetDetails": Handlebars.compile($("#tmpl_adviceSetDetails").html()),
       "AdviceSetScenarios": Handlebars.compile($("#tmpl_advicesetScenarios").html()),
       "AdviceSetReferences": Handlebars.compile($("#tmpl_advicesetReferenceDocs").html()),
+      "AdviceSetAiUR": Handlebars.compile($("#tmpl_advicesetUserQuestions").html()),
       "InputRequest": Handlebars.compile($("#tmpl_adviceInputRequest").html()),
       "Advice": Handlebars.compile($("#tmpl_adviceAdvice").html()),
       "Recommendations": Handlebars.compile($("#tmpl_groupedRecommendationsAdviceList").html()),
-      "RecommendationsOnThisPage": Handlebars.compile($("#tmpl_groupedRecommendationsAdviceListTOC").html()),
       "Assumptions": Handlebars.compile($("#tmpl_assumptionsList").html()),
       "QuestionsAnswers": Handlebars.compile($("#tmpl_answersList").html()),
       // "Error": Handlebars.compile($("#tmpl_error").html()),
@@ -147,6 +146,7 @@ export default class extends ShowcasePage {
         }
       }
 
+      // advice set heading
       _render(data);
 
       // scenarios
@@ -158,6 +158,10 @@ export default class extends ShowcasePage {
       })
       const str = this.TEMPLATES["AdviceSetScenarios"]({ scenarios: filteredScenarios });
       $(".adviceset-scenarios").html(str);
+
+      // AI User Requests
+      const strAiUrs = this.TEMPLATES["AdviceSetAiUR"](this.api);
+      $(".adviceset-user-questions").html(strAiUrs);
 
     }).catch(jqXHR => {
       let err = "Error";
@@ -360,13 +364,12 @@ export default class extends ShowcasePage {
     this.api._recommendationsExist = _.flatMap(this.api.recommendations).length > 0;
     this.api._referenceDocumentsExist = this.api.adviceset.referenceDocuments.length > 0;
     this.api._showPrimaryPersonalized = (this.api._recommendationsExist && recommendationGroupCount >= 2) || this.api._referenceDocumentsExist;
-    this.api._showsidebar = (this.api._recommendationsExist && recommendationGroupCount >= 2);
 
     // render
     const str = this.TEMPLATES["Recommendations"](this.api);
     $(".list-all-recommendations").html(str);
-    const referencesStr = this.TEMPLATES["AdviceSetReferences"](this.api);
-    $(".adviceset-references").html(referencesStr);
+    const strReferences = this.TEMPLATES["AdviceSetReferences"](this.api);
+    $(".adviceset-references").html(strReferences);
 
     // One more step....
     this._updateForPrimaryAdvice();
@@ -381,9 +384,9 @@ export default class extends ShowcasePage {
   _setAssumptionActive(isAdvice) {
     const { id } = this.api.display;
     if (isAdvice) {
-      $(".assumptions, .answers").find("li").removeClass("active");
+      $("aside .assumptions, .answers").find("a").removeClass("active");
     } else {
-      $(".assumptions, .answers").find("li").removeClass("active").end().find(`li[data-id=${id}]`).addClass("active");
+      $("aside .assumptions, .answers").find("a").removeClass("active").end().find(`a[data-id=${id}]`).addClass("active");
     }
   }
 
@@ -433,7 +436,7 @@ export default class extends ShowcasePage {
         }));
       });
       return Promise.all(fns).then(() => {
-        const $popoverEls = $("#group_references").find("[data-toggle=popover]");
+        const $popoverEls = $("#group_references").find("[data-bs-toggle=popover]");
         $popoverEls.each((i, el) => {
           new bootstrap.Popover(el);
         });
@@ -568,10 +571,10 @@ export default class extends ShowcasePage {
    * Click handler for assumptions or Q&A
    */
   handleClickAssumption() {
-    $(".answers, .assumptions").on("click", ".a > a, a.statement", e => {
+    $("aside .assumptions").on("click", "a.statement", e => {
       e.preventDefault();
       const $this = $(e.currentTarget);
-      const data = $this.closest("li").data();
+      const data = $this.data();
       $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored
@@ -597,19 +600,6 @@ export default class extends ShowcasePage {
       this.api.display = answer;
       this.api.display.idx = answer.idx;
       this.updateMainPane();
-    });
-  }
-
-  /**
-   * Handle clicks on "on this page" table of contents
-   */
-  handleClickOnThisPageItem() {
-    $(".advice-on-this-page").on("click", "li a", e => {
-      const isContentVisible = $(".list-all-recommendations").is(":visible");
-      // if content isn't visible yet, expand it when user clicks on TOC
-      if (!isContentVisible) {
-        $("a[data-action=toggleRecommendations]").trigger("click");
-      }
     });
   }
 

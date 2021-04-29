@@ -1,0 +1,14 @@
+<div class="adviceset-user-questions"></div>
+
+<script id="tmpl_advicesetUserQuestions" type="text/x-handlebars-template">
+  <p>This Advice Set can answer the following questions.</p>
+  <div class="advice-group aiurs">
+    <ul class="list-group list-group-flush">
+      {{#each adviceset.aiUserRequests}}
+      <li class="list-group-item list-group-item-action">
+        {{request}}
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+</script>

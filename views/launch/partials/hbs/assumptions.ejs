@@ -11,32 +11,26 @@
 			<div id="flush-collapse-asmp{{@index}}" class="accordion-collapse collapse" aria-labelledby="flush-heading-asmp{{@index}}"
 				data-bs-parent="#accordionFlushSidebar">
 				<div class="accordion-body">
-					<ul>
+					<div class="list-group list-group-flush">
 						{{#each this}}
-						<li data-id="{{id}}" data-group-id="{{tagGroup.id}}" data-idx="{{idx}}" class="qa">
-							{{#if statement}}
-							<a href="#" class="statement">
-								{{statement}}
-							</a>
-							{{else}}
-							<span class="q">
-								{{#if form.questionVariable}}
-								<span class="text-monospace">{{form.questionVariable.name}}</span>&nbsp;&nbsp;&nbsp;
+						<a href="#" data-id="{{id}}" data-group-id="{{tagGroup.id}}" data-idx="{{idx}}" class="statement list-group-item list-group-item-action">
+								{{#if statement}}
+									{{statement}}
 								{{else}}
-								{{question}}
-								{{/if}}
-							</span>
-							<span class="a"><a href="#" class="">
-									{{#if answer}}
-									{{answer}}
+									{{#if form.questionVariable}}
+										<span class="text-monospace">{{form.questionVariable.name}}</span>&nbsp;&nbsp;&nbsp;
 									{{else}}
-									{{value}}
+										{{question}}
 									{{/if}}
-								</a></span>
-							{{/if}}
-						</li>
+									{{#if answer}}
+										{{answer}}
+									{{else}}
+										{{value}}
+									{{/if}}
+								{{/if}}
+							</a>
 						{{/each}}
-					</ul>
+					</div>
 				</div>
 			</div>
 		</div>
