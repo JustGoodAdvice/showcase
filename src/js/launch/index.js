@@ -10,6 +10,7 @@ export default class extends ShowcasePage {
   init() {
     super.init();
     this.initCache();
+    this.AUTO_EXPAND_RECOMMENDATION_COUNT = 4;
     this.updateAdviceSetDetails().then(() => {
       // current querystring without "?" prefix
       const querystring = location.search.substr(1);
@@ -31,6 +32,7 @@ export default class extends ShowcasePage {
         this.handleCollapseAssumptionGroup();
         this.listenForUrlChanges();
         this.handleClickExpandControls();
+        this.handleClickOpenRawDataModal();
         // this.handleResizeChart();
 
         // keyboard shortcuts
@@ -58,8 +60,8 @@ export default class extends ShowcasePage {
         });
 
         // when data is updated after page-load, use this fn
-        this.$loadingContainer = $(".advice-outer-container");
-        this.scrollTo = 0;
+        this.$loadingContainer = $(".row.split-columns");
+        this.scrollTo = $(".advice-set-details .lead").offset().top || 0;
 
         this.updateFn = (data) => {
           // update content
@@ -86,6 +88,7 @@ export default class extends ShowcasePage {
       "InputRequest": Handlebars.compile($("#tmpl_adviceInputRequest").html()),
       "Advice": Handlebars.compile($("#tmpl_adviceAdvice").html()),
       "Recommendations": Handlebars.compile($("#tmpl_groupedRecommendationsAdviceList").html()),
+      "RecommendationsOur": Handlebars.compile($("#tmpl_groupedOurRecommendationsAdviceList").html()),
       "Assumptions": Handlebars.compile($("#tmpl_assumptionsList").html()),
       "QuestionsAnswers": Handlebars.compile($("#tmpl_answersList").html()),
       // "Error": Handlebars.compile($("#tmpl_error").html()),
@@ -313,6 +316,10 @@ export default class extends ShowcasePage {
     const str = this.TEMPLATES["InputRequest"](this.api);
     this.$advice.html(str);
 
+    // hide "next" button unless it's a numeric input
+    const isRadio = this.api.display.form.fieldType.match(/Radio|Boolean/);
+    $(".advice").find("button[type=submit]").toggle(!(isRadio && isRadio.length > 0));
+
     // set value
     this._setValue();
     // set input masks
@@ -366,7 +373,17 @@ export default class extends ShowcasePage {
     this.api._showPrimaryPersonalized = (this.api._recommendationsExist && recommendationGroupCount >= 2) || this.api._referenceDocumentsExist;
 
     // render
-    const str = this.TEMPLATES["Recommendations"](this.api);
+    const tmpl = this._hasOurAdvice ? "RecommendationsOur" : "Recommendations";
+    if (this._hasOurAdvice) {
+      this.api.recommendations_others = {};
+      Object.keys(this.api.recommendations).forEach(group => {
+        if (group != "Our Advice" && group != "Our Thinking" && group != "Considerations") {
+          this.api.recommendations_others[group] = this.api.recommendations[group];
+          delete this.api.recommendations[group];
+        }
+      });
+    }
+    const str = this.TEMPLATES[tmpl](this.api);
     $(".list-all-recommendations").html(str);
     const strReferences = this.TEMPLATES["AdviceSetReferences"](this.api);
     $(".adviceset-references").html(strReferences);
@@ -473,7 +490,7 @@ export default class extends ShowcasePage {
         const $chart = $(this);
         const { src } = $chart.data();
         // parent container
-        let $parentContainer = $chart.parents(".list-all-recommendations");
+        let $parentContainer = $chart.parents(".recommendations");
         if (!$parentContainer.length) {
           $parentContainer = $chart.parents(".advice");
         }
@@ -518,6 +535,14 @@ export default class extends ShowcasePage {
    * "Next" button handler
    */
   handleClickContinue() {
+    // pressing radio button auto-advances to next
+    this.$advice.on("click", ".form-check label.btn", e => {
+      const $lbl = $(e.currentTarget);
+      $lbl.prev("input").prop("checked", true);
+      const $form = $lbl.closest("form");
+      $form.trigger("submit");
+    });
+
     this.$advice.on("submit", "form", e => {
       const $form = $(e.currentTarget);
 
@@ -543,7 +568,7 @@ export default class extends ShowcasePage {
 
       const data = $form.serialize();
 
-      this._loadApi(data, $(".row .advice"), false).then(() => {
+      this._loadApi(data, undefined, false).then(() => {
         this.updateFn();
       });
 
@@ -697,6 +722,17 @@ export default class extends ShowcasePage {
         }, 500);
       }
     });
+  }
+
+  /**
+ *
+ * @param {jquery} $el Click target
+ * @param {boolean} shown Open or closed?
+ */
+  _toggleCollapseLink($el, shown) {
+    $el.find("span").text(shown ? "Collapse" : "Expand");
+    $el.find("i").addClass(shown ? "fa-minus-square" : "fa-plus-square").removeClass(!shown ? "fa-minus-square" : "fa-plus-square");
+    $el.data("collapsed", !shown);
   }
   // #endregion
 }

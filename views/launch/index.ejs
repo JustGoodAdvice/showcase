@@ -44,11 +44,11 @@
           </main>
           <aside class="col-md-3 offset-md-1 col-lg-3 offset-lg-2 g-0">
             <ul class="list-unstyled settings-buttons">
-              <li><a href="#" data-toggle="tooltip" title="Start over"><i class="fal fa-undo"></i></a></li>
+              <li><a href="/s/<%= locals.adviceSetId %>" data-toggle="tooltip" title="Start over"><i class="fal fa-undo"></i></a></li>
               <li><a href="#" data-toggle="tooltip" title="Change View"><i class="fal fa-window-alt"></i></a></li>
               <li><a href="#" data-toggle="tooltip" title="Change Voice"><i class="fal fa-microphone-alt"></i></a></li>
               <li><a href="#" data-toggle="tooltip" title="API Channel"><i class="fal fa-box-check"></i></a></li>
-              <li><a href="#" data-toggle="tooltip" title="View data"><i class="fal fa-table"></i></a></li>
+              <li><a href="#" data-toggle="tooltip" title="View data" data-bs-toggle="modal" data-bs-target="#dataModal"><i class="fal fa-table"></i></a></li>
               <li><a href="#" data-toggle="tooltip" title="Get support" class="intercom_messenger_launcher"><i class="fal fa-life-ring"></i></a></li>
             </ul>
 
@@ -114,11 +114,14 @@
     <%- include("partials/hbs/inputRequest"); %>
     <%- include("partials/hbs/advice"); %>
     <%- include("partials/hbs/recommendations"); %>
+    <%- include("partials/hbs/recommendations_our"); %>
     <%# include("partials/error"); %>
 
     <%- include("partials/hbs/answers"); %>
     <%- include("partials/hbs/assumptions"); %>
     <%- include("partials/hbs/variables"); %>
+    <%- include("partials/_modal_vars"); %>
+    <%- include("partials/_toast"); %>
 
     <div id="__init" data-page-init="launch"></div>
     <%- include("partials/_footer_js"); %>

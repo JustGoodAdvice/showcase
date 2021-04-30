@@ -288,12 +288,11 @@ export default class ShowcasePage {
     });
 
     // find "primary advice" -- last advice in highest weighted group
-    const [highestWeightedGroup] = groupKeys;
-    if (groupedAdvice[highestWeightedGroup] && groupedAdvice[highestWeightedGroup].length){
-      const primaryAdvice = _.last(groupedAdvice[highestWeightedGroup]);
-      primaryAdvice._isPrimary = true;
-
-      if (this.primaryAdviceModeEnabled) {
+    if (this.primaryAdviceModeEnabled) {
+      const highestWeightedGroup = _.last(groupKeys);
+      if (groupedAdvice[highestWeightedGroup] && groupedAdvice[highestWeightedGroup].length){
+        const primaryAdvice = _.last(groupedAdvice[highestWeightedGroup]);
+        primaryAdvice._isPrimary = true;
         // assign it to temp prop
         this.api.display_primary_advice = primaryAdvice;
         // remove it from list that will become `recommendations`
@@ -313,6 +312,28 @@ export default class ShowcasePage {
         }
         this.api.display_primary_advice._evaluated = `<strong>${factoredStr}</strong> and <strong>${varStr}</strong>`;
         this.api.display_primary_advice._recommended = `${pluralize("recommendation", recommendationLen, true)}`;
+      }
+    }
+
+    // if advice returns group "Our Advice", use it first
+    this._hasOurAdvice = false;
+    if (groupKeys.includes("Our Advice")) {
+      this._hasOurAdvice = true;
+      groupedAdvice = {
+        "Our Advice": groupedAdvice["Our Advice"],
+        "Our Thinking": groupedAdvice["Our Thinking"] || [],
+        "Considerations": groupedAdvice["Considerations"] || [],
+        ...groupedAdvice
+      }
+
+      if (groupedAdvice["Our Advice"][0]){
+        groupedAdvice["Our Advice"][0]._len = groupedAdvice["Our Advice"].length;
+      }
+      if (groupedAdvice["Our Thinking"][0]) {
+        groupedAdvice["Our Thinking"][0]._len = groupedAdvice["Our Thinking"].length;
+      }
+      if (groupedAdvice["Considerations"][0]){
+        groupedAdvice["Considerations"][0]._len = groupedAdvice["Considerations"].length;
       }
     }
 

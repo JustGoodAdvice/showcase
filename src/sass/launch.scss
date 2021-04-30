@@ -40,11 +40,19 @@ $accordion-button-active-bg: $gray-light;
 $list-group-bg: transparent;
 $list-group-hover-bg: $gray-light;
 
+$modal-fade-transform: scale(.8);
+
+// loader
+$zindex-fixed: 1030;
+$zindex-loading-mask: $zindex-fixed - 2;
+$zindex-loading-spinner: $zindex-fixed + 1;
+
 @import '../../node_modules/bootstrap5/scss/bootstrap';
 @import '../../node_modules/@fortawesome/fontawesome-pro/scss/fontawesome';
 @import '../../node_modules/@fortawesome/fontawesome-pro/scss/light';
 @import '../../node_modules/@fortawesome/fontawesome-pro/scss/brands';
 @import "../../node_modules/placeholder-loading/src/scss/placeholder-loading";
+@import 'loading';
 
 .ph-item {
   border-color: transparent;
@@ -70,9 +78,26 @@ $list-group-hover-bg: $gray-light;
   font-size: 80%;
 }
 
+#toastWrapper {
+  display: none;
+  min-height: 200px;
+  min-width: 320px;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  z-index: 9999999;
+
+  #toastContainer {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
 taffrail-var {
   &.mark {
     border-radius: $border-radius;
+    background-color: $gray-100;
 
     &.active {
       background-color: lighten($rust, 35%);
@@ -193,8 +218,128 @@ body.launch {
     }
   }
 
-  .advice-list {
+  .advice-outer-container {
+    margin-bottom: 5rem;
+  }
 
+  .advice {
+    .question {
+			background-color: $gray-100;
+      border: 2px solid $secondary;
+			border-radius: $border-radius;
+      margin-left: -2rem;
+			padding: 2rem 4rem;
+      position: absolute;
+      width: 680px;
+      z-index: $zindex-fixed - 3;
+
+			.explanation {
+				color: $gray-dark;
+        font-size: 90%;
+			}
+
+			form {
+				padding: .5rem;
+
+				.form-group.d-grid {
+          .btn-block {
+            display: block;
+          }
+        }
+
+        .continue {
+          align-items: center;
+          display: flex;
+          margin-top: 2rem;
+          justify-content: space-between;
+
+          a.back {
+            color: $gray-600;
+            font-size: 90%;
+            text-decoration: none;
+
+            &:hover {
+              color: $gray-900;
+            }
+          }
+
+          .next {
+            font-size: 90%;
+          }
+        }
+			}
+		}
+
+    ~ .list-all-recommendations.unfocused {
+      border-top: 1px solid $gray-200;
+      filter: blur($border-radius);
+      margin-top: 1rem;
+      padding-top: 1rem;
+    }
+  }
+
+  .accordion-button.group-toggler {
+    background-color: transparent;
+    box-shadow: none;
+    font-size: $h5-font-size;
+    padding: 0;
+  }
+
+  .advice-group {
+    header {
+      margin-bottom: $headings-margin-bottom * 2;
+
+      i {
+        min-width: 1.25rem;
+      }
+    }
+  }
+
+  .advice-group + .advice-group {
+    margin-top: 2rem;
+  }
+
+  // see `recommendations_ours.ejs`
+  .advice-group {
+    &.ours {
+      margin-top: 1rem;
+
+      li {
+        margin-bottom: 1rem;
+
+        taffrail-var {
+          &.mark:not(.active) {
+            background-color: #fcf8e3;
+          }
+        }
+
+        .summary {
+          color: $gray-700;
+          font-style: italic;
+          margin-bottom: .5rem;
+          margin-top: .5rem;
+        }
+      }
+    }
+  }
+
+  .ours-split-col {
+    & { position: relative; }
+
+    border: 1px solid $gray-400;
+    border-radius: $border-radius;
+    margin-left: -25%;
+    padding: 2rem 2rem 3rem 2rem;
+    position: absolute;
+    width: 150%;
+
+    section {
+      font-size: 90%;
+      width: 50%;
+    }
+  }
+
+  .advice-list {
     li {
       .headline-open-advice-in-ab {
         color: $gray-500;
@@ -211,5 +356,51 @@ body.launch {
         }
       }
     }
+
+    .summary {
+      color: $gray-700;
+      font-size: 90%;
+    }
+
+    // only when centered...
+		.advice-attachment.advice-chart--interactive {
+			margin: -.5rem 0 1rem -.5rem;
+			padding: 0;
+		}
   }
+
+  // inside a modal
+	.variables-container {
+
+		.variables {
+			font-family: $font-family-monospace;
+			font-size: 12px;
+
+			td:nth-child(1) {
+				max-width: 1px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+
+				& + td {
+					width: 2rem;
+				}
+			}
+
+			td.var {
+				max-width: 1px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+        
+        a {
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+			}
+		}
+	}
 }
