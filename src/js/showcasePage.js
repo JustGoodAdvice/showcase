@@ -53,7 +53,7 @@ export default class ShowcasePage {
     }
     // mode
     this.primaryAdviceModeEnabled = store.get("primaryAdviceModeEnabled", false);
-    this.adviceEditorModeEnabled = store.get("adviceEditorModeEnabled", false);
+    this.adviceEditorModeEnabled = store.get("adviceEditorModeEnabled", true);
     if (this.adviceEditorModeEnabled) {
       $("html").addClass("advice-editor-mode-enabled");
     }
