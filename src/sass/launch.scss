@@ -97,7 +97,7 @@ $zindex-loading-spinner: $zindex-fixed + 1;
 taffrail-var {
   &.mark {
     border-radius: $border-radius;
-    background-color: $gray-100;
+    background-color: transparent;
 
     &.active {
       background-color: lighten($rust, 35%);
@@ -307,12 +307,6 @@ body.launch {
       li {
         margin-bottom: 1rem;
 
-        taffrail-var {
-          &.mark:not(.active) {
-            background-color: #fcf8e3;
-          }
-        }
-
         .summary {
           color: $gray-700;
           font-style: italic;
@@ -354,7 +348,7 @@ body.launch {
 
     li {
       margin-bottom: 1rem;
-      
+
       .headline-open-advice-in-ab {
         color: $gray-500;
         display: none;
