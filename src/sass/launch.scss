@@ -101,11 +101,13 @@ taffrail-var {
     background-color: transparent;
 
     &.active {
-      background-color: lighten($rust, 35%);
+      background-color: $gray-200; //lighten($rust, 35%);
       cursor: pointer;
+      padding: .15rem;
 
       &:hover {
-        background-color: lighten($rust, 25%);
+        background-color: $gray-300; //lighten($rust, 25%);
+        color: $secondary;
       }
     }
   }
@@ -207,8 +209,14 @@ body.launch {
   }
 
   .advice-set-details {
+    margin-bottom: 2rem;
+
     .title a {
       text-decoration: none;
+    }
+
+    .lead {
+      margin-bottom: 0;
     }
   }
 
