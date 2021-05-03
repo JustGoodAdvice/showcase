@@ -4,6 +4,7 @@
 $fa-font-path: "../../@fortawesome/fontawesome-pro/webfonts";
 $fa-font-size-base: 13px;
 
+$enable-caret: false;
 $enable-gradients: true;
 
 $colors: (
@@ -168,7 +169,12 @@ body.launch {
 
     li {
 
-      i[class*='fa-'] {
+      a {
+        text-decoration: none;
+      }
+
+      .dropdown > a > i[class*='fa-'],
+      > a > i[class*='fa-'] {
         border-radius: 50%;
         box-shadow: 0px 0px 2px $gray-500;
         border: solid $gray-200;
@@ -178,6 +184,10 @@ body.launch {
         text-align: center;
         display: inline-block;
         vertical-align: middle;
+      }
+
+      .dropdown > a > span {
+        font-size: 90%;
       }
 
       /*
