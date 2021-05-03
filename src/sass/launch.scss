@@ -340,7 +340,21 @@ body.launch {
   }
 
   .advice-list {
+    &.fa-ul {
+      margin-left: 0;
+
+      .fa-li {
+        display: none;
+        left: unset;
+        position: unset;
+        visibility: hidden;
+        width: unset;
+      }
+    }
+
     li {
+      margin-bottom: 1rem;
+      
       .headline-open-advice-in-ab {
         color: $gray-500;
         display: none;
