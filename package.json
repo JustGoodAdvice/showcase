@@ -14,7 +14,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-pro": "^5.15.3",
     "@sentry/apm": "^5.27.1",
-    "@sentry/browser": "^6.3.1",
+    "@sentry/browser": "^6.3.5",
     "@sentry/node": "^6.2.5",
     "@stimulus/polyfills": "^2.0.0",
     "async-es": "^3.2.0",
