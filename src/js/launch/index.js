@@ -91,7 +91,7 @@ export default class extends ShowcasePage {
       "RecommendationsOur": Handlebars.compile($("#tmpl_groupedOurRecommendationsAdviceList").html()),
       "Assumptions": Handlebars.compile($("#tmpl_assumptionsList").html()),
       "QuestionsAnswers": Handlebars.compile($("#tmpl_answersList").html()),
-      // "Error": Handlebars.compile($("#tmpl_error").html()),
+      "Error": Handlebars.compile($("#tmpl_error").html()),
     };
   }
 
