@@ -14,8 +14,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-pro": "^5.15.3",
     "@sentry/apm": "^5.27.1",
-    "@sentry/browser": "^6.2.5",
-    "@sentry/node": "^6.2.5",
+    "@sentry/browser": "^6.3.1",
+    "@sentry/node": "^6.3.5",
     "@stimulus/polyfills": "^2.0.0",
     "async-es": "^3.2.0",
     "bitly": "^7.1.2",
@@ -46,7 +46,7 @@
     "node-fetch": "^2.6.1",
     "node-sass-middleware": "0.11.0",
     "numeral": "^2.0.6",
-    "open-graph-scraper": "^4.8.1",
+    "open-graph-scraper": "^4.8.2",
     "placeholder-loading": "^0.4.0",
     "pluralize": "^8.0.0",
     "popper.js": "^1.16.1",
@@ -56,7 +56,7 @@
     "turbolinks": "^5.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.14",
+    "@babel/core": "^7.13.16",
     "@babel/preset-env": "^7.13.12",
     "babel-loader": "^8.2.2",
     "browser-sync": "^2.26.14",
