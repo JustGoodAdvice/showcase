@@ -99,6 +99,7 @@ taffrail-var {
   &.mark {
     border-radius: $border-radius;
     background-color: transparent;
+    padding: 0;
 
     &.active {
       background-color: $gray-200; //lighten($rust, 35%);
