@@ -95,7 +95,7 @@ $zindex-loading-spinner: $zindex-fixed + 1;
   }
 }
 
-taffrail-var {
+taffrail-varx {
   &.mark {
     border-radius: $border-radius;
     background-color: transparent;
@@ -110,6 +110,27 @@ taffrail-var {
         background-color: $gray-300; //lighten($rust, 25%);
         color: $secondary;
       }
+    }
+  }
+}
+
+taffrail-var {
+  &.mark {
+    border-radius: 0;
+    background-color: transparent;
+    padding: 0;
+
+    &.active {
+      border-bottom: 1px dotted $secondary;
+      color: $primary;
+      cursor: pointer;
+
+      &:hover {
+        color: $secondary;
+      }
+    }
+    &[data-is-undefined] {
+      border-bottom: 1px dotted $danger;
     }
   }
 }
@@ -294,6 +315,13 @@ body.launch {
       filter: blur($border-radius);
       margin-top: 1rem;
       padding-top: 1rem;
+    }
+  }
+
+  .advice-group {
+    a.group-toggler {
+      color: $primary;
+      text-decoration: none;
     }
   }
 
