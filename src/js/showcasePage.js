@@ -4,6 +4,7 @@ import { createBrowserHistory } from "history";
 import Handlebars from "handlebars";
 import Inputmask from "inputmask";
 import Loading from "./loading";
+import marked from "marked";
 import pluralize from "pluralize";
 import qs from "querystring";
 import store from "store";
@@ -11,6 +12,13 @@ import isHtml from "is-html";
 
 export default class ShowcasePage {
   constructor(){
+
+    // https://marked.js.org/using_advanced#options
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+    });
+
     this.history = createBrowserHistory();
 
     // handlebars helpers
@@ -23,10 +31,20 @@ export default class ShowcasePage {
     });
 
     Handlebars.registerHelper("breaklines", (text) => {
+      return text;
+
       if (text && !text.includes("<taffrail-var") && !isHtml(text)) {
         text = Handlebars.Utils.escapeExpression(text);
       }
-      text = String(text).replace(/(\r\n|\n|\r)/gm, "<br>");
+      text = String(_.trim(text)).replace(/(\r\n|\n|\r)/gm, "<br>");
+
+      // in a markdown scenario with lists, we end up with too many <br> tags in weird places
+      text = text.replace(/<br><ul>/g, "<ul>");
+      text = text.replace(/<br><li>/g, "<li>");
+      text = text.replace(/<\/li><br><li>/g, "</li><li>");
+      text = text.replace(/<\/li><br><ul>/g, "</li><ul>");
+      text = text.replace(/<\/li><br><\/ul>/g, "</li></ul>");
+
       return new Handlebars.SafeString(text);
     });
 
@@ -209,7 +227,8 @@ export default class ShowcasePage {
   // eslint-disable-next-line complexity
   mapAdviceData() {
     // if the `display` is the LAST advice node, set the "isLast" flag
-    const allAdvice = this.api.advice.filter(a => { return a.type == "ADVICE"; });
+    let allAdvice = this.api.advice.filter(a => { return a.type == "ADVICE"; });
+
     const lastAdvice = _.last(allAdvice);
     if (lastAdvice && this.api.display.id == lastAdvice.id) {
       lastAdvice._isLast = true;
@@ -235,6 +254,22 @@ export default class ShowcasePage {
         }
       }
     }
+
+    // add markdown-to-html property for `headline` and `summary`
+    allAdvice = allAdvice.map(adv => {
+      const headline = _.trim(adv.headline_html || adv.headline);
+      let headlineMd = marked(headline);
+      // remove wrapping <p> tag
+      headlineMd = headlineMd.replace(/<p>/g, "").replace(/<\/p>/g, "");
+      adv.headline_html = headlineMd;
+
+      const summary = _.trim(adv.summary_html || adv.summary);
+      let summaryMd = marked(summary);
+      // remove wrapping <p> tag
+      summaryMd = summaryMd.replace("<p>", "").replace("</p>", "");
+      adv.summary_html = summaryMd;
+      return adv;
+    });
 
     // group all advice into bucketed recommendations
     let groupedAdvice = _.groupBy(allAdvice, (a) => {
