@@ -352,25 +352,25 @@ export default class ShowcasePage {
 
     // if advice returns group "Our Advice", use it first
     this._hasOurAdvice = false;
-    if (groupKeys.includes("Our Advice")) {
-      this._hasOurAdvice = true;
-      groupedAdvice = {
-        "Our Advice": groupedAdvice["Our Advice"],
-        "Our Thinking": groupedAdvice["Our Thinking"] || [],
-        "Considerations": groupedAdvice["Considerations"] || [],
-        ...groupedAdvice
-      }
+    // if (groupKeys.includes("Our Advice")) {
+    //   this._hasOurAdvice = true;
+    //   groupedAdvice = {
+    //     "Our Advice": groupedAdvice["Our Advice"],
+    //     "Our Thinking": groupedAdvice["Our Thinking"] || [],
+    //     "Considerations": groupedAdvice["Considerations"] || [],
+    //     ...groupedAdvice
+    //   }
 
-      if (groupedAdvice["Our Advice"][0]){
-        groupedAdvice["Our Advice"][0]._len = groupedAdvice["Our Advice"].length;
-      }
-      if (groupedAdvice["Our Thinking"][0]) {
-        groupedAdvice["Our Thinking"][0]._len = groupedAdvice["Our Thinking"].length;
-      }
-      if (groupedAdvice["Considerations"][0]){
-        groupedAdvice["Considerations"][0]._len = groupedAdvice["Considerations"].length;
-      }
-    }
+    //   if (groupedAdvice["Our Advice"][0]){
+    //     groupedAdvice["Our Advice"][0]._len = groupedAdvice["Our Advice"].length;
+    //   }
+    //   if (groupedAdvice["Our Thinking"][0]) {
+    //     groupedAdvice["Our Thinking"][0]._len = groupedAdvice["Our Thinking"].length;
+    //   }
+    //   if (groupedAdvice["Considerations"][0]){
+    //     groupedAdvice["Considerations"][0]._len = groupedAdvice["Considerations"].length;
+    //   }
+    // }
 
     // all advice to render is saved to `recommendations`
     this.api.recommendations = groupedAdvice;
