@@ -396,6 +396,11 @@ body.launch {
     li {
       margin-bottom: 1rem;
 
+      // very last (or only) <li> does not need a bottom margin
+      &:last-child.no-summary {
+        margin-bottom: 0;
+      }
+
       .headline {
         display: inline-block;
       }
