@@ -41,12 +41,12 @@ export default class {
   }
 
   get savedGoals() {
-    const g = store.get(this.STORAGE_KEY, []);
+    const g = _.compact(store.get(this.STORAGE_KEY, []));
     return g;
   }
 
   set savedGoals(arr) {
-    store.set(this.STORAGE_KEY, arr);
+    store.set(this.STORAGE_KEY, _.compact(arr));
     // console.log("SAVING GOAL>>>>", arr);
     this.activateCurrentGoals();
   }
