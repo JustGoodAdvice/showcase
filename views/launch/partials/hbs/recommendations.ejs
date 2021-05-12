@@ -39,14 +39,13 @@
 									{{#if _icon}}<i class="{{_icon}}"></i>{{/if}}
 								{{/if}}
 								</span>
+								<a href="{{../../config.advicebuilder_host}}/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}" target="_ab_{{ruleSetId}}" class="headline-open-advice-in-ab btn btn-outline-secondary">Edit</a>
 								<span class="headline">
 									{{#if headline_html}}
 										{{{breaklines headline_html}}}
 									{{else}}
 										{{breaklines headline}}
 									{{/if}}
-									<a href="{{../../config.advicebuilder_host}}/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}"
-										target="_blank" class="headline-open-advice-in-ab">Edit</a>
 								</span>
 								{{#if summary}}
 									<div class="collapse {{#if attachment}}show{{/if}}" id="collapse_{{id}}">
