@@ -10,7 +10,9 @@ export default class extends ShowcasePage {
   init() {
     super.init();
     this.initCache();
+    this.handleOffCanvasEvt();
     this.AUTO_EXPAND_RECOMMENDATION_COUNT = 4;
+
     this.updateAdviceSetDetails().then(() => {
       // current querystring without "?" prefix
       const querystring = location.search.substr(1);
@@ -46,9 +48,9 @@ export default class extends ShowcasePage {
         Mousetrap.bind("a", () => {
           $("a[data-expand=advice]").trigger("click");
         });
-        // expand/collapse assumptions
+        // expand/collapse controls sidebar
         Mousetrap.bind("s", () => {
-          $("a[data-expand=assumptions]").trigger("click");
+          $("#aside_handle > a").trigger("click");
         });
         // show toast with keyboard shortcut map
         Mousetrap.bind("?", () => {
@@ -531,6 +533,15 @@ export default class extends ShowcasePage {
 
 
   // #region event handlers
+  handleOffCanvasEvt() {
+    $(".controls.offcanvas").on("hide.bs.offcanvas", e=> {
+      $("#aside_handle").removeClass("show");
+    });
+    $(".controls.offcanvas").on("show.bs.offcanvas", e=> {
+      $("#aside_handle").addClass("show");
+    });
+  }
+
   /**
    * "Next" button handler
    */
