@@ -439,6 +439,7 @@ export default class {
     return $.ajax({
       url: data._links.base,
       data: _.assign(data.params, params),
+    // eslint-disable-next-line complexity
     }).then(api => {
       const { data } = api;
 
@@ -501,8 +502,32 @@ export default class {
         const pctDiff = 100 * (FVT - RSN) / ((FVT + RSN) / 2);
         reachedGoal = pctDiff >= -3;
 
+        const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
+
+        if (this.reachedGoal && aboveOrBelow == "above") {
+          if (Monthly_Savings_Needed.value > 0) {
+            // remove 1st element from array, advice we don't want to display when goal has not been reached
+            // api.display.advice.shift();
+            // insert "you're already there.."
+            groupedAdvice["Our Advice"].unshift({
+              headline_html: `<p class="lead">By saving
+              ${this.tfvar(Current_Monthly_Savings)}
+              per month you are <strong>${aboveOrBelow}</strong> the
+              ${this.tfvar(Monthly_Savings_Needed)}
+              required to retire comfortably by age 
+              ${this.tfvar(Retirement_Age)}, in
+              ${this.tfvar(Retirement_Year_Target)}.</p>`,
+            });
+          } else {
+            groupedAdvice["Our Advice"].unshift({
+              headline_html: `<p class="lead">You are saving enough to retire comfortably by age 
+              ${this.tfvar(Retirement_Age)}, in
+              ${this.tfvar(Retirement_Year_Target)}.</p>`
+            });
+          }
+        }
+
         if (!reachedGoal) {
-          const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
           groupedAdvice["Our Advice"].unshift({
             headline_html: `<p class="lead">By saving
              ${this.tfvar(Current_Monthly_Savings)}
