@@ -504,7 +504,7 @@ export default class {
 
         const aboveOrBelow = (Current_Monthly_Savings.value < Monthly_Savings_Needed.value) ? "below" : "above";
 
-        if (this.reachedGoal && aboveOrBelow == "above") {
+        if (reachedGoal && aboveOrBelow == "above") {
           if (Monthly_Savings_Needed.value > 0) {
             // remove 1st element from array, advice we don't want to display when goal has not been reached
             // api.display.advice.shift();
@@ -525,9 +525,7 @@ export default class {
               ${this.tfvar(Retirement_Year_Target)}.</p>`
             });
           }
-        }
-
-        if (!reachedGoal) {
+        } else {
           groupedAdvice["Our Advice"].unshift({
             headline_html: `<p class="lead">By saving
              ${this.tfvar(Current_Monthly_Savings)}
