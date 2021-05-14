@@ -46,6 +46,7 @@ const PERSONAS = {
     Age_Now: 32,
     Age_Spouse: 32,
     Salary: 200000,
+    Household_Income: 200000,
     Expenses_Monthly: 7800,
     Income_Monthly: 13000,
     budgetcreated: true,
