@@ -271,109 +271,113 @@ export default class ShowcasePage {
       return adv;
     });
 
-    // group all advice into bucketed recommendations
-    let groupedAdvice = _.groupBy(allAdvice, (a) => {
-      return (a.tagGroup) ? a.tagGroup.name : "Recommendations";
-    });
+    console.info("Grouped advice is " + this.GROUPED_ADVICE_ENABLED);
+    let groupedAdvice = {};
+    if (this.GROUPED_ADVICE_ENABLED) {
+      // group all advice into bucketed recommendations
+      groupedAdvice = _.groupBy(allAdvice, (a) => {
+        return (a.tagGroup) ? a.tagGroup.name : "Recommendations";
+      });
 
-    // This is hard to read but straightforward chained lodash logic. Steps:
-    // 1.convert groupedAdvice object `toPairs` (new array of arrays [[tagGroup, itemsArr]])
-    // 2.sort by weight of tagGroup (pull from 1st item)
-    // 3.convert `fromPairs` back to object
-    // 4.retrieve chained value
-    //
-    // Cribbed from:
-    // https://github.com/lodash/lodash/issues/1459#issuecomment-253969771
-    groupedAdvice = _(groupedAdvice).toPairs().sortBy([(group) => {
-      const [/* key*/, items] = group;
-      // get the weight (defaults to 0) from first item in group
-      const { tagGroup: { weight = 0 } = {} } = _.first(items);
-      return weight;
-    }]).fromPairs().value();
+      // This is hard to read but straightforward chained lodash logic. Steps:
+      // 1.convert groupedAdvice object `toPairs` (new array of arrays [[tagGroup, itemsArr]])
+      // 2.sort by weight of tagGroup (pull from 1st item)
+      // 3.convert `fromPairs` back to object
+      // 4.retrieve chained value
+      //
+      // Cribbed from:
+      // https://github.com/lodash/lodash/issues/1459#issuecomment-253969771
+      groupedAdvice = _(groupedAdvice).toPairs().sortBy([(group) => {
+        const [/* key*/, items] = group;
+        // get the weight (defaults to 0) from first item in group
+        const { tagGroup: { weight = 0 } = {} } = _.first(items);
+        return weight;
+      }]).fromPairs().value();
 
-    const groupKeys = Object.keys(groupedAdvice);
+      const groupKeys = Object.keys(groupedAdvice);
 
-    // add handlebars helpers
-    groupKeys.forEach((key, idx) => {
-      // map each array of advice with some props
-      groupedAdvice[key] = groupedAdvice[key].map(a => {
+      // add handlebars helpers
+      groupKeys.forEach((key, idx) => {
+        // map each array of advice with some props
+        groupedAdvice[key] = groupedAdvice[key].map(a => {
+          // determine if this is an interactive chart attachment
+          const { attachment } = a;
+          let isChart = false;
+          if (attachment) {
+            isChart = attachment.contentType == "application/vnd+interactive.chart+html";
+            // handlebars helper
+            attachment._isInteractiveChart = isChart;
+          }
+
+          // only show icon for advice with summary or attachment
+          let icon = "";
+          if (a.summary && isChart) {
+            icon = "fal fa-chevron-down";
+          } else if (a.summary) {
+            icon = "fal fa-chevron-right";
+          } else {
+            icon = "fal fa-circle bullet-sm";
+          }
+          // handlebars helper
+          a._icon = icon;
+
+          return a;
+        });
+      });
+
+      // find "primary advice" -- last advice in highest weighted group
+      if (this.primaryAdviceModeEnabled) {
+        const highestWeightedGroup = _.last(groupKeys);
+        if (groupedAdvice[highestWeightedGroup] && groupedAdvice[highestWeightedGroup].length){
+          const primaryAdvice = _.last(groupedAdvice[highestWeightedGroup]);
+          primaryAdvice._isPrimary = true;
+          // assign it to temp prop
+          this.api.display_primary_advice = primaryAdvice;
+          // remove it from list that will become `recommendations`
+          groupedAdvice[highestWeightedGroup].pop();
+          // are there any recommendations left in this group?
+          if (!groupedAdvice[highestWeightedGroup].length) {
+            delete groupedAdvice[highestWeightedGroup];
+          }
+
+          // build a string for use below primary advice
+          const varStr = ` ${pluralize("inputs", this.api.variables.length, true)}`;
+          let factoredStr = "";
+          const assumptionLen = _.flatMap(this.api.assumptions).length;
+          const recommendationLen = _.flatMap(groupedAdvice).length;
+          if (assumptionLen > 0) {
+            factoredStr = `${pluralize("assumption", assumptionLen, true)}`;
+          }
+          this.api.display_primary_advice._evaluated = `<strong>${factoredStr}</strong> and <strong>${varStr}</strong>`;
+          this.api.display_primary_advice._recommended = `${pluralize("recommendation", recommendationLen, true)}`;
+        }
+      }
+
+      // all advice to render is saved to `recommendations`
+      this.api.recommendations = groupedAdvice;
+    } else {
+      // go through all advice tagGroups and remove the same back-to-back groups
+      let group = "";
+      allAdvice.forEach(adv => {
+        const currGroup = adv?.tagGroup?.name;
+        if (currGroup !== undefined) {
+          if (group == currGroup) {
+            delete adv.tagGroup;
+          }
+          group = currGroup;
+        }
+
         // determine if this is an interactive chart attachment
-        const { attachment } = a;
+        const { attachment } = adv;
         let isChart = false;
         if (attachment) {
           isChart = attachment.contentType == "application/vnd+interactive.chart+html";
           // handlebars helper
           attachment._isInteractiveChart = isChart;
         }
-
-        // only show icon for advice with summary or attachment
-        let icon = "";
-        if (a.summary && isChart) {
-          icon = "fal fa-chevron-down";
-        } else if (a.summary) {
-          icon = "fal fa-chevron-right";
-        } else {
-          icon = "fal fa-circle bullet-sm";
-        }
-        // handlebars helper
-        a._icon = icon;
-
-        return a;
       });
-    });
-
-    // find "primary advice" -- last advice in highest weighted group
-    if (this.primaryAdviceModeEnabled) {
-      const highestWeightedGroup = _.last(groupKeys);
-      if (groupedAdvice[highestWeightedGroup] && groupedAdvice[highestWeightedGroup].length){
-        const primaryAdvice = _.last(groupedAdvice[highestWeightedGroup]);
-        primaryAdvice._isPrimary = true;
-        // assign it to temp prop
-        this.api.display_primary_advice = primaryAdvice;
-        // remove it from list that will become `recommendations`
-        groupedAdvice[highestWeightedGroup].pop();
-        // are there any recommendations left in this group?
-        if (!groupedAdvice[highestWeightedGroup].length) {
-          delete groupedAdvice[highestWeightedGroup];
-        }
-
-        // build a string for use below primary advice
-        const varStr = ` ${pluralize("inputs", this.api.variables.length, true)}`;
-        let factoredStr = "";
-        const assumptionLen = _.flatMap(this.api.assumptions).length;
-        const recommendationLen = _.flatMap(groupedAdvice).length;
-        if (assumptionLen > 0) {
-          factoredStr = `${pluralize("assumption", assumptionLen, true)}`;
-        }
-        this.api.display_primary_advice._evaluated = `<strong>${factoredStr}</strong> and <strong>${varStr}</strong>`;
-        this.api.display_primary_advice._recommended = `${pluralize("recommendation", recommendationLen, true)}`;
-      }
+      this.api.recommendations = allAdvice;
     }
-
-    // if advice returns group "Our Advice", use it first
-    this._hasOurAdvice = false;
-    // if (groupKeys.includes("Our Advice")) {
-    //   this._hasOurAdvice = true;
-    //   groupedAdvice = {
-    //     "Our Advice": groupedAdvice["Our Advice"],
-    //     "Our Thinking": groupedAdvice["Our Thinking"] || [],
-    //     "Considerations": groupedAdvice["Considerations"] || [],
-    //     ...groupedAdvice
-    //   }
-
-    //   if (groupedAdvice["Our Advice"][0]){
-    //     groupedAdvice["Our Advice"][0]._len = groupedAdvice["Our Advice"].length;
-    //   }
-    //   if (groupedAdvice["Our Thinking"][0]) {
-    //     groupedAdvice["Our Thinking"][0]._len = groupedAdvice["Our Thinking"].length;
-    //   }
-    //   if (groupedAdvice["Considerations"][0]){
-    //     groupedAdvice["Considerations"][0]._len = groupedAdvice["Considerations"].length;
-    //   }
-    // }
-
-    // all advice to render is saved to `recommendations`
-    this.api.recommendations = groupedAdvice;
 
     // add config to api data because handlebars can't access `jga` global
     this.api.config = window.jga.config;

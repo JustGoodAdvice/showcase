@@ -8,7 +8,11 @@ import store from "store";
 
 export default class extends ShowcasePage {
   init() {
+    // disable advice grouping
+    this.GROUPED_ADVICE_ENABLED = false;
+
     super.init();
+
     this.initCache();
     this.handleOffCanvasEvt();
     this.AUTO_EXPAND_RECOMMENDATION_COUNT = 4;
@@ -62,8 +66,8 @@ export default class extends ShowcasePage {
         });
 
         // when data is updated after page-load, use this fn
-        this.$loadingContainer = $(".row.split-columns");
-        this.scrollTo = $(".advice-set-details .lead").offset().top || 0;
+        this.$loadingContainer = $(".row.advice-wrap");
+        // this.scrollTo = $(".advice-set-details .lead").offset().top || 0;
 
         this.updateFn = (data) => {
           // update content
@@ -90,7 +94,7 @@ export default class extends ShowcasePage {
       "InputRequest": Handlebars.compile($("#tmpl_adviceInputRequest").html()),
       "Advice": Handlebars.compile($("#tmpl_adviceAdvice").html()),
       "Recommendations": Handlebars.compile($("#tmpl_groupedRecommendationsAdviceList").html()),
-      "RecommendationsOur": Handlebars.compile($("#tmpl_groupedOurRecommendationsAdviceList").html()),
+      "RecommendationsList": Handlebars.compile($("#tmpl_recommendationsAdviceList").html()),
       "Assumptions": Handlebars.compile($("#tmpl_assumptionsList").html()),
       "QuestionsAnswers": Handlebars.compile($("#tmpl_answersList").html()),
       "Error": Handlebars.compile($("#tmpl_error").html()),
@@ -368,23 +372,12 @@ export default class extends ShowcasePage {
    * Update advice list by group
    */
   updateRecommendationsList() {
-    // simple helper for UX
-    const recommendationGroupCount = Object.keys(this.api.recommendations).length;
-    this.api._recommendationsExist = _.flatMap(this.api.recommendations).length > 0;
+    // simple helpers for UX
+    this.api._recommendationsExist = this.api.recommendations.length > 0;
     this.api._referenceDocumentsExist = this.api.adviceset.referenceDocuments.length > 0;
-    this.api._showPrimaryPersonalized = (this.api._recommendationsExist && recommendationGroupCount >= 2) || this.api._referenceDocumentsExist;
 
     // render
-    const tmpl = this._hasOurAdvice ? "RecommendationsOur" : "Recommendations";
-    if (this._hasOurAdvice) {
-      this.api.recommendations_others = {};
-      Object.keys(this.api.recommendations).forEach(group => {
-        if (group != "Our Advice" && group != "Our Thinking" && group != "Considerations") {
-          this.api.recommendations_others[group] = this.api.recommendations[group];
-          delete this.api.recommendations[group];
-        }
-      });
-    }
+    const tmpl = this.GROUPED_ADVICE_ENABLED ? "Recommendations" : "RecommendationsList";
     const str = this.TEMPLATES[tmpl](this.api);
     $(".list-all-recommendations").html(str);
     const strReferences = this.TEMPLATES["AdviceSetReferences"](this.api);
@@ -557,7 +550,7 @@ export default class extends ShowcasePage {
     this.$advice.on("submit", "form", e => {
       const $form = $(e.currentTarget);
 
-      $("html, body").animate({ scrollTop: this.scrollTo });
+      // $("html, body").animate({ scrollTop: this.scrollTo });
 
       // convert values from masked to unmasked for form submission
       const $inputs = this._findFormInput($form);
@@ -596,7 +589,7 @@ export default class extends ShowcasePage {
       const { _currIdx } = this.api.display;
       const display = this.api.answers.find((a) => { return a.idx == _currIdx - 1; });
       if (!display) { return; }
-      $("html, body").animate({ scrollTop: this.scrollTo });
+      // $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
       this.api.display = display;
       this.updateMainPane();
@@ -611,7 +604,7 @@ export default class extends ShowcasePage {
       e.preventDefault();
       const $this = $(e.currentTarget);
       const data = $this.data();
-      $("html, body").animate({ scrollTop: this.scrollTo });
+      // $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored
       const answer = _.flatMap(this.api.assumptions).find((a) => { return a.idx == data.idx; });
@@ -629,7 +622,7 @@ export default class extends ShowcasePage {
       e.preventDefault();
       const $this = $(e.currentTarget);
       const { idx } = $this.data();
-      $("html, body").animate({ scrollTop: this.scrollTo });
+      // $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored
       const answer = _.flatMap(this.api.answers).find((a) => { return a.idx == idx; });

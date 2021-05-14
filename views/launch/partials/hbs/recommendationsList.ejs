@@ -1,0 +1,69 @@
+<script id="tmpl_recommendationsAdviceList" type="text/x-handlebars-template">
+	{{#if _recommendationsExist}}
+		
+		{{#each recommendations}}
+      <div class="advice-item">
+        <a href="{{../../config.advicebuilder_host}}/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}" target="_ab_{{ruleSetId}}" class="headline-open-advice-in-ab">Edit</a>
+
+        {{#if tagGroup.name}}
+        <div class="advice--group">
+          <span>{{tagGroup.name}}</span>
+        </div>
+        {{/if}}
+
+        <h3 class="advice--headline">
+          {{#if headline_html}}
+            {{{breaklines headline_html}}}
+          {{else}}
+            {{breaklines headline}}
+          {{/if}}
+        </h3>
+
+        {{#if summary}}
+          {{#if attachment}}
+            {{#if attachment._isInteractiveChart}}
+              <section class="advice--attachment advice-chart--interactive" id="{{id}}_{{@index}}" data-id="{{attachment.id}}"
+                data-src="{{attachment.url}}">
+                <scr{{!}}ipt>
+                  var chartFrame = document.createElement('iframe');
+                  chartFrame.frameBorder = '0';
+                  chartFrame.scrolling = 'no';
+                  chartFrame.allowTransparency = 'true';
+                  chartFrame.allowFullscreen = 'true';
+                  chartFrame.width = '100%';
+                  chartFrame.height = '100%';
+                  document.getElementById('{{id}}_{{@index}}').appendChild(chartFrame);
+                </scr{{!}}ipt>
+              </section>
+            {{else}}
+              <section class="advice--attachment">
+                <figure>
+                  <img class="img-fluid" src="https://d1d53ugxmopqf1.cloudfront.net/fit-in/1000x563/filters:quality(75)/{{attachment.fileId}}">
+                </figure>
+              </section>
+            {{/if}}
+          {{/if}}
+
+          <div class="advice--summary">
+            {{#if summary_html}}
+              {{{breaklines summary_html}}}
+            {{else}}
+              {{breaklines summary}}
+            {{/if}}
+          </div>
+
+          {{#if actions.length}}
+            <div class="advice--actions">
+              {{#each actions}}
+              <div><a href="{{url}}" target="_blank" class="btn btn-sm btn-outline-secondary">{{name}}</a></div>
+              {{/each}}
+            </div>
+          {{/if}}
+
+        {{/if}}
+      </div>
+
+		{{/each}}
+		
+	{{/if}}
+</script>

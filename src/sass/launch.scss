@@ -98,25 +98,6 @@ $aside-handle-width: 20px;
   }
 }
 
-taffrail-varx {
-  &.mark {
-    border-radius: $border-radius;
-    background-color: transparent;
-    padding: 0;
-
-    &.active {
-      background-color: $gray-200; //lighten($rust, 35%);
-      cursor: pointer;
-      padding: .15rem;
-
-      &:hover {
-        background-color: $gray-300; //lighten($rust, 25%);
-        color: $secondary;
-      }
-    }
-  }
-}
-
 taffrail-var {
   &.mark {
     border-radius: 0;
@@ -158,21 +139,24 @@ body.launch {
     flex: 1 1 100%;
   }
 
-  .split-columns {
-    display: flex;
-    height: 100%;
-    min-height: 100%;
-    
-    main {
-      padding-top: 2rem;
-    }
+  main {
+    min-height: 30rem;
   }
 
-  main {
-    // background: transparent url("/img/Taffrail_LifeRing_NoWaves_Navy@2x.png") right -77px no-repeat;
-    // background-size: 379.25px 378.5px;
-    // margin-top: 2rem;
-    min-height: 30rem;
+  aside {
+    .list-group-flush {
+      margin-left: -1.25rem;
+      margin-right: -1.25rem;
+
+      .list-group-item {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
+    }
+
+    .accordion-item--first {
+      border-top-width: 6px;
+    }
   }
 
   #aside_handle {
@@ -199,6 +183,7 @@ body.launch {
 
       i {
         -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+        filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
         transform: scale(-1, 1);
       }
     }
@@ -299,22 +284,6 @@ body.launch {
     }
   }
 
-  aside {
-    .list-group-flush {
-      margin-left: -1.25rem;
-      margin-right: -1.25rem;
-
-      .list-group-item {
-        padding-left: 1.25rem;
-        padding-right: 1.25rem;
-      }
-    }
-
-    .accordion-item--first {
-      border-top-width: 6px;
-    }
-  }
-
   .advice-outer-container {
     margin-bottom: 5rem;
   }
@@ -375,130 +344,81 @@ body.launch {
     }
   }
 
-  .advice-group {
-    a.group-toggler {
-      color: $primary;
-      text-decoration: none;
-    }
-  }
-
-  .accordion-button.group-toggler {
-    background-color: transparent;
-    box-shadow: none;
-    font-size: $h5-font-size;
-    padding: 0;
-  }
-
-  .advice-group {
-    header {
-      margin-bottom: $headings-margin-bottom * 2;
-
-      i {
-        min-width: 1.25rem;
-      }
-    }
-  }
-
-  .advice-group + .advice-group {
-    margin-top: 2rem;
-  }
-
-  // see `recommendations_ours.ejs`
-  .advice-group {
-    &.ours {
-      margin-top: 1rem;
-
-      li {
-        margin-bottom: 1rem;
-
-        .summary {
-          color: $gray-700;
-          font-style: italic;
-          margin-bottom: .5rem;
-          margin-top: .5rem;
-        }
-      }
-    }
-  }
-
-  .ours-split-col {
-    & { position: relative; }
-
-    border: 1px solid $gray-400;
-    border-radius: $border-radius;
-    margin-left: -25%;
-    padding: 2rem 2rem 3rem 2rem;
-    position: absolute;
-    width: 150%;
-
-    section {
-      font-size: 90%;
-      width: 50%;
-    }
-  }
-
-  .advice-list {
-    &.fa-ul {
-      margin-left: 0;
-
-      .fa-li {
-        display: none;
-        left: unset;
-        position: unset;
-        visibility: hidden;
-        width: unset;
-      }
+  .list-all-recommendations {
+    .advice-item {
+      position: relative;
     }
 
-    li {
-      margin-bottom: 1rem;
+    .headline-open-advice-in-ab {
+      color: $gray-500;
+      display: none;
+      font-size: $font-size-sm;
+      font-weight: normal;
+      position: absolute;
+      top: 0;
+      right: - ($spacer);
+    }
 
-      // very last (or only) <li> does not need a bottom margin
-      &:last-child.no-summary {
-        margin-bottom: 0;
-      }
-
-      .headline {
-        display: inline-block;
-      }
-
-      .headline ul {
-        margin-top: 1rem;
-      }
-
-      .headline-open-advice-in-ab {
-        display: none;
-        font-size: $font-size-sm;
-        font-weight: normal;
-        position: absolute;
-        top: 0;
-        right: 0;
-        visibility: hidden;
-      }
-
-      .advice-editor-mode-enabled & {
+    .advice-editor-mode-enabled & {
+      &:hover {
         .headline-open-advice-in-ab {
           display: inline-block;
         }
+      }
+    }
 
-        &:hover {
-          .headline-open-advice-in-ab {
-            visibility: visible;
-          }
+    ul {
+      list-style-type: square;
+      padding-left: $spacer;
+      margin-bottom: 0;
+
+      li {
+        margin-top: $spacer * .75;
+      }
+    }
+
+    .advice--group {
+      border-top: 1px solid $gray-300;
+      font-family: $font-family-sans-serif;
+      margin-top: $spacer * 2;
+      padding-top: $spacer * .25;
+
+      + .advice--headline {
+        margin-top: -$spacer + -($spacer * .5);
+        padding-top: 0;
+      }
+
+      // pull group name out to the left, on large screens only
+      $pull-left: 200px;
+
+      @include media-breakpoint-up(lg) {
+        margin-left: $pull-left * -1;
+
+        span {
+          display: inline-block;
+          max-width: $pull-left;
+          padding-right: $spacer / 2;
         }
       }
     }
 
-    .summary {
-      color: $gray-700;
-      font-size: 90%;
+    .advice--headline {
+      display: inline;
+      font-family: $font-family-sans-serif;
+      font-size: $font-size-base;
+      font-weight: bold;
+      line-height: $line-height-base;
+      margin-top: $spacer;
+      margin-bottom: 0;
     }
 
-    // only when centered...
-		.advice-attachment.advice-chart--interactive {
-			margin: -.5rem 0 1rem -.5rem;
-			padding: 0;
-		}
+    .advice--summary {
+      display: inline;
+    }
+
+    .advice--actions {
+      margin: ($spacer / 2) 0;
+    }
   }
 
   // inside a modal
