@@ -3,15 +3,23 @@
 		
 		{{#each recommendations}}
       <div class="advice-item">
-        <a href="{{../../config.advicebuilder_host}}/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}" target="_ab_{{ruleSetId}}" class="headline-open-advice-in-ab">Edit</a>
-
         {{#if tagGroup.name}}
         <div class="advice--group">
           <span>{{tagGroup.name}}</span>
+          {{#if @first}}
+            <div>
+              <%- include("_dropdown"); %>
+            </div>
+          {{/if}}
         </div>
         {{/if}}
 
         <h3 class="advice--headline">
+          <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group" role="group" aria-label="Advice Builder group">
+              <a href="{{../config.advicebuilder_host}}/advicesets/{{ruleSetId}}/rules/{{ruleId}}/show?selectedNodeId={{id}}{{#if audienceType}}&audienceId={{audienceType.id}}{{/if}}" target="_ab_{{ruleSetId}}" class="btn btn-sm" data-toggle="tooltip" title="Edit Advice" data-bs-placement="left"><i class="fal fa-edit"></i></a>
+            </div>
+          </div>
           {{#if headline_html}}
             {{{breaklines headline_html}}}
           {{else}}

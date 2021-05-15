@@ -167,7 +167,7 @@ body.launch {
     border-bottom-left-radius: $border-radius;
     height: 100px;
     flex-shrink: unset;
-    margin: -$aside-handle-width;
+    margin-right: -$aside-handle-width;
     max-width: $aside-handle-width;
     padding: 0;
     position: absolute;
@@ -286,6 +286,7 @@ body.launch {
 
   .advice-outer-container {
     margin-bottom: 5rem;
+    margin-top: 2.5rem;
   }
 
   .advice {
@@ -349,24 +350,6 @@ body.launch {
       position: relative;
     }
 
-    .headline-open-advice-in-ab {
-      color: $gray-500;
-      display: none;
-      font-size: $font-size-sm;
-      font-weight: normal;
-      position: absolute;
-      top: 0;
-      right: - ($spacer);
-    }
-
-    .advice-editor-mode-enabled & {
-      &:hover {
-        .headline-open-advice-in-ab {
-          display: inline-block;
-        }
-      }
-    }
-
     ul {
       list-style-type: square;
       padding-left: $spacer;
@@ -379,6 +362,8 @@ body.launch {
 
     .advice--group {
       border-top: 1px solid $gray-300;
+      display: flex;
+      justify-content: space-between;
       font-family: $font-family-sans-serif;
       margin-top: $spacer * 2;
       padding-top: $spacer * .25;
@@ -406,10 +391,33 @@ body.launch {
       display: inline;
       font-family: $font-family-sans-serif;
       font-size: $font-size-base;
-      font-weight: bold;
+      font-weight: 500;
       line-height: $line-height-base;
       margin-top: $spacer;
       margin-bottom: 0;
+      position: relative;
+    }
+
+    .advice--headline {
+      .btn-toolbar {
+
+        display: none;
+        .advice-editor-mode-enabled & {
+          display: block;
+        }
+
+        position: absolute;
+        top: 0;
+        left: -($spacer * 2);
+
+        .btn-group a:first-child {
+          padding-top: 0;
+        }
+
+        a {
+          color: $gray-500;
+        }
+      }
     }
 
     .advice--summary {
