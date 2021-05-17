@@ -131,7 +131,7 @@ export default class extends ShowcasePage {
 
       data.adviceset = {
         title: entity.name,
-        description: entity.description,
+        description: null, // Removed 5/17 for UX simplication only. //entity.description,
         owner: owner,
         _links: this.api.adviceset._links
       }
@@ -485,7 +485,7 @@ export default class extends ShowcasePage {
         const $chart = $(this);
         const { src } = $chart.data();
         // parent container
-        let $parentContainer = $chart.parents(".recommendations");
+        let $parentContainer = $chart.parents(".list-all-recommendations");
         if (!$parentContainer.length) {
           $parentContainer = $chart.parents(".advice");
         }
