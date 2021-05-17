@@ -11,6 +11,7 @@ const PERSONAS = {
     Marital_Status: "single",
     Age_Now: 25,
     Salary: 150000,
+    Household_Income: 150000,
     Expenses_Monthly: 7000,
     Income_Monthly: 10000,
     budgetcreated: true,
