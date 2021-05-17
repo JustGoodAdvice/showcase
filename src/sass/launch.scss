@@ -21,6 +21,8 @@ $theme-colors: (
   'tertiary': #67DFBA
 );
 
+$font-size-base: 1.15rem;
+
 $primary: map-get($theme-colors, 'primary');
 $secondary: map-get($theme-colors, 'secondary');
 $tertiary: map-get($theme-colors, 'tertiary');
@@ -275,6 +277,10 @@ body.launch {
   .advice-set-details {
     margin-bottom: 2rem;
 
+    h1 {
+      font-size: $h2-font-size;
+    }
+
     .title a {
       text-decoration: none;
     }
@@ -348,6 +354,7 @@ body.launch {
   .list-all-recommendations {
     .advice-item {
       position: relative;
+      margin-top: $spacer;
     }
 
     ul {
@@ -393,7 +400,7 @@ body.launch {
       font-size: $font-size-base;
       font-weight: 500;
       line-height: $line-height-base;
-      margin-top: $spacer;
+      
       margin-bottom: 0;
       position: relative;
     }
@@ -410,11 +417,20 @@ body.launch {
         top: 0;
         left: -($spacer * 2);
 
-        .btn-group a:first-child {
+        .btn-group-vertical a:first-child {
           padding-top: 0;
         }
 
-        a {
+        .btn:active,
+        .btn:hover {
+          color: $primary;
+        }
+
+        .btn:active {
+          box-shadow: none;
+        }
+
+        a.btn {
           color: $gray-500;
         }
       }
