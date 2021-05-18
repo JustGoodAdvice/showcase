@@ -269,9 +269,12 @@ export default class {
             // }
             if (saveRetirement) {
               console.group("Retirement");
+              const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection";
               const {
                 "401K_Deferral_Max_Pct": _401K_Contribution_Max_Pct = { value: 0 },
+                "401K_Deferral_Max_Monthly": _401K_Deferral_Max_Monthly = { value: 0 },
                 "401K_Contribution_Current_Pct": _401K_Contribution_Current_Pct = { value: 0 },
+                Monthly_IRA_Contribution_Current = { value: 0 },
                 Monthly_Retirement_Savings_Other_Current = { value: 0 },
                 Monthly_IRA_Contribution_Max = { value: 0 },
                 Salary = { value: 0 },
@@ -342,13 +345,12 @@ export default class {
                   if (isNaN(otherContribution)) {
                     otherContribution = 0;
                   }
-                  console.log("willMaxIra values", otherContribution, iraContribution, remainderToContributeToRetirement)
+                  console.log("willMaxIra values", otherContribution, iraContribution, remainderToContributeToRetirement);
                 }
 
                 console.log(`IRA contribution ${iraContribution}`);
                 console.log(`Other savings ${otherContribution}`);
 
-                const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection"; // API input
                 queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
                   "401K_Contribution_Current_Pct": newContributionPct,
                   [hasIraRuleId]: 1,
@@ -359,19 +361,46 @@ export default class {
                 budget -= (iraContribution + otherContribution);
                 // }
               } else {
-                // maxed 401k, stick rest into IRA & other
-                const hasIraRuleId = "rule_uOCZo71UpkvkFNjUwuuqV_selection";
-                const iraContribution = budget > Monthly_IRA_Contribution_Max.value ? Monthly_IRA_Contribution_Max.value : budget;
-                const otherContribution = Math.abs(budget - iraContribution);
-                console.log(`401k is already maxed, apply remainder to IRA $(${iraContribution}) and other (${otherContribution})`);
+                // maxed 401k, stick rest into IRA (if not maxed) & other
+                // budget -= _401K_Deferral_Max_Monthly.value;
+                console.log(`Budget is $${budget}`);
+                console.log(`401k is already maxed at $${_401K_Deferral_Max_Monthly.value}`);
+
+                let iraContribution = 0;
+                let otherContribution = Monthly_Retirement_Savings_Other_Current.value;
+
+                // is IRA already maxed?
+                const maxedIra = Monthly_IRA_Contribution_Current.value >= Monthly_IRA_Contribution_Max.value;
+                if (maxedIra) {
+                  console.log(`IRA is already maxed at $${Monthly_IRA_Contribution_Current.value}`);
+                  iraContribution = Monthly_IRA_Contribution_Max.value;
+                } else {
+                  console.log(`IRA is not yet maxed with ${iraContribution} contribution`);
+                  iraContribution = (budget > Monthly_IRA_Contribution_Max.value) ? Monthly_IRA_Contribution_Max.value : budget;
+                  budget -= iraContribution;
+                }
+
+                // if IRA is maxed, use entire balance of budget to "other"... otherwise reduce budget by IRA contribution amount before applying to other
+                otherContribution = maxedIra ? budget : Math.abs(budget - iraContribution);
+                budget -= otherContribution;
+                console.log(`IRA contribution will be ${iraContribution}`)
+                console.log(`Other contribution will be remainder ${otherContribution}`)
+                console.log(`Remaining budget ${budget}`)
+
+                // const willMaxIra = iraContribution >= Number(Monthly_IRA_Contribution_Max.value.toFixed(2));
+                // if (willMaxIra) {
+                //   console.log(`IRA would be maxed with $${iraContribution} to contribute`);
+                //   otherContribution = Number(otherContribution);
+                // } else {
+                //   console.log(`IRA would NOT be maxed with remainder $${iraContribution} to contribute`);
+                // }
+
                 queue.push(this._OPTIMIZE_REFRESH_GOAL(saveRetirement, {
                   "401K_Contribution_Current_Pct": _401K_Contribution_Max_Pct.value,
                   [hasIraRuleId]: 1,
                   Monthly_IRA_Contribution_Current: iraContribution,
                   Monthly_Retirement_Savings_Other_Current: otherContribution,
                 }));
-
-                budget -= (iraContribution + otherContribution);
               }
               console.groupEnd();
             }
