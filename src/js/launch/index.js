@@ -14,6 +14,7 @@ export default class extends ShowcasePage {
     super.init();
 
     this.initCache();
+    this.handleClickOpenOffCanvasControls();
     this.handleOffCanvasEvt();
     this.AUTO_EXPAND_RECOMMENDATION_COUNT = 4;
 
@@ -34,10 +35,7 @@ export default class extends ShowcasePage {
         this.handleClickBack();
         this.handleClickAssumption();
         this.handleClickTaffrailVar();
-        this.handleCollapseAdviceSummaries();
-        this.handleCollapseAssumptionGroup();
         this.listenForUrlChanges();
-        this.handleClickExpandControls();
         this.handleClickOpenRawDataModal();
         // this.handleResizeChart();
 
@@ -597,6 +595,16 @@ export default class extends ShowcasePage {
   }
 
   /**
+   * "Controls" button handler
+   */
+  handleClickOpenOffCanvasControls() {
+    $(document).on("click", "a.open-controls", e => {
+      e.preventDefault();
+      $("#aside_handle").find("a").trigger("click");
+    });
+  }
+
+  /**
    * Click handler for assumptions or Q&A
    */
   handleClickAssumption() {
@@ -629,84 +637,6 @@ export default class extends ShowcasePage {
       this.api.display = answer;
       this.api.display.idx = answer.idx;
       this.updateMainPane();
-    });
-  }
-
-  /**
-   * Listener for opening/closing advice summaries
-   */
-  handleCollapseAdviceSummaries() {
-    $(".list-all-recommendations").on("show.bs.collapse", ".collapse", (e) => {
-      const $this = $(e.currentTarget);
-      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
-      const isGroupHeader = $toggler.hasClass("group-toggler") && $toggler.find("i").length;
-      if (isGroupHeader) {
-        $toggler.find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
-      } else {
-        $toggler.find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
-      }
-    });
-
-    $(".list-all-recommendations").on("hidden.bs.collapse", ".collapse", (e) => {
-      const $this = $(e.currentTarget);
-      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
-      const isGroupHeader = $toggler.hasClass("group-toggler");
-      if (isGroupHeader) {
-        $toggler.find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
-      } else {
-        $toggler.find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
-      }
-    });
-  }
-
-  /**
-   * Listener for opening/closing assumption groups
-   */
-  handleCollapseAssumptionGroup() {
-    $(".assumptions").on("show.bs.collapse", "ol.assumptions-list.collapse", (e) => {
-      const $this = $(e.currentTarget);
-      const { groupId } = $this.find("li").first().data();
-      store.set(`assumption_${groupId}_${this.api.adviceset.id}`, true);
-      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
-      $toggler.find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
-    });
-
-    $(".assumptions").on("hidden.bs.collapse", "ol.assumptions-list.collapse", (e) => {
-      const $this = $(e.currentTarget);
-      const { groupId } = $this.find("li").first().data();
-      store.set(`assumption_${groupId}_${this.api.adviceset.id}`, false);
-      const $toggler = $(`a[aria-controls=${$this.prop("id")}]`);
-      $toggler.find("i").removeClass("fa-chevron-down").addClass("fa-chevron-right");
-    });
-  }
-
-  /**
-   * Handle expando/collapso links on sidebar
-   */
-  handleClickExpandControls() {
-    $("main").on("click", "a[data-expand]", e => {
-      e.preventDefault();
-      const $this = $(e.currentTarget);
-      const { expand } = $this.data();
-
-      $this.tooltip("hide");
-
-      let $collapsibles;
-      if (expand == "assumptions") {
-        $collapsibles = $(".assumptions-list.collapse");
-      } else if (expand == "advice") {
-        $collapsibles = $(".advice-list").find(".collapse");
-      }
-
-      // open or close?
-      const { collapsed = true } = $this.data();
-      const collapse = collapsed ? "show" : "hide";
-      $collapsibles
-        .collapse(collapse)
-        .on("shown.bs.collapse", e => { this._toggleCollapseLink($this, true) })
-        .on("hidden.bs.collapse", e => { this._toggleCollapseLink($this, false) });
-
-      this._toggleCollapseLink($this, collapse == "show");
     });
   }
 

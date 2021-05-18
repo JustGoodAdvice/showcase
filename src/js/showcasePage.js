@@ -64,7 +64,8 @@ export default class ShowcasePage {
       // v5
       new bootstrap.Tooltip(document.body, {
         selector: "[data-toggle=tooltip]",
-        html: true
+        html: true,
+        delay: 250
       });
     } else {
       $("body").tooltip({ selector: "[data-toggle=tooltip]", html: true });

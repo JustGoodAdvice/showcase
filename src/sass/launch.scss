@@ -296,19 +296,38 @@ body.launch {
   }
 
   .advice {
+    position: relative;
+
     .question {
 			background-color: $gray-100;
       border: 2px solid $secondary;
 			border-radius: $border-radius;
-      margin-left: -2rem;
-			padding: 2rem 4rem;
+      left: -$spacer * 3;
+			padding: 2rem 5rem;
       position: absolute;
-      width: 680px;
+      width: $spacer * 46;
       z-index: $zindex-fixed - 3;
+
+      .tools {
+        position: absolute;
+        top: $spacer;
+        right: $spacer;
+
+        font-size: $font-size-base;
+      }
+      
+      .btn:active {
+        box-shadow: none;
+      }
+
+      .title {
+        font-size: $h3-font-size;
+      }
 
 			.explanation {
 				color: $gray-dark;
-        font-size: 90%;
+        // font-size: 90%;
+        font-weight: 300;
 			}
 
 			form {
@@ -353,8 +372,8 @@ body.launch {
 
   .list-all-recommendations {
     .advice-item {
-      position: relative;
       margin-top: $spacer;
+      position: relative;
     }
 
     ul {
@@ -369,58 +388,51 @@ body.launch {
 
     .advice--group {
       border-top: 1px solid $gray-300;
-      display: flex;
-      justify-content: space-between;
-      font-family: $font-family-sans-serif;
-      margin-top: $spacer * 2;
-      padding-top: $spacer * .25;
-
-      + .advice--headline {
-        margin-top: -$spacer + -($spacer * .5);
-        padding-top: 0;
-      }
-
-      // pull group name out to the left, on large screens only
-      $pull-left: 200px;
+      margin-bottom: $spacer;
+      min-height: 1px;
+      position: relative;
 
       @include media-breakpoint-up(lg) {
-        margin-left: $pull-left * -1;
+        margin-bottom: 0;
 
-        span {
+        // pull group name out to the left, on large screens only
+        $pull-left: 200px;
+
+        label {
+          border-top: 1px solid $gray-300;
           display: inline-block;
+          font-family: $font-family-sans-serif;
+          font-weight: 300;
+          left: $pull-left * -1;
+          margin-top: -1px;
           max-width: $pull-left;
           padding-right: $spacer / 2;
+          position: absolute;
+          width: $pull-left;
         }
+      }
+
+      + .btn-toolbar {
+        border-top: 1px solid $gray-300;
       }
     }
 
-    .advice--headline {
-      display: inline;
-      font-family: $font-family-sans-serif;
-      font-size: $font-size-base;
-      font-weight: 500;
-      line-height: $line-height-base;
+    .btn-toolbar {
+      display: none;
       
-      margin-bottom: 0;
-      position: relative;
-    }
+      .advice-editor-mode-enabled & {
+        display: block;
+      }
 
-    .advice--headline {
-      .btn-toolbar {
+      left: 100%;
+      position: absolute;
+      top: 0;
 
-        display: none;
-        .advice-editor-mode-enabled & {
-          display: block;
+      > .btn-group {
+        a.btn:first-child {
+          padding-left: 0;
         }
-
-        position: absolute;
-        top: 0;
-        left: -($spacer * 2);
-
-        .btn-group-vertical a:first-child {
-          padding-top: 0;
-        }
-
+        
         .btn:active,
         .btn:hover {
           color: $primary;
@@ -436,8 +448,20 @@ body.launch {
       }
     }
 
+    .advice--headline {
+      display: inline;
+      font-family: $font-family-sans-serif;
+      font-size: $font-size-base;
+      font-weight: 600; // semibold
+      line-height: $line-height-base;
+      
+      margin-bottom: 0;
+      position: relative;
+    }
+
     .advice--summary {
       display: inline;
+      font-weight: 300; // light
     }
 
     .advice--actions {

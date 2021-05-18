@@ -3,10 +3,11 @@
 		<h5 class="mb-3 rs-context" id="context_{{display.ruleSetId}}"><span class="text-muted">...</span></h5>
 	{{/if}}
 	<div class="question shadow-lg rounded">
-		<header class="mb-1 d-flex align-items-center justify-content-between">
-			<h4 class="mb-0 mr-2">{{display.question}}</h4>
+		<div class="tools">
 			<%- include("_dropdown"); %>
-		</header>
+			<button type="button" class="btn-close" aria-label="Close"></button>
+		</div>
+		<h2 class="title">{{display.question}}</h4>
 		{{#if display.explanation}}
 			<div class="explanation">
 				<p>{{display.explanation}}</p>
