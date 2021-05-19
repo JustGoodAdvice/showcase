@@ -775,7 +775,7 @@ export default class ShowcasePage {
    * Handle clicks to toggle advice editing mode
    */
   handleClickToggleAdviceEditorMode() {
-    $("main").on("click", "a[data-action='toggle-edit-advice-mode']", e => {
+    $(document).on("click", "a[data-action='toggle-edit-advice-mode']", e => {
       e.preventDefault();
       const currentlyEnabled = this.adviceEditorModeEnabled;
       const modeEnabled = !currentlyEnabled ? true : false;
