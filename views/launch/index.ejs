@@ -54,22 +54,31 @@
         </nav>
         <ul class="list-unstyled settings-buttons">
           <li><a href="/s/<%= locals.adviceSetId %>" data-toggle="tooltip" title="Start over"><i class="fal fa-undo"></i></a></li>
-          <li><a href="#" data-toggle="tooltip" title="Change View"><i class="fal fa-window-alt"></i></a></li>
-          <li><a href="#" data-toggle="tooltip" title="Change Voice"><i class="fal fa-microphone-alt"></i></a></li>
-          <li>
-            <div class="dropdown" data-toggle="tooltip" title="API Channel">
-              <a href="#" class="dropdown-toggle" id="dropdownMenuButtonApiSelect" data-bs-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fal fa-box-check"></i> <span data-channel-name></span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButtonApiSelect">
-                <h6 class="dropdown-header">API CHANNELS</h6>
-                <div class="channel-switcher">
-                  <a class="dropdown-item" href="#" data-channel="published" data-action="set-channel"><i
-                      class="fal fa-rocket-launch"></i>&nbsp;Published</a>
-                  <a class="dropdown-item" href="#" data-channel="preview" data-action="set-channel"><i
-                      class="fal fa-cubes"></i>&nbsp;Preview</a>
-                </div>
+          <li class="dropdown" data-toggle="tooltip" title="Change voice">
+            <a href="#" class="dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fal fa-microphone-alt"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+              <h6 class="dropdown-header">VOICES</h6>
+              <div class="audience-switcher">
+                <a class="dropdown-item" href="#" data-audience-id="-1" data-action="set-audience"><i
+                    class="fal fa-microphone-alt"></i>&nbsp;Default</a>
+                <a class="dropdown-item" href="#" data-audience-id="gRGmgTjX7" data-action="set-audience"><i
+                    class="fal fa-microphone-alt"></i>&nbsp;Advisor</a>
+              </div>
+            </div>
+          </li>
+          <li class="dropdown" data-toggle="tooltip" title="API Channel">
+            <a href="#" class="dropdown-toggle" id="dropdownMenuButtonApiSelect" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fal fa-box-check"></i> <span data-channel-name></span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonApiSelect">
+              <h6 class="dropdown-header">API CHANNELS</h6>
+              <div class="channel-switcher">
+                <a class="dropdown-item" href="#" data-channel="published" data-action="set-channel"><i
+                    class="fal fa-rocket-launch"></i>&nbsp;Published</a>
+                <a class="dropdown-item" href="#" data-channel="preview" data-action="set-channel"><i
+                    class="fal fa-cubes"></i>&nbsp;Preview</a>
               </div>
             </div>
           </li>
