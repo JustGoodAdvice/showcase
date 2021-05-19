@@ -5,7 +5,6 @@ import Handlebars from "handlebars";
 import Inputmask from "inputmask";
 import Loading from "./loading";
 import marked from "marked";
-import pluralize from "pluralize";
 import qs from "querystring";
 import store from "store";
 import isHtml from "is-html";
