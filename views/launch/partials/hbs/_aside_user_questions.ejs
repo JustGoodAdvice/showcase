@@ -6,9 +6,12 @@
     <ul class="list-group list-group-flush">
       {{#each adviceset.aiUserRequests}}
       <li class="list-group-item list-group-item-action">
-        {{request}}
+        <a class="text-decoration-none stretched-link ai-request" href="#{{id}}">{{request}}</a>
       </li>
       {{/each}}
+      <li class="list-group-item list-group-item-action">
+        <a class="text-decoration-none stretched-link ai-request text-muted" href="#reset">Reset</a>
+      </li>
     </ul>
   </div>
 </script>

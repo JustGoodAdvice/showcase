@@ -143,8 +143,6 @@ export default class ShowcasePage {
       include: include,
       showcase: true
     }, currFormData, qs.parse(newFormData));
-    // does link contain referring AI User Request ID (aiUrId)?
-    this.fromAiUrId = formData.aiUrId;
     // internal JGA: don't include these fields
     delete formData.returnFields;
 
@@ -866,7 +864,7 @@ export default class ShowcasePage {
    * Handle changes in audience type
    */
   handleChangeAudience() {
-    $("main").on("click", "a[data-action=set-audience]", e => {
+    $(document).on("click", "a[data-action=set-audience]", e => {
       const $el = $(e.currentTarget);
       const { audienceId = -1 } = $el.data();
       this._loadApi(`audienceId=${audienceId}`, undefined, false).then(() => {

@@ -37,6 +37,7 @@ export default class extends ShowcasePage {
         this.handleClickTaffrailVar();
         this.listenForUrlChanges();
         this.handleClickOpenRawDataModal();
+        this.handleClickOnAiUrSidebar();
         // this.handleResizeChart();
 
         // keyboard shortcuts
@@ -140,12 +141,14 @@ export default class extends ShowcasePage {
 
       // check for referring AI UserRequest ID on querystring
       // and find matching question for banner
+      const querystr = qs.parse(location.search.substr(1));
+      this.fromAiUrId = querystr.aiUrId;
       if (this.fromAiUrId) {
         const matchingAiUr = aiUserRequests.find(aiur => { return aiur.id == this.fromAiUrId });
         if (matchingAiUr) {
-          const { request, description } = matchingAiUr;
+          const { request /* , description*/ } = matchingAiUr;
           data.adviceset.title = request;
-          data.adviceset.description = description ? description : entity.description;
+          data.adviceset.description = null; // description ? description : entity.description;
         }
       }
 
@@ -626,6 +629,24 @@ export default class extends ShowcasePage {
       this.api.display = answer;
       this.api.display.idx = answer.idx;
       this.updateMainPane();
+    });
+  }
+
+  /**
+   * Click handler for AI User Request on sidebar
+   */
+  handleClickOnAiUrSidebar() {
+    $("aside .adviceset-user-questions").on("click", "a.ai-request", e => {
+      e.preventDefault();
+      const $this = $(e.currentTarget);
+      const [,id] = $this.prop("href").split("#");
+      const querystr = qs.parse(location.search.substr(1));
+      if (id == "reset") {
+        delete querystr.aiUrId;
+      } else {
+        querystr.aiUrId = id;
+      }
+      window.location.href = `${this.baseUrl}?${qs.stringify(querystr)}`;
     });
   }
 
