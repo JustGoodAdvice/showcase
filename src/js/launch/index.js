@@ -16,7 +16,6 @@ export default class extends ShowcasePage {
     this.initCache();
     this.handleClickOpenOffCanvasControls();
     this.handleOffCanvasEvt();
-    this.AUTO_EXPAND_RECOMMENDATION_COUNT = 4;
 
     this.updateAdviceSetDetails().then(() => {
       // current querystring without "?" prefix
@@ -33,6 +32,7 @@ export default class extends ShowcasePage {
         // events
         this.handleClickContinue();
         this.handleClickBack();
+        this.handleClickCloseQuestion();
         this.handleClickAssumption();
         this.handleClickTaffrailVar();
         this.listenForUrlChanges();
@@ -46,19 +46,15 @@ export default class extends ShowcasePage {
           const querystr = qs.parse(location.search.substr(1));
           window.location.href = `${link}?${qs.stringify(querystr)}`;
         });
-        // expand/collapse advice
-        Mousetrap.bind("a", () => {
-          $("a[data-expand=advice]").trigger("click");
-        });
         // expand/collapse controls sidebar
         Mousetrap.bind("s", () => {
-          $("#offcanvas-controls-handle > a").trigger("click");
+          $("a.open-controls").first().trigger("click");
         });
         // show toast with keyboard shortcut map
         Mousetrap.bind("?", () => {
           this.showToast(undefined, {
             title: "Keyboard Shortcuts",
-            message: "Press <code>a</code> to expand advice.<br>Press <code>s</code> to expand assumptions.",
+            message: "Press <code>s</code> to toggle controls.",
             delay: 5000
           });
         });
@@ -266,10 +262,20 @@ export default class extends ShowcasePage {
     $(".question").show();
     if (this.api.display.type == "INPUT_REQUEST") {
       this._updateForInputRequest();
+      $("html").addClass("question-show");
       $(".list-all-recommendations").addClass("unfocused").removeClass("has-primary-advice");
     } else {
       // see `updateRecommendationsList`
     }
+  }
+
+  /**
+   * Remove css classes from when question was visible
+   */
+  _closeQuestionModal() {
+    $("html").removeClass("question-show");
+    $(".question").hide();
+    $(".list-all-recommendations").removeClass("unfocused");
   }
 
   // #region templating utils
@@ -280,29 +286,7 @@ export default class extends ShowcasePage {
   _updateForPrimaryAdvice() {
     // if this is the LAST advice, hide center column and move advice list into center focus
     if (this.api.display._isLast) {
-      if (this.primaryAdviceModeEnabled) {
-        this.api.display = this.api.display_primary_advice;
-      }
-
-      $(".question").hide();
-      $(".list-all-recommendations").removeClass("unfocused");
-
-      if (this.primaryAdviceModeEnabled) {
-        $(".list-all-recommendations").addClass("has-primary-advice");
-      }
-
-      // if there's < N expandable advice recommendations displayed, expand them automatically
-      const { AUTO_EXPAND_RECOMMENDATION_COUNT: ct } = this;
-      if (_.flatMap(this.api.recommendations).filter(a => { return a.summary }).length < ct) {
-        setTimeout(() => {
-          $(".advice-list .collapse").collapse("show");
-        }, 50);
-      }
-
-      if (this.primaryAdviceModeEnabled) {
-        const str = this.TEMPLATES["Advice"](this.api);
-        this.$advice.html(str);
-      }
+      this._closeQuestionModal();
 
       // if the rule has primary advice ... but no grouped recommendations and sources
       // show the sources container.
@@ -595,6 +579,18 @@ export default class extends ShowcasePage {
   }
 
   /**
+   * "Close question" button handler
+   */
+  handleClickCloseQuestion() {
+    this.$advice.on("click", "a.q-close", e => {
+      e.preventDefault();
+      this._setCurrentIdx();
+      this._setAssumptionActive(true);
+      this._closeQuestionModal();
+    });
+  }
+
+  /**
    * "Controls" button handler
    */
   handleClickOpenOffCanvasControls() {
@@ -630,6 +626,7 @@ export default class extends ShowcasePage {
       e.preventDefault();
       const $this = $(e.currentTarget);
       const { idx } = $this.data();
+      $this.tooltip("hide");
       // $("html, body").animate({ scrollTop: this.scrollTo });
       // temp override `display` global prop to insert question into HTML
       // when user presses "OK" to keep or change answer, global data is refreshed/restored

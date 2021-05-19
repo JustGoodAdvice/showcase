@@ -275,6 +275,13 @@ body.launch {
   .advice-set-details {
     margin-bottom: 2rem;
 
+    // when question is open (on body element)
+    .question-show & {
+      h1 a {
+        color: $gray-400;
+      }
+    }
+
     h1 {
       font-size: $h2-font-size;
     }
@@ -307,11 +314,17 @@ body.launch {
       z-index: $zindex-fixed - 3;
 
       .tools {
+        font-size: $font-size-base;
         position: absolute;
         top: $spacer;
         right: $spacer;
 
-        font-size: $font-size-base;
+        display: flex;
+        align-items: center;
+
+        a.btn {
+          color: $gray-500;
+        }
       }
       
       .btn:active {
