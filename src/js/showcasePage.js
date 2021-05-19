@@ -71,7 +71,6 @@ export default class ShowcasePage {
       $("body").tooltip({ selector: "[data-toggle=tooltip]", html: true });
     }
     // mode
-    this.primaryAdviceModeEnabled = store.get("primaryAdviceModeEnabled", false);
     this.adviceEditorModeEnabled = store.get("adviceEditorModeEnabled", true);
     if (this.adviceEditorModeEnabled) {
       $("html").addClass("advice-editor-mode-enabled");
@@ -81,9 +80,7 @@ export default class ShowcasePage {
     this.handleChangeAudience();
     this.handleCopyLink();
     this.handleCopyLinkAndSaveScenario();
-    this.handleShowAllRecommendationsFromPrimaryAdvice();
     this.handleClickOpenRawDataModal();
-    this.handleClickTogglePrimaryAdviceMode();
     this.handleClickToggleAdviceEditorMode();
     this.handleClickShowAllSources();
 
@@ -325,34 +322,6 @@ export default class ShowcasePage {
           return a;
         });
       });
-
-      // find "primary advice" -- last advice in highest weighted group
-      if (this.primaryAdviceModeEnabled) {
-        const highestWeightedGroup = _.last(groupKeys);
-        if (groupedAdvice[highestWeightedGroup] && groupedAdvice[highestWeightedGroup].length){
-          const primaryAdvice = _.last(groupedAdvice[highestWeightedGroup]);
-          primaryAdvice._isPrimary = true;
-          // assign it to temp prop
-          this.api.display_primary_advice = primaryAdvice;
-          // remove it from list that will become `recommendations`
-          groupedAdvice[highestWeightedGroup].pop();
-          // are there any recommendations left in this group?
-          if (!groupedAdvice[highestWeightedGroup].length) {
-            delete groupedAdvice[highestWeightedGroup];
-          }
-
-          // build a string for use below primary advice
-          const varStr = ` ${pluralize("inputs", this.api.variables.length, true)}`;
-          let factoredStr = "";
-          const assumptionLen = _.flatMap(this.api.assumptions).length;
-          const recommendationLen = _.flatMap(groupedAdvice).length;
-          if (assumptionLen > 0) {
-            factoredStr = `${pluralize("assumption", assumptionLen, true)}`;
-          }
-          this.api.display_primary_advice._evaluated = `<strong>${factoredStr}</strong> and <strong>${varStr}</strong>`;
-          this.api.display_primary_advice._recommended = `${pluralize("recommendation", recommendationLen, true)}`;
-        }
-      }
 
       // all advice to render is saved to `recommendations`
       this.api.recommendations = groupedAdvice;
@@ -806,26 +775,6 @@ export default class ShowcasePage {
   }
 
   /**
-   * Handle clicks to toggle primnary advice mode
-   */
-  handleClickTogglePrimaryAdviceMode() {
-    $("main").on("click", "a[data-action='toggle-primary-advice-mode']", e => {
-      e.preventDefault();
-      const currentlyEnabled = this.primaryAdviceModeEnabled;
-      const modeEnabled = !currentlyEnabled ? true : false;
-      store.set("primaryAdviceModeEnabled", modeEnabled);
-      this.primaryAdviceModeEnabled = modeEnabled;
-      this.showToast(undefined, {
-        title: "Challenge accepted!",
-        message: `Primary mode ${modeEnabled ? "enabled" : "disabled"}. Refreshing in 3 seconds...`
-      });
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
-    });
-  }
-
-  /**
    * Handle clicks to toggle advice editing mode
    */
   handleClickToggleAdviceEditorMode() {
@@ -848,22 +797,6 @@ export default class ShowcasePage {
       const $btn = $(e.currentTarget);
       $btn.hide()
       $("#group_references").find(".card.d-none").removeClass("d-none");
-    });
-  }
-
-  /**
-   * Handle click to show/hide all recommendations
-   */
-  handleShowAllRecommendationsFromPrimaryAdvice(){
-    $("main").on("click", "a[data-action=toggleRecommendations]", e => {
-      e.preventDefault();
-      const $btn = $(e.currentTarget);
-      $("html, body").animate({ scrollTop: $(".expand-history hr").offset().top + 1 });
-      $(".list-all-recommendations").slideToggle(function() {
-        const isVisible = $(this).is(":visible");
-        $(this).toggleClass("show", isVisible);
-        $btn.find("span").text( isVisible ? "Hide" : "Show" );
-      });
     });
   }
 
