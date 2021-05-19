@@ -41,7 +41,11 @@
 			<i class="fal fa-pencil"></i> Edit Group
 		</a>
 		{{/if}}
-		<a href="{{../config.advicebuilder_host}}/advicesets/{{../adviceset._id}}/rules/{{this.0.ruleId}}/debug?{{../paramsAsQueryStr}}" class="dropdown-item" target="_blank">
+		{{#if this.ruleId}}
+			<a href="{{../config.advicebuilder_host}}/advicesets/{{../adviceset._id}}/rules/{{this.ruleId}}/debug?{{../paramsAsQueryStr}}" class="dropdown-item" target="_blank">
+		{{else}}
+			<a href="{{../config.advicebuilder_host}}/advicesets/{{../adviceset._id}}/rules/{{this.0.ruleId}}/debug?{{../paramsAsQueryStr}}" class="dropdown-item" target="_blank">
+		{{/if}}
 			<i class="fal fa-debug"></i> Debug
 		</a>
 		<a href="{{../_links.self}}" class="dropdown-item" target="_blank">
