@@ -51,7 +51,7 @@ $zindex-loading-mask: $zindex-fixed - 2;
 $zindex-loading-spinner: $zindex-fixed + 1;
 
 $banner-height: 14px;
-$aside-handle-width: 20px;
+$aside-handle-width: 2rem;
 
 @import '../../node_modules/bootstrap5/scss/bootstrap';
 @import '../../node_modules/@fortawesome/fontawesome-pro/scss/fontawesome';
@@ -146,6 +146,8 @@ body.launch {
   }
 
   aside {
+    font-size: 90%;
+
     .list-group-flush {
       margin-left: -1.25rem;
       margin-right: -1.25rem;
@@ -161,26 +163,22 @@ body.launch {
     }
   }
 
-  #aside_handle {
+  #offcanvas-controls-handle {
     border-bottom: 1px solid $gray-300;
     border-left: 1px solid $gray-300;
     border-top: 1px solid $gray-300;
     border-top-left-radius: $border-radius;
     border-bottom-left-radius: $border-radius;
     height: 100px;
-    flex-shrink: unset;
-    margin-right: -$aside-handle-width;
     max-width: $aside-handle-width;
-    padding: 0;
-    position: absolute;
+    position: fixed;
+    right: 0;
     top: 50%;
     transition: all $offcanvas-transition-duration ease-in-out;
     width: $aside-handle-width;
 
-    right: $aside-handle-width;
-
     &.show {
-      right: $offcanvas-horizontal-width - 30;
+      right: $offcanvas-horizontal-width - 50;
       transform: none;
 
       i {

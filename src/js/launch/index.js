@@ -52,7 +52,7 @@ export default class extends ShowcasePage {
         });
         // expand/collapse controls sidebar
         Mousetrap.bind("s", () => {
-          $("#aside_handle > a").trigger("click");
+          $("#offcanvas-controls-handle > a").trigger("click");
         });
         // show toast with keyboard shortcut map
         Mousetrap.bind("?", () => {
@@ -526,10 +526,10 @@ export default class extends ShowcasePage {
   // #region event handlers
   handleOffCanvasEvt() {
     $(".controls.offcanvas").on("hide.bs.offcanvas", e=> {
-      $("#aside_handle").removeClass("show");
+      $("#offcanvas-controls-handle").removeClass("show");
     });
     $(".controls.offcanvas").on("show.bs.offcanvas", e=> {
-      $("#aside_handle").addClass("show");
+      $("#offcanvas-controls-handle").addClass("show");
     });
   }
 
@@ -600,7 +600,7 @@ export default class extends ShowcasePage {
   handleClickOpenOffCanvasControls() {
     $(document).on("click", "a.open-controls", e => {
       e.preventDefault();
-      $("#aside_handle").find("a").trigger("click");
+      new bootstrap.Offcanvas(document.getElementById("offcanvas-controls")).show();
     });
   }
 
