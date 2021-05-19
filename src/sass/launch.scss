@@ -374,10 +374,7 @@ body.launch {
 		}
 
     ~ .list-all-recommendations.unfocused {
-      border-top: 1px solid $gray-200;
       filter: blur($border-radius);
-      margin-top: 1rem;
-      padding-top: 1rem;
     }
   }
 
