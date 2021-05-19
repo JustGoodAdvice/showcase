@@ -380,7 +380,18 @@ export default class extends ShowcasePage {
     if (isAdvice) {
       $("aside .assumptions, .answers").find("a").removeClass("active");
     } else {
-      $("aside .assumptions, .answers").find("a").removeClass("active").end().find(`a[data-id=${id}]`).addClass("active");
+      const $statement = $("aside .assumptions, .answers").find("a").removeClass("active").end().find(`a[data-id=${id}]`);
+      $statement.addClass("active");
+      // if inside accordion, open relevant section
+      if ($statement.parents(".accordion-item").length) {
+        // close open accordion but NOT current one
+        const $currentAcc = $statement.closest(".accordion-collapse");
+
+        // open relevant one, if not already open
+        if (!$currentAcc.hasClass("show")) {
+          $currentAcc.prev().find("button").trigger("click");
+        }
+      }
     }
   }
 
