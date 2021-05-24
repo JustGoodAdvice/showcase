@@ -266,6 +266,9 @@ export default class extends ShowcasePage {
     if (this.api.display.type == "INPUT_REQUEST") {
       this._updateForInputRequest();
       $("html").addClass("question-show");
+      if ($(".list-all-recommendations").children(".advice-item").length) {
+        $("html").addClass("question-show--with-advice");
+      }
       $(".list-all-recommendations").addClass("unfocused").removeClass("has-primary-advice");
     } else {
       // see `updateRecommendationsList`
@@ -276,7 +279,7 @@ export default class extends ShowcasePage {
    * Remove css classes from when question was visible
    */
   _closeQuestionModal() {
-    $("html").removeClass("question-show");
+    $("html").removeClass("question-show").removeClass("question-show--with-advice");
     $(".question").hide();
     $(".list-all-recommendations").removeClass("unfocused");
   }
@@ -308,8 +311,8 @@ export default class extends ShowcasePage {
     this.$advice.html(str);
 
     // hide "next" button unless it's a numeric input
-    const isRadio = this.api.display.form.fieldType.match(/Radio|Boolean/);
-    $(".advice").find("button[type=submit]").toggle(!(isRadio && isRadio.length > 0));
+    // const isRadio = this.api.display.form.fieldType.match(/Radio|Boolean/);
+    // $(".advice").find("button[type=submit]").toggle(!(isRadio && isRadio.length > 0));
 
     // set value
     this._setValue();

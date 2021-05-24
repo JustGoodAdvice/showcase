@@ -275,13 +275,6 @@ body.launch {
   .advice-set-details {
     margin-bottom: 2rem;
 
-    // when question is open (on body element)
-    .question-show & {
-      h1 a {
-        color: $gray-400;
-      }
-    }
-
     h1 {
       font-size: $h2-font-size;
     }
@@ -312,6 +305,10 @@ body.launch {
       position: absolute;
       width: $spacer * 46;
       z-index: $zindex-fixed - 3;
+
+      .question-show--with-advice & {
+        margin-top: $spacer * 2;
+      }
 
       .tools {
         font-size: $font-size-base;
@@ -372,10 +369,6 @@ body.launch {
         }
 			}
 		}
-
-    ~ .list-all-recommendations.unfocused {
-      filter: blur($border-radius);
-    }
   }
 
   .list-all-recommendations {

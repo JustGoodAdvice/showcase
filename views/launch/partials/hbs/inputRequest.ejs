@@ -14,18 +14,20 @@
 			</div>
 		{{/if}}
 		<hr>
-		<form data-id="{{display.id}}">
+		<form data-id="{{display.id}}" data-field-type="{{display.form.fieldType}}">
 
-			<div class="form-group d-grid gap-2 col-10 mx-auto">
+			<div class="form-group d-grid gap-2 col-12 mx-auto">
 
 				{{#ifEquals display.form.fieldType "Radio"}}
 				
 					{{#each display.form.values}}
 						<div class="form-check">
-							<input type="radio" name="{{../display.form.name}}" value="{{value}}" id="{{id}}" class="btn-check" required>
-							<label class="btn btn-outline-primary btn-block" for="{{id}}">{{label}}
+							<input class="form-check-input" type="radio" name="{{../display.form.name}}" id="{{id}}" value="{{value}}" required>
+							<label class="form-check-label" for="{{id}}">
+								{{label}}
+							</label>
 							{{#if helpText}}
-							<small class="form-text text-muted">{{helpText}}</small>
+								<div class="form-text text-muted">{{helpText}}</div>
 							{{/if}}
 							</label>
 						</div>
