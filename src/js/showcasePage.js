@@ -1009,7 +1009,7 @@ export default class ShowcasePage {
    * @param {string=} types Comma-separated list of HTML tags, e.g., "input,select"
    */
   _findFormInput($form, types = "input") {
-    return $form.find(types).filter(":not(:radio):not(:hidden)");
+    return $form.find(types).filter(":not(:radio):not(:hidden):not(.is-other-response)");
   }
   // #endregion
 }

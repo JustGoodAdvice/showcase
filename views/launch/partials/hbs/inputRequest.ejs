@@ -21,16 +21,28 @@
 				{{#ifEquals display.form.fieldType "Radio"}}
 				
 					{{#each display.form.values}}
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="{{../display.form.name}}" id="{{id}}" value="{{value}}" required>
-							<label class="form-check-label" for="{{id}}">
-								{{label}}
-							</label>
-							{{#if helpText}}
-								<div class="form-text text-muted">{{helpText}}</div>
-							{{/if}}
-							</label>
-						</div>
+						{{#if isOtherResponse}}
+							<div class="input-group">
+								<div class="input-group-text">
+									<input class="form-check-input mt-0" type="radio" name="{{../display.form.name}}" id="{{id}}" value="{{value}}" required aria-label="Radio button for following text input">
+									<label class="form-check-label" for="{{id}}">
+										{{label}}
+									</label>
+								</div>
+								<input type="text" class="form-control is-other-response" aria-label="Text input with radio button">
+							</div>
+						{{else}}
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="{{../display.form.name}}" id="{{id}}" value="{{value}}" required>
+								<label class="form-check-label" for="{{id}}">
+									{{label}}
+								</label>
+								{{#if helpText}}
+									<div class="form-text text-muted">{{helpText}}</div>
+								{{/if}}
+								</label>
+							</div>
+						{{/if}}
 					{{/each}}
 
 				{{/ifEquals}}
