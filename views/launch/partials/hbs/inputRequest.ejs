@@ -24,12 +24,12 @@
 						{{#if isOtherResponse}}
 							<div class="input-group">
 								<div class="input-group-text">
-									<input class="form-check-input mt-0" type="radio" name="{{../display.form.name}}" id="{{id}}" value="{{value}}" required aria-label="Radio button for following text input">
+									<input class="form-check-input mt-0" type="radio" name="{{../display.form.name}}" id="{{id}}" value="{{value}}" required aria-label="Radio button for following text input named {{label}}">
 									<label class="form-check-label" for="{{id}}">
 										{{label}}
 									</label>
 								</div>
-								<input type="text" class="form-control is-other-response" aria-label="Text input with radio button">
+								<input type="text" id="{{../display.form.questionVariable.id}}" name="{{../display.form.questionVariable.reservedName}}" value="{{../display.form.questionVariable.result.value}}" class="form-control is-other-response" aria-label="Text input for {{label}} with radio button">
 							</div>
 						{{else}}
 							<div class="form-check">
