@@ -397,6 +397,10 @@ body.launch {
       position: relative;
     }
 
+    .advice-item--with-group {
+      margin-top: $spacer * 2;
+    }
+
     ul {
       list-style-type: square;
       padding-left: $spacer;

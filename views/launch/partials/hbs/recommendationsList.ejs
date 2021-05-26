@@ -2,7 +2,7 @@
 	{{#if _recommendationsExist}}
 		
 		{{#each recommendations}}
-      <div class="advice-item">
+      <div class="advice-item {{#if tagGroup.name}}advice-item--with-group{{/if}}">
         {{#if tagGroup.name}}
         <div class="advice--group">
           <label>{{tagGroup.name}}</label>
