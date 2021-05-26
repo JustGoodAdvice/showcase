@@ -909,7 +909,7 @@ export default class ShowcasePage {
     // if there is no value, don't continue
     if (value == undefined || value == "\"null\"") { return; }
 
-    const $formEls = $container.find("form").find("input,select");
+    const $formEls = $container.find("form").find("input,select").filter(":not(.is-other-response)");
     $formEls.each((i, el) => {
       const $el = $(el);
       if ($el.is(":radio")) {
