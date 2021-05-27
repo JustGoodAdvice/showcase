@@ -35,6 +35,7 @@ export default class extends ShowcasePage {
         this.handleClickCloseQuestion();
         this.handleClickAssumption();
         this.handleClickTaffrailVar();
+        this.handleChangeApiChannel();
         this.listenForUrlChanges();
         this.handleClickOpenRawDataModal();
         this.handleClickOnAiUrSidebar();

@@ -266,7 +266,7 @@ export default class ShowcasePage {
       return adv;
     });
 
-    console.info("Grouped advice is " + this.GROUPED_ADVICE_ENABLED);
+    // console.info("Grouped advice is " + this.GROUPED_ADVICE_ENABLED);
     let groupedAdvice = {};
     if (this.GROUPED_ADVICE_ENABLED) {
       // group all advice into bucketed recommendations
@@ -813,7 +813,7 @@ export default class ShowcasePage {
     // console.log("setActiveApiChannel",this.api.adviceset)
     if (publishedVersion && publishedVersion !== null) {
       if (channel == "published") {
-        version = ` (v${publishedVersion})`;
+        version = ` <span class="fs-xs">(v${publishedVersion})</span>`;
       }
       hasPublishedVersion = true;
     }
@@ -824,14 +824,14 @@ export default class ShowcasePage {
       $switcher.find("[data-channel=published]").hide();
     }
 
-    $("span[data-channel-name]").text(`${_.startCase(_.camelCase(channel))}${version}`); // capitalize 1st letter
+    $("span[data-channel-name]").html(`${_.startCase(_.camelCase(channel))}${version}`); // capitalize 1st letter
   }
 
   /**
    * Handle changing API channel
    */
   handleChangeApiChannel() {
-    $("main").on("click", "a[data-action=set-channel]", e => {
+    $(document).on("click", "a[data-action=set-channel]", e => {
       e.preventDefault();
       const $el = $(e.currentTarget);
       const { channel } = $el.data();
