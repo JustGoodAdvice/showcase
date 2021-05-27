@@ -107,6 +107,11 @@ export default class extends ShowcasePage {
       $(".advice-set-details").html(str);
       // update the window title
       this.windowTitle = `${data.adviceset.title} - ${data.adviceset.owner.name}`;
+
+      // if user preference has controls visible, open on page load
+      if (store.get("offcanvas_visible", false)) {
+        new bootstrap.Offcanvas(document.getElementById("offcanvas-controls")).show();
+      }
     }
 
     const data = { adviceset: {} }
@@ -528,9 +533,11 @@ export default class extends ShowcasePage {
   handleOffCanvasEvt() {
     $(".controls.offcanvas").on("hide.bs.offcanvas", e=> {
       $("#offcanvas-controls-handle").removeClass("show");
+      store.set("offcanvas_visible", false);
     });
     $(".controls.offcanvas").on("show.bs.offcanvas", e=> {
       $("#offcanvas-controls-handle").addClass("show");
+      store.set("offcanvas_visible", true);
     });
   }
 
