@@ -316,6 +316,11 @@ export default class extends ShowcasePage {
     const str = this.TEMPLATES["InputRequest"](this.api);
     this.$advice.html(str);
 
+    // hide "X" close question button if question is not yet answered
+    if (this.api.display.value == null) {
+      $(".advice").find(".q-close").hide();
+    }
+
     // hide "next" button unless it's a numeric input
     // const isRadio = this.api.display.form.fieldType.match(/Radio|Boolean/);
     // $(".advice").find("button[type=submit]").toggle(!(isRadio && isRadio.length > 0));

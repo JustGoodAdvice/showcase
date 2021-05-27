@@ -60,6 +60,10 @@ $aside-handle-width: 2rem;
 @import "../../node_modules/placeholder-loading/src/scss/placeholder-loading";
 @import 'loading';
 
+.dropdown-menu {
+  z-index: $zindex-modal;
+}
+
 .ph-item {
   border-color: transparent;
   padding-left: 0;
