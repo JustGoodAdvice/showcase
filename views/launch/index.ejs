@@ -34,9 +34,12 @@
                 </div>
               </div>
             </div>
-            <div class="center-ph-loader">
-              <%- include("partials/hbs/loading"); %>
-            </div>
+            <section id="__loading__">
+              <div class="long-loader"></div>
+              <div class="center-ph-loader">
+                <%- include("partials/hbs/loading"); %>
+              </div>
+            </section>
             <div class="list-all-recommendations"></div>
             <div class="advice"></div>
           </main>
@@ -149,6 +152,7 @@
     <%- include("partials/hbs/variables"); %>
     <%- include("partials/_modal_vars"); %>
     <%- include("partials/_toast"); %>
+    <%- include("partials/hbs/_loader_long"); %>
 
     <div id="__init" data-page-init="launch"></div>
     <%- include("partials/_footer_js"); %>

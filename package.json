@@ -51,6 +51,7 @@
     "placeholder-loading": "^0.4.0",
     "pluralize": "^8.0.0",
     "popper.js": "^1.16.1",
+    "promise-retry": "^2.0.1",
     "regenerator-runtime": "^0.13.5",
     "stimulus": "^2.0.0",
     "store": "^2.0.12",

@@ -5,10 +5,11 @@ import Handlebars from "handlebars";
 import Inputmask from "inputmask";
 import Loading from "./loading";
 import marked from "marked";
+import promiseRetry from "promise-retry";
 import qs from "querystring";
 import store from "store";
 import isHtml from "is-html";
-
+const HTTP_TIMEOUT = 29000;
 export default class ShowcasePage {
   constructor(){
 
@@ -161,57 +162,91 @@ export default class ShowcasePage {
     const [apiUrlWithoutQuerystring] = this.api._links.self.split("?");
     const loadingId = Loading.show($loadingContainer, undefined, usePlaceholder);
 
-    return $.ajax({
-      url: apiUrlWithoutQuerystring,
-      type: "GET",
-      dataType: "json",
-      headers: {
-        "Accept": "application/json; chartset=utf-8",
-        "Authorization": `Bearer ${this.config.api_key}`
-      },
-      contentType: "application/json",
-      data: formData
-    }).then(api => {
-      // Advice API (preview mode) can return HTTP 200 (success)
-      // with an error, so we'll inject that error into the `adviceset`
-      // place, so the error shows up on top.
-      if (api.error) {
-        Loading.hide(loadingId);
-        return Promise.reject(new Error(api.error.message));
+    // pass Handlebars into the AjaxLoading static class
+    Loading.Handlebars = Handlebars;
+    // setup intervals for when to change long loading messages
+    const intervals = [5]; // after 6seconds, assume preview API is not cached
+    const factor = 10;
+    for (let i = 1; (factor * i) < 75; i++) {
+      intervals.push(factor * i);
+    }
+    intervals.push(75);
+
+    // start timing API request
+    let apiTimer = 0;
+    const apiTimingInterval = setInterval(() => {
+      apiTimer += 1;
+      $("div[data-api-timer]").text(apiTimer);
+
+      // at each interval, update the long loading message
+      if (intervals.includes(apiTimer)) {
+        Loading.showLong($loadingContainer, loadingId, apiTimer, this.api);
+      } else if (apiTimer == 75) {
+        window.clearInterval(apiTimingInterval);
+        $("#__loading__").find(".spinner").hide();
       }
-      // update global!
-      this.api = api.data;
-      this.api.adviceset = _.extend(this.config?.adviceset, api.data.adviceset);
-      this.setActiveAudience(formData.audienceId);
-      this.setActiveApiChannel();
-      Loading.hide(loadingId);
-      return api;
-    }).catch((jqXHR) => {
-      let err;
-      let reason = "";
-      if (jqXHR.responseJSON) {
-        err = jqXHR.responseJSON.error.message;
-        if (jqXHR.responseJSON.error.reason) {
-          ({ reason } = jqXHR.responseJSON.error);
-        }
-      } else if (jqXHR.statusText) {
-        err = jqXHR.statusText;
-      } else {
-        err = jqXHR.message;
-      }
-      if (reason) {
-        err += ` (${reason})`;
-      }
-      this.api = _.assign({}, window.jga.api, {
-        error: {
-          title: "Error",
-          description: err != "error" ? err : "API unavailable",
+    }, 1000);
+
+    // https://www.npmjs.com/package/promise-retry#usage
+    const retryOpts = { minTimeout: HTTP_TIMEOUT, retries: 1 };
+
+    return promiseRetry(retryOpts, (retry, attemptNumber) => {
+      return $.ajax({
+        url: apiUrlWithoutQuerystring,
+        timeout: HTTP_TIMEOUT, // API server max len
+        type: "GET",
+        dataType: "json",
+        headers: {
+          "Accept": "application/json; chartset=utf-8",
+          "Authorization": `Bearer ${this.config.api_key}`
         },
-        advice: []
-      });
-      Loading.hide(loadingId);
-      const str = this.TEMPLATES["Error"](this.api);
-      this.$advice.html(str);
+        contentType: "application/json",
+        data: formData
+      }).then(api => {
+        window.clearInterval(apiTimingInterval);
+        // Advice API (preview mode) can return HTTP 200 (success)
+        // with an error, so we'll inject that error into the `adviceset`
+        // place, so the error shows up on top.
+        if (api.error) {
+          Loading.hide(loadingId, "all");
+          return Promise.reject(new Error(api.error.message));
+        }
+        // update global!
+        this.api = api.data;
+        this.api.adviceset = _.extend(this.config?.adviceset, api.data.adviceset);
+        this.setActiveAudience(formData.audienceId);
+        this.setActiveApiChannel();
+        Loading.hide(loadingId, "all");
+        return api;
+      }).catch(retry)
+      // .catch((jqXHR) => {
+      //   retry
+      //   let err;
+      //   let reason = "";
+      //   if (jqXHR.responseJSON) {
+      //     err = jqXHR.responseJSON.error.message;
+      //     if (jqXHR.responseJSON.error.reason) {
+      //       ({ reason } = jqXHR.responseJSON.error);
+      //     }
+      //   } else if (jqXHR.statusText) {
+      //     err = jqXHR.statusText;
+      //   } else {
+      //     err = jqXHR.message;
+      //   }
+      //   if (reason) {
+      //     err += ` (${reason})`;
+      //   }
+      //   this.api = _.assign({}, window.jga.api, {
+      //     error: {
+      //       title: "Error",
+      //       description: err != "error" ? err : "API unavailable",
+      //     },
+      //     advice: []
+      //   });
+      //   Loading.hide(loadingId, "all");
+      //   const str = this.TEMPLATES["Error"](this.api);
+      //   this.$advice.html(str);
+      // });
     });
   }
 
