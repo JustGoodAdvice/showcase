@@ -391,7 +391,7 @@ const words = [{
   "description": "Originally this expression has its roots in Greek mythology.  Halcyone was the daughter of Aeolus and wife of Ceyx. When Ceyx drowned, it is said that Halcyone threw herself into the sea. Out of pity, the gods changed the pair into kingfishers also known as halcyons.  The gods also forbade the winds from blowing seven days before and after the winter solstice. This is the breeding season of the halcyon. The expression \"halcyon days\" has come to mean a time of peace and tranquility."
 }, {
   "word": "Hand over fist",
-  "description": "The expression \"hand over fist\" means to go forth rapidly in someendeavor, such as, making money hand over fist. Originally theexpression came from the act of quickly climbing the rigging of the old sailing ships\" hand over hand\" or \"hand over fist\". "
+  "description": "The expression \"hand over fist\" means to go forth rapidly in someendeavor, such as, making money hand over fist. Originally the expression came from the act of quickly climbing the rigging of the old sailing ships\" hand over hand\" or \"hand over fist\". "
 }, {
   "word": "Hard and fast",
   "description": "An expression used to describe inflexibility, such as, a hard and fast rule  The term is nautical in origination and was used to describe a ship grounded on the shore; 'hard' meaning firmly and 'fast' meaning fixed."
@@ -472,7 +472,7 @@ const words = [{
   "description": "This is a term that originally meant toknow the proper use of the many ropes the older sailing vessels had. Today theterm means to be accomplished or be proficient at some particular job or task."
 }, {
   "word": "Lay of the land",
-  "description": "Nautically to \"know the lay of the land\" wasimportant for navigation as well as an indicator of what the seafloor may belike.  If the land is flat and sandy, the seabed is likely to be shallow and sandy."
+  "description": "Nautically to \"know the lay of the land\" was important for navigation as well as an indicator of what the seafloor may belike.  If the land is flat and sandy, the seabed is likely to be shallow and sandy."
 }, {
   "word": "Leading light",
   "description": "It was customary to mark the entry to a port with a line of leading lights to show the way.Someone who shows the way or is a leader is called a  \"leading light\". "
