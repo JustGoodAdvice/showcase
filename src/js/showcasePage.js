@@ -176,7 +176,7 @@ export default class ShowcasePage {
     let apiTimer = 0;
     const apiTimingInterval = setInterval(() => {
       apiTimer += 1;
-      $("div[data-api-timer]").text(apiTimer);
+      $("#__loading__").find("span[data-api-timer]").text(apiTimer);
 
       // at each interval, update the long loading message
       if (intervals.includes(apiTimer)) {
@@ -188,7 +188,7 @@ export default class ShowcasePage {
     }, 1000);
 
     // https://www.npmjs.com/package/promise-retry#usage
-    const retryOpts = { minTimeout: HTTP_TIMEOUT, retries: 1 };
+    const retryOpts = { minTimeout: HTTP_TIMEOUT / 2, retries: 2 };
 
     return promiseRetry(retryOpts, (retry, attemptNumber) => {
       return $.ajax({
@@ -218,35 +218,37 @@ export default class ShowcasePage {
         this.setActiveApiChannel();
         Loading.hide(loadingId, "all");
         return api;
-      }).catch(retry)
-      // .catch((jqXHR) => {
-      //   retry
-      //   let err;
-      //   let reason = "";
-      //   if (jqXHR.responseJSON) {
-      //     err = jqXHR.responseJSON.error.message;
-      //     if (jqXHR.responseJSON.error.reason) {
-      //       ({ reason } = jqXHR.responseJSON.error);
-      //     }
-      //   } else if (jqXHR.statusText) {
-      //     err = jqXHR.statusText;
-      //   } else {
-      //     err = jqXHR.message;
-      //   }
-      //   if (reason) {
-      //     err += ` (${reason})`;
-      //   }
-      //   this.api = _.assign({}, window.jga.api, {
-      //     error: {
-      //       title: "Error",
-      //       description: err != "error" ? err : "API unavailable",
-      //     },
-      //     advice: []
-      //   });
-      //   Loading.hide(loadingId, "all");
-      //   const str = this.TEMPLATES["Error"](this.api);
-      //   this.$advice.html(str);
-      // });
+      }).catch((jqXHR) => {
+        if (jqXHR.statusText === "timeout") {
+          return retry(jqXHR);
+        } else {
+          let err;
+          let reason = "";
+          if (jqXHR.responseJSON) {
+            err = jqXHR.responseJSON.error.message;
+            if (jqXHR.responseJSON.error.reason) {
+              ({ reason } = jqXHR.responseJSON.error);
+            }
+          } else if (jqXHR.statusText) {
+            err = jqXHR.statusText;
+          } else {
+            err = jqXHR.message;
+          }
+          if (reason) {
+            err += ` (${reason})`;
+          }
+          this.api = _.assign({}, window.jga.api, {
+            error: {
+              title: "Error",
+              description: err != "error" ? err : "API unavailable",
+            },
+            advice: []
+          });
+          Loading.hide(loadingId, "all");
+          const str = this.TEMPLATES["Error"](this.api);
+          this.$advice.html(str);
+        }
+      });
     });
   }
 
