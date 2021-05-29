@@ -142,7 +142,9 @@ export default class extends ShowcasePage {
         adviceScenarios,
         aiUserRequests,
         publishing,
-        tags
+        tags,
+        entity,
+        owner
       });
 
       // check for referring AI UserRequest ID on querystring
