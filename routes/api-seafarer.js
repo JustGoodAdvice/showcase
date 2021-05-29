@@ -46,7 +46,7 @@ const words = [{
   "description": "This expression does not originate with pirates holdingswords in their teeth, rather it  is just one of many uses of the metaphorical phrase \"to the teeth,\" meaning \"very fully or completely\". "
 }, {
   "word": "As the crow flies",
-  "description": "The most direct route from one place to another withoutdetours.  Before modern navigational systems existed, British vessels customarily carried a cage of crows. These birdsfly straight to the nearest land when released at sea thus indicating the directionof the nearest land was. "
+  "description": "The most direct route from one place to another without detours.  Before modern navigational systems existed, British vessels customarily carried a cage of crows. These birdsfly straight to the nearest land when released at sea thus indicating the directionof the nearest land was. "
 }, {
   "word": "At a loose ends",
   "description": "A nautical term for a rope when unattached and therefore neglected or not doing its job.Thus 'tying up loose ends' indicates having done a complete job or having dealtwith all the details. "
@@ -61,7 +61,7 @@ const words = [{
   "description": "To bale out means to remove water from a vessel.  Now the term is used in the sense of getting out of a badsituation such as selling the shares of a failing company. "
 }, {
   "word": "Bamboozle",
-  "description": "From the 17th century, it described the Spanish custom ofhoisting false flags to deceive (bamboozle) enemies. Today if one intentionally deceivessomeone, they are said to have bamboozled them. "
+  "description": "From the 17th century, it described the Spanish custom ofhoisting false flags to deceive (bamboozle) enemies. Today if one intentionally deceives someone, they are said to have bamboozled them. "
 }, {
   "word": "Bare Poles",
   "description": "Describes a sailing vessel with no sail set. A ship in a storm that has takendown all of her sails is with or under bare poles."
@@ -229,7 +229,7 @@ const words = [{
   "description": "This is a drinking expression that is believed to have its origins in seafreight where cargo was lowered into the hatch for transport below deck. The freightappeared to be consumed by theship.  "
 }, {
   "word": "Dragging your anchor",
-  "description": "When a vessel is caught in a storm and heading for land orrocks,they would drop anchor to try to avoid running aground. If the anchor did notgrip, it would drag along the bottom. Today the expression refers to being impeded by something or of behaving or acting in a tiredor slow manner.  "
+  "description": "When a vessel is caught in a storm and heading for land or rocks,they would drop anchor to try to avoid running aground. If the anchor did notgrip, it would drag along the bottom. Today the expression refers to being impeded by something or of behaving or acting in a tiredor slow manner.  "
 }, {
   "word": "Dressed to the nines",
   "description": "To celebrate victories, a returning ship would approach her home watersor port \"dressed\" in bunting and flags. As many of the crew as possible would line up on the nine primary yards as a salute to their monarch.Today the expression is often used to describe a person who is dressed in fancy clothing."
@@ -460,7 +460,7 @@ const words = [{
   "description": "This describes the action of a boat that rolls over, often as a result of a strongwind gust. Today the expression is often used in reference to a person being emotionally\"turned over\" or upset as well as a reference to aperson dying. "
 }, {
   "word": "Keep an even keel",
-  "description": "A nautical term for keeping a boat upright, notheeling over to either side. Today the expression is used when describing a personsemotions.  To \"keep an even keel\" is to remain level headed oremotionally stable. "
+  "description": "A nautical term for keeping a boat upright, notheeling over to either side. Today the expression is used when describing a persons emotions.  To \"keep an even keel\" is to remain level headed oremotionally stable. "
 }, {
   "word": "Keeping a weather eye open",
   "description": "This expression comes from the importance of a sailing crew staying alert and looking for potential trouble such as approaching bad weather. Today it has a similar use, meaning to generally watch out for trouble."
@@ -559,7 +559,7 @@ const words = [{
   "description": "This is an expression that originally meant to continue to sail longer upon atack than is necessary in order to reach a given point. Today the term is usedin a general sense of exceeding a limit or having gone too far or over-extended in someventure.  "
 }, {
   "word": "Overwhelm",
-  "description": "This term comes from the Middle English word meaning \"tocapsize\" or overturn a vessel. Today the term is synonymous with being overcome,defeated or to capitulate. P  "
+  "description": "This term comes from the Middle English word meaning \"tocapsize\" or overturn a vessel. Today the term is synonymous with being overcome,defeated or to capitulate."
 }, {
   "word": "Passed with flying colors",
   "description": "This expression comes from the custom of sailing ships that would fly their colors or put up their flags and pennants if they wanted to beidentified when passing other ships at sea. Today this expression is used torefer to someone who has passed a test or some other type of trial with a great margin."
@@ -577,7 +577,7 @@ const words = [{
   "description": "This is an expression meaning to find out what's goingon or to fully investigate something. Originally the phrase \"plumb thedepths\" came from the plumbor lead weight attached to a rope used to test the depth of the water. "
 }, {
   "word": "Pooped",
-  "description": "This word is used to denote the swamping of an aft  deckwhen sailing down wind in high following seas. Today the word is used synonymously with worn-out or fatigued, perhaps as the crew member mayhave been on a \"pooped\" deck. "
+  "description": "This word is used to denote the swamping of an aft  deckwhen sailing down wind in high following seas. Today the word is used synonymously with worn-out or fatigued, perhaps as the crew member may have been on a \"pooped\" deck. "
 }, {
   "word": "Port Holes",
   "description": "Today the term is used to describe the windows, or openings on a vessel. The word originates from the French word porte which means door. The expression \"port hole\" originated when French boat builders began to install small doors on the side of ships which could be opened to shoot the cannons."
