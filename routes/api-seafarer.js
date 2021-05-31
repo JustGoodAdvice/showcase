@@ -22,7 +22,7 @@ const words = [{
   "description": "The sea watch from noon until 4 p.m.-- one of the seven watches used by the Royal British Navy."
 }, {
   "word": "Albatross around one's neck",
-  "description": "An Albatross is a largeand long-winged seabird of the Southern Hemisphere capable of long flights. Itwas believed among seamen that albatrosses embodied the souls of dead sailorsand it was considered unlucky to kill one. "
+  "description": "An Albatross is a large and long-winged seabird of the Southern Hemisphere capable of long flights. It was believed among seamen that albatrosses embodied the souls of dead sailorsand it was considered unlucky to kill one. "
 }, {
   "word": "All at sea",
   "description": "Nautical expression to describe the condition of a vessel lost out of site of land. Now the expression or its shortened form \"at sea\" is used to describe someone who is confused, bewildered and unable to understand."
@@ -43,37 +43,37 @@ const words = [{
   "description": "When trouble struck at sea, seamen would go to thenearest to \"any port in a storm.\"  Now this phrase has entered oureveryday language and is used when we have problems and any and all help is welcome. "
 }, {
   "word": "Armed to the teeth",
-  "description": "This expression does not originate with pirates holdingswords in their teeth, rather it  is just one of many uses of the metaphorical phrase \"to the teeth,\" meaning \"very fully or completely\". "
+  "description": "This expression does not originate with pirates holdings words in their teeth, rather it  is just one of many uses of the metaphorical phrase \"to the teeth,\" meaning \"very fully or completely\". "
 }, {
   "word": "As the crow flies",
   "description": "The most direct route from one place to another without detours.  Before modern navigational systems existed, British vessels customarily carried a cage of crows. These birdsfly straight to the nearest land when released at sea thus indicating the directionof the nearest land was. "
 }, {
   "word": "At a loose ends",
-  "description": "A nautical term for a rope when unattached and therefore neglected or not doing its job.Thus 'tying up loose ends' indicates having done a complete job or having dealtwith all the details. "
+  "description": "A nautical term for a rope when unattached and therefore neglected or not doing its job.Thus 'tying up loose ends' indicates having done a complete job or having dealt with all the details. "
 }, {
   "word": "At a rate of knots",
-  "description": "To go at top speed. This is used to describesomeone who is traveling or driving very fast."
+  "description": "To go at top speed. This is used to describe someone who is traveling or driving very fast."
 }, {
   "word": "Athwart",
   "description": "Lying along the ship's width, at right angles to the vessels fore-and-aft line (centerline). Same as abeam."
 }, {
   "word": "Bale out",
-  "description": "To bale out means to remove water from a vessel.  Now the term is used in the sense of getting out of a badsituation such as selling the shares of a failing company. "
+  "description": "To bale out means to remove water from a vessel.  Now the term is used in the sense of getting out of a bad situation such as selling the shares of a failing company. "
 }, {
   "word": "Bamboozle",
-  "description": "From the 17th century, it described the Spanish custom ofhoisting false flags to deceive (bamboozle) enemies. Today if one intentionally deceives someone, they are said to have bamboozled them. "
+  "description": "From the 17th century, it described the Spanish custom of hoisting false flags to deceive (bamboozle) enemies. Today if one intentionally deceives someone, they are said to have bamboozled them. "
 }, {
   "word": "Bare Poles",
-  "description": "Describes a sailing vessel with no sail set. A ship in a storm that has takendown all of her sails is with or under bare poles."
+  "description": "Describes a sailing vessel with no sail set. A ship in a storm that has taken down all of her sails is with or under bare poles."
 }, {
   "word": "Barge in",
-  "description": "The word barge refers to the more common, flat-bottomed workboat which is hard tomaneuver and difficult to control.  They would bump and bang into other boatsthus the term . . . \"barge in.\""
+  "description": "The word barge refers to the more common, flat-bottomed workboat which is hard to maneuver and difficult to control.  They would bump and bang into other boats thus the term . . . \"barge in.\""
 }, {
   "word": "Batten down the hatches",
-  "description": "Now used as a term meaning \"get ready\". The term originates from the act of securing the hatches and tarpaulinscovering them on a boat with use of battens (long flat blades made of wood) inpreparation for a coming storm.  "
+  "description": "Now used as a term meaning \"get ready\". The term originates from the act of securing the hatches and tarpaulins covering them on a boat with use of battens (long flat blades made of wood) in preparation for a coming storm.  "
 }, {
   "word": "Bear down",
-  "description": "To approach something from upwind, to bear down is to sail fast, often towards the enemy in a threatening manner. Today to bear down is still used to describe \"making a rush at\", as well as exert strength or pressure upon something or to pay special attention in somesituation."
+  "description": "To approach something from upwind, to bear down is to sail fast, often towards the enemy in a threatening manner. Today to bear down is still used to describe \"making a rush at\", as well as exert strength or pressure upon something or to pay special attention in some situation."
 }, {
   "word": "Bedlam",
   "description": "The word originated from the name of a London mental hospital, St. Mary of Bethlehem Hospital, where the Royal Navy would discharge men for treatment of mental illness.  Now the word is used to describe a state of extreme confusion and disorder."
@@ -103,13 +103,13 @@ const words = [{
   "description": "A well known saying meaning that family relationships are more important than all other relationships. It was originally attributed to an U.S. Navy commodore Josiah Tattnail who used the expression when justifying his intervention in the British attack on the Peiho forts in June 1859 during the second China war. "
 }, {
   "word": "Blood Money",
-  "description": "Originally known as bounty money, it was the financial reward for sinking an enemyship. Today bloodmoney refers to money paid by a killer as compensation to the next of kin of a murdervictim   or money gained at the cost of another's life or livelihood.  "
+  "description": "Originally known as bounty money, it was the financial reward for sinking an enemy ship. Today blood money refers to money paid by a killer as compensation to the next of kin of a murder victim   or money gained at the cost of another's life or livelihood.  "
 }, {
   "word": "Bolster",
-  "description": "A piece of wood fitted in various places to preventchafing.  Today the term means to support and strengthen."
+  "description": "A piece of wood fitted in various places to prevent chafing.  Today the term means to support and strengthen."
 }, {
   "word": "Brightwork",
-  "description": "On a vessel, brightwork is the varnished woodwork and/or polished metal. C   "
+  "description": "On a vessel, brightwork is the varnished woodwork and/or polished metal."
 }, {
   "word": "Calm before the storm: ",
   "description": "Although not exclusively nautical, this has been attributed to seagoing folk as a result of their constant and intimate interaction with the weather. Although not known at the time, an approaching storm will drop the barometric pressure, creating a low directly ahead of the storm front. If a storm comes from a direction that is opposite to the prevailing winds, the prevailing breezes will eventually be overcome by the storm front. Just before this happens, however, there will be an equalization of wind speed from two opposing directions resulting in an absence of any wind. The meaning is not lost on landlubbers"
@@ -124,22 +124,22 @@ const words = [{
   "description": "Break off; to break a spar, bowsprit or part a rope. A spar is said to \"carry away\" when it is broken or disabled. When any part of a vessel's gear or equipment breaks or givesway, is lost or washed away, it is said to be \"carried away.\"   "
 }, {
   "word": "Carry on",
-  "description": "In the days of sail, the officer of the deck kept a weather eye constantly on the slightest change in the wind sothat the sails could be reefed or added as necessary to ensure the fastest headway. Whenever a good breeze came along, the order to \"carry on\" would be given. It meant to hoist every bit of canvas the yards could carry. Through the centuries, the term's connotation has changed somewhat. Todaythe expression means to continue onward or go on with a given task.  "
+  "description": "In the days of sail, the officer of the deck kept a weather eye constantly on the slightest change in the wind sothat the sails could be reefed or added as necessary to ensure the fastest headway. Whenever a good breeze came along, the order to \"carry on\" would be given. It meant to hoist every bit of canvas the yards could carry. Through the centuries, the term's connotation has changed somewhat. Today the expression means to continue onward or go on with a given task.  "
 }, {
   "word": "Castaway",
   "description": "A shipwrecked or marooned sailor or, in some cases, a sailorput ashore as punishment. To cast away was to commit a deliberate act to cause a ship to sink, to be lost or to make it necessary to abandon her.   "
 }, {
   "word": "Cat-o'-nine-tails",
-  "description": "Until 1881, an authorized instrument of punishment in the British Navy, composed of nine pieces of chord about half a yard long fixed upon a piece of thick rope for a handle. Each length of chord had three knots atclose intervals near the striking end. Sailors were flogged with the cay on the bare back for transgressing \"The Articles ofWar\" (the rules of the service). A \"thieves cat\" had larger and harder knots than usual and was used only for punishingthieves.  "
+  "description": "Until 1881, an authorized instrument of punishment in the British Navy, composed of nine pieces of chord about half a yard long fixed upon a piece of thick rope for a handle. Each length of chord had three knots atclose intervals near the striking end. Sailors were flogged with the cay on the bare back for transgressing \"The Articles ofWar\" (the rules of the service). A \"thieves cat\" had larger and harder knots than usual and was used only for punishing thieves.  "
 }, {
   "word": "Chandlery",
-  "description": "A maker and seller of candles was known as a chandler and the place where candles were made and sold was a chandlery.Boats at that time consumed large amounts of candles on a voyage. To replace those consumed, the captain would have to visit the local chandlery while in port.Chandlers would often stock other nautical goods, such as rope, leather and tar. Todaythe term refers to a boat supply store.  "
+  "description": "A maker and seller of candles was known as a chandler and the place where candles were made and sold was a chandlery. Boats at that time consumed large amounts of candles on a voyage. To replace those consumed, the captain would have to visit the local chandlery while in port. Chandlers would often stock other nautical goods, such as rope, leather and tar. Todaythe term refers to a boat supply store.  "
 }, {
   "word": "Channel",
-  "description": "From the Latin canal referring to the movement ofwater.  It is the area within a body of water of adequate depth to be used for navigation.   "
+  "description": "From the Latin canal referring to the movement of water.  It is the area within a body of water of adequate depth to be used for navigation.   "
 }, {
   "word": "Chew (chewing)  the fat",
-  "description": "Sailors used to talk and complain about the poorfood while eating their salt pork.  Chew the fat meant to talk socially without exchangingvery much information.Alternately, in the days when brine was added to barrels of meat, it had a hardening effect on the fat. It was still edible but it took considerable chewing. So, to \"chew the fat\" has come to mean to talkendlessly.   "
+  "description": "Sailors used to talk and complain about the poorfood while eating their salt pork.  Chew the fat meant to talk socially without exchanging very much information. Alternately, in the days when brine was added to barrels of meat, it had a hardening effect on the fat. It was still edible but it took considerable chewing. So, to \"chew the fat\" has come to mean to talkendlessly.   "
 }, {
   "word": "Chock-a-block (Chock full)",
   "description": "When the sails were pulled in tight so that the boat could sail as close to the wind as possible, the blocks (pulleys) would be pulled \"hard-up\" or in as tight or close together as possible.  This would be called \"chock-a-block,\" or chock full.\" Used in the modern-day sense of any articles (or people) that are packed in tightly together.  "
@@ -151,7 +151,7 @@ const words = [{
   "description": "It was the custom in sailing ships to record courses, distances and tacks on a log slate.  The new watch would always start with a clean slate if things had been growing fine, disregarding what had gone before and starting anew. In a similar way,today we refer to a new beginningas starting with a \"clean slate.\"  "
 }, {
   "word": "Clear the deck/Clear for action",
-  "description": "In preparation for heavy weather, \"Clear the deck,\"(or a naval engagement, \"clear for action\") meant removing anything from the deckthat was not essential. Today, this phrase is usually used when preparing tostart a project in order to be fully ready for the intake of all new informationand needed materials.  "
+  "description": "In preparation for heavy weather, \"Clear the deck,\"(or a naval engagement, \"clear for action\") meant removing anything from the deck that was not essential. Today, this phrase is usually used when preparing to start a project in order to be fully ready for the intake of all new information and needed materials.  "
 }, {
   "word": "Close Quarters",
   "description": "A small wooden fortress or barricade constructed on the deck of aship. The term 'close quarters' has come to mean in close contact or a small area. Closed quarters referred to the quarters aboard ship, especially those for officers and passengers, which had wooden partitions or bulkheads dividing them.  "
@@ -160,7 +160,7 @@ const words = [{
   "description": "In port, the yard arms where slewed inboard by the cock up crew and neatly braced so that they would not foul other ship's rigging or dock equipment Today, a \"cock up\" is a mistake or making a mess of something.  "
 }, {
   "word": "Combing the cat",
-  "description": "When flogging a seaman, \"combing the cat\" meant to runfingers through the cat-o'-nine-tails after each stroke to separate the strands in preparation for the next stroke.   "
+  "description": "When flogging a seaman, \"combing the cat\" meant to run fingers through the cat-o'-nine-tails after each stroke to separate the strands in preparation for the next stroke.   "
 }, {
   "word": "Come hell or high water",
   "description": "To do whatever it takes to accomplish a goal or arrive at a destination."
@@ -169,7 +169,7 @@ const words = [{
   "description": "The hawse-pipe is a pipe in the ship's bow for the anchor cable to run through. Anybody who has risen to Captain from lowly deckhand is said to have \"come up through the hawse-pipe.\" Todaythe expression is also used outside of the naval language."
 }, {
   "word": "Couple of shakes",
-  "description": "Shakes refers to the shaking (luffing) of the head sails if the vessel points up too close to the wind. Sailors would measure short periods of time before watch changes with a \"couple of shakes.\"Today the expression is used to mean in a short time period."
+  "description": "Shakes refers to the shaking (luffing) of the head sails if the vessel points up too close to the wind. Sailors would measure short periods of time before watch changes with a \"couple of shakes.\" Today the expression is used to mean in a short time period."
 }, {
   "word": "Cranky",
   "description": "From the Dutch krengd, a crank was an unstable sailing vessel. It has come to mean irritable. "
@@ -178,10 +178,10 @@ const words = [{
   "description": "A short haircut given to the whole ship crew."
 }, {
   "word": "Cut and Run",
-  "description": "Hurry off abruptly; to escape by a sudden maneuver. Thisphrase comesfrom the act of cutting the anchor line in an effort to make a quick getaway. Alternately, the saying comes from the cutting of the ropeyarns used to fasten thesails so the sails could fall quickly when the need to get under way was urgent."
+  "description": "Hurry off abruptly; to escape by a sudden maneuver. Thisphrase comesfrom the act of cutting the anchor line in an effort to make a quick getaway. Alternately, the saying comes from the cutting of the ropeyarns used to fasten the sails so the sails could fall quickly when the need to get under way was urgent."
 }, {
   "word": "Cup of Joe",
-  "description": "From American Navy lore.  Josephus Daniels (1862- 1948) was appointed Secretary of the Navy by President Woodrow Wilson in 1913.During his time as Secretary of the Navy, \"Joe\" Daniels abolished the officers' wine, after which the strongest drink aboard Navy ships wascoffee.  A cup of coffee became known as \"a cup of Joe\". D  "
+  "description": "From American Navy lore.  Josephus Daniels (1862- 1948) was appointed Secretary of the Navy by President Woodrow Wilson in 1913.During his time as Secretary of the Navy, \"Joe\" Daniels abolished the officers' wine, after which the strongest drink aboard Navy ships wascoffee.  A cup of coffee became known as \"a cup of Joe\". "
 }, {
   "word": "Davy Jones' Locker",
   "description": "Seamen's slang for the bottom of the sea. This expression is believed to be from the story that Davy Jones was the owner of a sixteenth-century London pub where unwary sailors were drugged and put inlockers and then awoke aboard ship to find they had been 'recruited' into the Navy. "
@@ -190,10 +190,10 @@ const words = [{
   "description": "The term \"flogging a dead horse\" alludes to the difficulty of getting any extra work from a crew during a celebration held by British crews when they had been at sea four weeks and had worked off their initial advance (often one month's pay). At the expiration of the first month of the voyage, it was at one time customary to hoist in the rigging a canvas effigy of a horse.  Today, \"dead horse\" refers to a debt to the government and/or advance of salary."
 }, {
   "word": "Dead in the Water",
-  "description": "A sailing ship that is dead in the water is stationary with no wind in its sails to make it come alive. In everydayusage, the term means \"not going anywhere\"."
+  "description": "A sailing ship that is dead in the water is stationary with no wind in its sails to make it come alive. In everyday usage, the term means \"not going anywhere\"."
 }, {
   "word": "Dead Reckoning",
-  "description": "For many years, the practice of keeping a log based on estimated speed was called 'deduced' reckoning.Over time, this turned into dead reckoning. Dead reckoning is the process by which the position of the ship at any moment isfound (without any observation of the sun or stars) based upon the last well-determined positionand the run that has been made since that last position.  For this purpose, the ship's course indicated by its compass, the distance indicated by the log, anddrift and leeway were all taken into account. "
+  "description": "For many years, the practice of keeping a log based on estimated speed was called 'deduced' reckoning. Over time, this turned into dead reckoning. Dead reckoning is the process by which the position of the ship at any moment isfound (without any observation of the sun or stars) based upon the last well-determined positionand the run that has been made since that last position.  For this purpose, the ship's course indicated by its compass, the distance indicated by the log, anddrift and leeway were all taken into account. "
 }, {
   "word": "Dead on end",
   "description": "Said of the wind when exactly ahead and of another vessel when her fore and aft line coincides with observer's line of sight."
@@ -214,10 +214,10 @@ const words = [{
   "description": "To unrig a vessel and discharge all of its stores. "
 }, {
   "word": "Doesn't have both oars in the water",
-  "description": "This is an expression used todescribe someone that is thought to be slow or crazy, or just not all there."
+  "description": "This is an expression used to describe someone that is thought to be slow or crazy, or just not all there."
 }, {
   "word": "Dog watch and Dogging the watch",
-  "description": "This likely comes from the expression \"dodgewatch,\" the shorter of the seven lookout or watch duties on board aship.  A dog (or dodge) watch is two hours long while all other watches arefour hours in duration.  "
+  "description": "This likely comes from the expression \"dodgewatch,\" the shorter of the seven lookout or watch duties on board aship.  A dog (or dodge) watch is two hours long while all other watches are four hours in duration.  "
 }, {
   "word": "Don't hand me a line",
   "description": "An expression now used to ask for a speaker toconsider telling the truth. This originated from the frequent observation that the person speaking or telling a story would not be helping to tie up boat lines or ropes while docking,but rather leaving the job to the other sailors.   "
@@ -226,19 +226,19 @@ const words = [{
   "description": "Keep things the way they are.  "
 }, {
   "word": "Down the Hatch",
-  "description": "This is a drinking expression that is believed to have its origins in seafreight where cargo was lowered into the hatch for transport below deck. The freightappeared to be consumed by theship.  "
+  "description": "This is a drinking expression that is believed to have its origins in seafreight where cargo was lowered into the hatch for transport below deck. The freight appeared to be consumed by theship.  "
 }, {
   "word": "Dragging your anchor",
-  "description": "When a vessel is caught in a storm and heading for land or rocks,they would drop anchor to try to avoid running aground. If the anchor did notgrip, it would drag along the bottom. Today the expression refers to being impeded by something or of behaving or acting in a tiredor slow manner.  "
+  "description": "When a vessel is caught in a storm and heading for land or rocks, they would drop anchor to try to avoid running aground. If the anchor did notgrip, it would drag along the bottom. Today the expression refers to being impeded by something or of behaving or acting in a tired or slow manner.  "
 }, {
   "word": "Dressed to the nines",
-  "description": "To celebrate victories, a returning ship would approach her home watersor port \"dressed\" in bunting and flags. As many of the crew as possible would line up on the nine primary yards as a salute to their monarch.Today the expression is often used to describe a person who is dressed in fancy clothing."
+  "description": "To celebrate victories, a returning ship would approach her home watersor port \"dressed\" in bunting and flags. As many of the crew as possible would line up on the nine primary yards as a salute to their monarch. Today the expression is often used to describe a person who is dressed in fancy clothing."
 }, {
   "word": "Drifting through life (Drifter)",
   "description": "Drifting through life (Drifter). From the Middle English 'drifte' which means to float. Now used to describe a person without purpose or aim in life.   "
 }, {
   "word": "Dummy run",
-  "description": "The naval name for a trial or practice in which all the motions are gone through but nothingelse. The expression is therefore freely used in the navy to mean a rehearsal.  "
+  "description": "The naval name for a trial or practice in which all the motions are gone through but nothing else. The expression is therefore freely used in the navy to mean a rehearsal.  "
 }, {
   "word": "Dungarees",
   "description": "A coarse kind of unbleached cotton cloth. The term dates back to the 18th century, from the Hindi word'dungri', a particular type of sturdy Indian cotton cloth that was used for making sails.   "
@@ -247,13 +247,13 @@ const words = [{
   "description": "This means sharing the expenses. The expression, intended to be negative, originated as a result of the hostility between the British and the Dutch during the 17th and 18th centuries during which there were trade disputes, shipping embargoes as well as war.   "
 }, {
   "word": " Dunnage",
-  "description": "Technically, packing material used to protect or wedge in cargo orstores.  It is also used when referring to a person's clothes and/or baggage. E  "
+  "description": "Technically, packing material used to protect or wedge in cargo orstores.  It is also used when referring to a person's clothes and/or baggage."
 }, {
   "word": "Everything on top and nothing handy",
-  "description": "This is used to describe any gear carelessly stowed.The expression is believed to come from the lack of organization in the crew'sstorage chest.   "
+  "description": "This is used to describe any gear carelessly stowed. The expression is believed to come from the lack of organization in the crew'sstorage chest."
 }, {
   "word": "Eye-splice",
-  "description": "To splice, ('episeer' French.  'splitster', Dutch, 'plico' Latin) to join the two ends of a rope together, or to unite the end of a rope to any other part thereof. There are several different methods of performing this operation, according to the services on which it is to be employed. Thus, there is the short-splice, the long-splice,the eye-splice, and the cunt-splice-- all of which are used for different purposes. The \"eye-splice\"is intended to make a sort of eye or circle at the end of arope. F  "
+  "description": "To splice, ('episeer' French.  'splitster', Dutch, 'plico' Latin) to join the two ends of a rope together, or to unite the end of a rope to any other part thereof. There are several different methods of performing this operation, according to the services on which it is to be employed. Thus, there is the short-splice, the long-splice,the eye-splice, and the cunt-splice-- all of which are used for different purposes. The \"eye-splice\" is intended to make a sort of eye or circle at the end of arope."
 }, {
   "word": "Fathom",
   "description": "This was originally a land measuring term derived from the Anglo-Saxon word 'fætm' meaning the embracing arms, or to embrace. In those days, most measurements were based on average sizes of parts of the body.  A fathom is the average distance from fingertip to fingertip of the outstretched arms of a six-foot tall man hence six feet."
@@ -274,7 +274,7 @@ const words = [{
   "description": "To fend a boat or ship is to prevent her striking against any quay, jetty, vessel or any object that may endanger her.  Hence a fender is an object used to soften the blow. To \"fend off\" is to prevent another vessel or object (quay, jetty, etc.) from striking a boat or ship. We use it more commonly in the sense of keeping something away or even in fending off an attack (even a verbal one) of some kind.  "
 }, {
   "word": "Field day",
-  "description": "Originally a day for cleaning all parts of the vessel. Today the expression is used to reference a good time; \"Have a field day\".  "
+  "description": "Originally a day for cleaning all parts of the vessel. Today the expression is used to reference a good time; \"Have a field day\"."
 }, {
   "word": "Figurehead",
   "description": "An ornamental figure placed on the front of a ship often under the bowsprit. Originally, the figure was often thought to be a religious and/or protective emblem. Today the term figurehead describes a leader with no real power or function,  much like the figurehead on the front of a ship.  "
@@ -334,7 +334,7 @@ const words = [{
   "description": "An expression for all-inclusive or very thorough.  The expression comes from the nautical term stem or very front of a ship and stern or very back of a ship.  From stem to stern means the entire ship. "
 }, {
   "word": "Fudge (as used in expressions like \"fudging the books\")",
-  "description": "This expression is believed to come from a Captain Fudge, also known as \"Lying Fudge\" who was a notorious liar in the 17th Century. G  "
+  "description": "This expression is believed to come from a Captain Fudge, also known as \"Lying Fudge\" who was a notorious liar in the 17th Century. "
 }, {
   "word": "Galley",
   "description": "The galley is the kitchen of the ship. The best explanation as to its origin is that it is a corruption of gallery.  Ancient sailors cooked their meals on a brick or stone gallery laid amidships."
@@ -367,7 +367,7 @@ const words = [{
   "description": "This refers to an over-enthusiastic person being carried away by hisemotions or commitment. "
 }, {
   "word": "Go to the Head",
-  "description": "This is synonymous with going to the toilet.  Theexpression comes from the fact that on sailing ships, the toilet was located forward, close to the figureheador the \"head\" of the vessel."
+  "description": "This is synonymous with going to the toilet. The expression comes from the fact that on sailing ships, the toilet was located forward, close to the figureheador the \"head\" of the vessel."
 }, {
   "word": "Go with the flow",
   "description": "An expression for sailing in the same direction as the currentflow that makes the passage smoother and faster. Later this term was used to mean taking thingseasier or being more relaxed, or getting in step with surrounding events."
@@ -376,13 +376,13 @@ const words = [{
   "description": "A sailing vessel 'gripes' when she can not properly sail close hauled (at a angle close to the direction of the wind) due to being incorrectly designed or because she has an imbalance of sail which results in bow (front) heading into the wind when sailing close-hauled. The sails flap around and forward progress is difficult. The term is now used to mean complain. "
 }, {
   "word": "Grog (Groggy)",
-  "description": "This originates from the nickname the British sailors had for their Commander, Admiral Vernon, who wore a cloak made of a coarse cloth called grogram.Admiral Vernon became known as \"Old Grog\". In 1740, he ordered his men to dilute their dailyration of rum with water. Today the term is used to mean an alcoholic drink."
+  "description": "This originates from the nickname the British sailors had for their Commander, Admiral Vernon, who wore a cloak made of a coarse cloth called grogram. Admiral Vernon became known as \"Old Grog\". In 1740, he ordered his men to dilute their dailyration of rum with water. Today the term is used to mean an alcoholic drink."
 }, {
   "word": "Ground swell",
   "description": "A sudden swell or rise of water near the shore that often occurs in otherwise calm conditions.  It is caused by undulating water from a far away storm. Today the term means a growing change in public opinion.  "
 }, {
   "word": "Gung Ho",
-  "description": "This term originated as a Chinese expression used to describe ship crews when theywould join together to make it through a difficult situation. The term was brought into the English vocabulary when WWII Marine Lieutenant Colonel Carlson  used the term for a motto for his division.Today the expression is synonymous with excited or ready for action."
+  "description": "This term originated as a Chinese expression used to describe ship crews when theywould join together to make it through a difficult situation. The term was brought into the English vocabulary when WWII Marine Lieutenant Colonel Carlson  used the term for a motto for his division. Today the expression is synonymous with excited or ready for action."
 }, {
   "word": "Hail from",
   "description": "To hail, call to, or salute to other passing vessels has long been a nautical custom. The expression to \"hail from\" was used to acknowledge a passing vessel and to simultaneously inform the other vessel of the hailing vessels home port or area of origin. The expression is now used to inform people where you come from."
@@ -391,13 +391,13 @@ const words = [{
   "description": "Originally this expression has its roots in Greek mythology.  Halcyone was the daughter of Aeolus and wife of Ceyx. When Ceyx drowned, it is said that Halcyone threw herself into the sea. Out of pity, the gods changed the pair into kingfishers also known as halcyons.  The gods also forbade the winds from blowing seven days before and after the winter solstice. This is the breeding season of the halcyon. The expression \"halcyon days\" has come to mean a time of peace and tranquility."
 }, {
   "word": "Hand over fist",
-  "description": "The expression \"hand over fist\" means to go forth rapidly in someendeavor, such as, making money hand over fist. Originally the expression came from the act of quickly climbing the rigging of the old sailing ships\" hand over hand\" or \"hand over fist\". "
+  "description": "The expression \"hand over fist\" means to go forth rapidly in some endeavor, such as, making money hand over fist. Originally the expression came from the act of quickly climbing the rigging of the old sailing ships\" hand over hand\" or \"hand over fist\". "
 }, {
   "word": "Hard and fast",
-  "description": "An expression used to describe inflexibility, such as, a hard and fast rule  The term is nautical in origination and was used to describe a ship grounded on the shore; 'hard' meaning firmly and 'fast' meaning fixed."
+  "description": "An expression used to describe in flexibility, such as, a hard and fast rule  The term is nautical in origination and was used to describe a ship grounded on the shore; 'hard' meaning firmly and 'fast' meaning fixed."
 }, {
   "word": "Hard up",
-  "description": "An expression now used to mean short of money. Originallywhen a sailing crew was ordered to tighten the sails, the blocks would be \"hard up\" meaninghauled together as close as possible."
+  "description": "An expression now used to mean short of money. Originally when a sailing crew was ordered to tighten the sails, the blocks would be \"hard up\" meaning hauled together as close as possible."
 }, {
   "word": "Hasn't got a clue",
   "description": "With nautical origins, the clew refers to the corner of the sail where a brass ring is sewn into the fabric of the sail in order to properly hold the sail in place.  If a clew should rip, the sail would loose shape and the vessel will not sail in a controlled manner. Until it is refastened, it \"hasn't got a clew,\" or needs to \"get clewed up\" again. Today if someone \"hasn't got a clue\" then they do not understand or are not knowledgeable.  To \"get clued up\" is to learn about or to come to fully understand something. "
@@ -406,10 +406,10 @@ const words = [{
   "description": "Today this word is used to refer to an initiation ritual of a newcomer to a group by humiliating and harassing him or her, thereby asserting the authority of the group. Originally hazing was the practice of captains asserting their authority by having a ship's crew work all hours of the day or night, whether needed or not, in order to make them generally miserable thereby more humble and easier to manage."
 }, {
   "word": "Head",
-  "description": "The lavatory aboard a ship is known as the \"head.\"  Theexpression comes from the fact that on the sailing ships the toilet was located forward, close to the figureheador the \"head\" of the vessel."
+  "description": "The lavatory aboard a ship is known as the \"head.\"  The expression comes from the fact that on the sailing ships the toilet was located forward, close to the figureheador the \"head\" of the vessel."
 }, {
   "word": "Heave to",
-  "description": "To stop or slow a sailing vessel by placing some of the canvas(often the jib) back against the wind and placing the main in a close haul positionwhile fastening the rudder in a fixed position.  The expression is also usedto mean stopping.  However, this is not used as commonly as it once was. "
+  "description": "To stop or slow a sailing vessel by placing some of the canvas (often the jib) back against the wind and placing the main in a close haul position while fastening the rudder in a fixed position.  The expression is also used to mean stopping.  However, this is not used as commonly as it once was. "
 }, {
   "word": "High and Dry",
   "description": "Today the expression is synonymous with  being without resources or support. Originally used to describe a ship that is beached or on the rocks. She is left 'high' by the receding tide and 'dry' by being out of the water."
@@ -418,46 +418,46 @@ const words = [{
   "description": "To fall or drop suddenly, usually to evade some danger. "
 }, {
   "word": "Holy Mackerel",
-  "description": "Because mackerel is a fish that spoils quickly, merchants were allowed to sell it on Sundayscontradicting the blue laws in 17th-century England. The phrase \"HolyMackerel!\" is still used today as an expression of surprise and/or astonishment."
+  "description": "Because mackerel is a fish that spoils quickly, merchants were allowed to sell it on Sundays contradicting the blue laws in 17th-century England. The phrase \"Holy Mackerel!\" is still used today as an expression of surprise and/or astonishment."
 }, {
   "word": "Horse Latitudes",
-  "description": "This is the area of relatively calm weather conditions foundfrom latitudes 30 degrees North to 30 degrees South. The expression is said to comefrom the story that sailing ships carrying horses to America, when traversing these latitudes, had to throw horses overboard in order to lighten their vessels to make headway. "
+  "description": "This is the area of relatively calm weather conditions found from latitudes 30 degrees North to 30 degrees South. The expression is said to comefrom the story that sailing ships carrying horses to America, when traversing these latitudes, had to throw horses overboard in order to lighten their vessels to make headway. "
 }, {
   "word": "Hot pursuit",
   "description": "A term originating from the naval warfare tactic of allowing a fleeing enemy to be followed into neutral waters and captured there if the chase had begun in international waters. Today it is used to mean closely follow or chase. "
 }, {
   "word": "Hulk",
-  "description": "A nautical expression for an old sailing vessel that is nolonger seaworthy. The larger vessels were sometimes stripped of their rigging and used for in-port storage. Today expressions like \"He was a great 'hulk' of a guy\" means he was a bigman. "
+  "description": "A nautical expression for an old sailing vessel that is no longer seaworthy. The larger vessels were sometimes stripped of their rigging and used for in-port storage. Today expressions like \"He was a great 'hulk' of a guy\" means he was a bigman. "
 }, {
   "word": "Hunky-Dory",
-  "description": "This term, meaning everything is alright, originated  from a street named \"Honki-Dori\" in Yokohama, Japan. This street was known by the sailors as the street that catered to the pleasures of sailors.  If life was HonkiDori, a sailor had money, plenty of grog, and a pretty girl. I  "
+  "description": "This term, meaning everything is alright, originated  from a street named \"Honki-Dori\" in Yokohama, Japan. This street was known by the sailors as the street that catered to the pleasures of sailors.  If life was HonkiDori, a sailor had money, plenty of grog, and a pretty girl. "
 }, {
   "word": "Idler",
   "description": "This was the name for those members of a ship's crew, such ascooks and sail-makers, that did not stand night watch because of their work. "
 }, {
   "word": "In Irons",
-  "description": "This is a term used to describe the position of a sailing vesselwith the bow or front facing directly into the wind so that neither side of the sails fill. "
+  "description": "This is a term used to describe the position of a sailing vessel with the bow or front facing directly into the wind so that neither side of the sails fill. "
 }, {
   "word": "In the Drink",
   "description": "Is a term used to indicate that someone has fallen into the water. "
 }, {
   "word": "In the Doldrums",
-  "description": "Doldrums is the name of an area of the ocean on either sideof the equator. This area is known to have unstable and light windconditions.  A sailing ship caught in the Doldrums can be stranded due to lack of wind. Today the term is used to describe someone as being in low spirits, stagnated ordepressed.  J  "
+  "description": "Doldrums is the name of an area of the ocean on either sideof the equator. This area is known to have unstable and light wind conditions.  A sailing ship caught in the Doldrums can be stranded due to lack of wind. Today the term is used to describe someone as being in low spirits, stagnated ordepressed."
 }, {
   "word": "Jibes (Gybes)",
-  "description": "This is the term to describe the often unwelcomed andpossibly violent and dangerous swing of the boom and sail from one side of thevessel to the other. This is brought about when a boat sailing down wind alters courseor when the wind changes direction so that the wind passes from one side of the stern to theother. The term is also now used when referring to negative, unwelcomed remarks about or to another person. "
+  "description": "This is the term to describe the often unwelcomed and possibly violent and dangerous swing of the boom and sail from one side of the vessel to the other. This is brought about when a boat sailing down wind alters course or when the wind changes direction so that the wind passes from one side of the stern to theother. The term is also now used when referring to negative, unwelcomed remarks about or to another person. "
 }, {
   "word": "Junk",
   "description": "Refers in a nautical sense to an old rope no longer able to take aload. "
 }, {
   "word": "Jury Rig",
-  "description": "This term describes something that is assembled in a makeshiftmanner offering nothing more than a temporary solution. It originates from thenautical term \"jury mast,\" which is a temporary mast made from any availablepole when the mast has become damaged or lost overboard. This term gaverise to the term 'jury rigging' to describe an attempt to place certain personsas jurors in a court proceeding in an effort to assure a particular legaldecision. K  "
+  "description": "This term describes something that is assembled in a makeshift manner offering nothing more than a temporary solution. It originates from the nautical term \"jury mast,\" which is a temporary mast made from any available pole when the mast has become damaged or lost overboard. This term gaverise to the term 'jury rigging' to describe an attempt to place certain personsas jurors in a court proceeding in an effort to assure a particular legal decision."
 }, {
   "word": "Keel hauling",
   "description": "This was a naval punishment during the 15th and 16th centuries. The crew member who was to be punished was dragged under the bottom of the boat from one side of the boat to theother. The term \"keel-hauled\" is still used to mean a severe punishment. "
 }, {
   "word": "Keel over",
-  "description": "This describes the action of a boat that rolls over, often as a result of a strongwind gust. Today the expression is often used in reference to a person being emotionally\"turned over\" or upset as well as a reference to aperson dying. "
+  "description": "This describes the action of a boat that rolls over, often as a result of a strong wind gust. Today the expression is often used in reference to a person being emotionally \"turned over\" or upset as well as a reference to a person dying. "
 }, {
   "word": "Keep an even keel",
   "description": "A nautical term for keeping a boat upright, notheeling over to either side. Today the expression is used when describing a persons emotions.  To \"keep an even keel\" is to remain level headed oremotionally stable. "
