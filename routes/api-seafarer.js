@@ -481,13 +481,13 @@ const words = [{
   "description": "This expression has come to mean generally learning how to perform some specific task or gain skill within some particular field ofendeavor. The term comes from the important task of learning the use of the many ropes aboard a sailing vessel. "
 }, {
   "word": "Letting the Cat out of the bag",
-  "description": "This term comes from the old navalpunishment of being whipped with a \"cat o' nine tails.\" The whip was kept in a leather bag and when the sailors \"let the Cat out of the bag\" they had usually done somethingthat would result in punishment. The term is used today to mean that someone hassaid something that was not to be said or revealed a secret."
+  "description": "This term comes from the old naval punishment of being whipped with a \"cat o' nine tails.\" The whip was kept in a leather bag and when the sailors \"let the Cat out of the bag\" they had usually done something that would result in punishment. The term is used today to mean that someone has said something that was not to be said or revealed a secret."
 }, {
   "word": "Like rats deserting a sinking ship",
   "description": "This is a derogatory term for a person who leavesa given situation at the first sign of trouble, just as rats were said to leave a sinking ship."
 }, {
   "word": "Like ships passing in the nights",
-  "description": "This expression indicates a meeting or passingwhich had a low probability of occurring just as it was unlikely that ships met at night on the sea when boat traffic was little and before navigational aids such as radar were used."
+  "description": "This expression indicates a meeting or passing which had a low probability of occurring just as it was unlikely that ships met at night on the sea when boat traffic was little and before navigational aids such as radar were used."
 }, {
   "word": "Limey",
   "description": "A term that was used to refer to a British sailor, now this is also used generally to indicate a British person. The term came from the seventeenth and eighteenth century practice of issuing limes to British sailors to combat scurvy (a vitamin C deficiency). "
@@ -496,10 +496,10 @@ const words = [{
   "description": "Today this phrase is used to describe someone who appears to be unsteady on their feet, perhaps from the effects of fatigue or alcohol. The term is from the nautical term \"listing to port\" which means the vessel is leaning towards the left or portside. "
 }, {
   "word": "Log book",
-  "description": "Today a record kept on a regular basis aboard ship is called a \"log.\"The term comes from the fact that these records were originally kept by inscribing information into shingles cut from logs and hinged so they opened likebooks.  "
+  "description": "Today a record kept on a regular basis aboard ship is called a \"log.\" The term comes from the fact that these records were originally kept by inscribing information into shingles cut from logs and hinged so they opened likebooks.  "
 }, {
   "word": "Loose Cannon",
-  "description": "Today the term \"loose cannon\" refers to someone who is out of control, unpredictable, and  who may causedamage, just as the canons would do if they were to break loose on the decks ofthe oldsailing vessels. "
+  "description": "Today the term \"loose cannon\" refers to someone who is out of control, unpredictable, and  who may cause damage, just as the canons would do if they were to break loose on the decks ofthe old sailing vessels. "
 }, {
   "word": "Loose Ends",
   "description": "Today the term \"at loose ends\" is used to reference someone who has spare time and does not know what to do with themselves. The term comes from the practice of having the ship's crew members repair and splice the ship's ropes when they didn't have something else to do. The crew member performing this task was said to be at \"loose ends.\" "
@@ -511,31 +511,31 @@ const words = [{
   "description": "This term is used to mean a big, awkward or clumsy person. The term landlubber originated as a derogatory term for an inexperienced seaman who may be better off on land.   M  "
 }, {
   "word": "Maiden voyage",
-  "description": "A term to reference a ship's first voyage. Today the term isapplied to most any type of first trip, whether it is a first trip in a newcar or the first voyage to a new place. "
+  "description": "A term to reference a ship's first voyage. Today the term is applied to most any type of first trip, whether it is a first trip in a new car or the first voyage to a new place. "
 }, {
   "word": "Main stay",
   "description": "Part of the standing rigging on a sailboat, it is the cable or rope which supports the mast from the front of the boat to the top of the mast.  Today it's use in the vernacular, as in \"He was the mainstay of the organization,\" meaning someone or something on which there is a principal dependence."
 }, {
   "word": "Marooned",
-  "description": "This term is used for an old punishment for mutineers. It consisted of placingthe person on a remote island withvery limited supplies and leaving them to their fate. Today the term is used synonymouswith stranded.  "
+  "description": "This term is used for an old punishment for mutineers. It consisted of placing the person on a remote island withvery limited supplies and leaving them to their fate. Today the term is used synonymous with stranded.  "
 }, {
   "word": "May Day",
   "description": "'Mayday' is the internationally recognized voice radio signal for ships and people in serious trouble at sea. The word comes from the French m'aidez which means \"help me\".  "
 }, {
   "word": "Mind your P's and Q's",
-  "description": "Sailors would get credit at the taverns in port until they were paid.The barman would keep a record of their drinks on a chalkboard behind the bar. Amark was made under \"P\" for pint or \"Q\" for quart.  On payday, the sailors were liable for each mark next to his name, so he was forced to \"mind his P's and Q's.\" Today the term means to remain well behaved.  "
+  "description": "Sailors would get credit at the taverns in port until they were paid. The barman would keep a record of their drinks on a chalkboard behind the bar. Amark was made under \"P\" for pint or \"Q\" for quart.  On payday, the sailors were liable for each mark next to his name, so he was forced to \"mind his P's and Q's.\" Today the term means to remain well behaved.  "
 }, {
   "word": "Miss the mark",
-  "description": "This expression comes from sailing where the \"mark\" is a rounding markor buoy that sailboats competing in a regatta must sail around before turningtowards the next mark or finish line. If a sailboat misses the mark, it must complete a 360-degree circle before continuing the race as a penalty.  Today theexpression is used when one did not achieve an intended goal or complete a plan."
+  "description": "This expression comes from sailing where the \"mark\" is a rounding markor buoy that sailboats competing in a regatta must sail around before turning towards the next mark or finish line. If a sailboat misses the mark, it must complete a 360-degree circle before continuing the race as a penalty.  Today the expression is used when one did not achieve an intended goal or complete a plan."
 }, {
   "word": "Nautical",
   "description": "The term 'Nautical' originates from the Greek word 'nauti' meaning sailor."
 }, {
   "word": "No room to swing a cat",
-  "description": "During the whipping punishment using the\"cat o' nine tails,\" all hands were called on deck to witness. With afull crew, the deck could be so crowded that the cat o' nine tails was difficult touse without hitting other crew members.  In other words, there was \"no room to swing a cat.\"Today the expression is used to indicate crowded or packed surroundings."
+  "description": "During the whipping punishment using the\"cat o' nine tails,\" all hands were called on deck to witness. With afull crew, the deck could be so crowded that the cat o' nine tails was difficult touse without hitting other crew members.  In other words, there was \"no room to swing a cat.\" Today the expression is used to indicate crowded or packed surroundings."
 }, {
   "word": "Now You're talkin'",
-  "description": "This was originally an expression used by sailors to indicate that the sails were set correctly and the ship was balanced. The tem is still used to indicate agreement with what someone else is saying or a particular course of action. O  "
+  "description": "This was originally an expression used by sailors to indicate that the sails were set correctly and the ship was balanced. The tem is still used to indicate agreement with what someone else is saying or a particular course of action."
 }, {
   "word": "Off and On",
   "description": "An expression meaning at some times or occasionally. It originated as an old naval expression meaning close to the shore by sailing off andonor away from and towards the shore."
@@ -544,22 +544,22 @@ const words = [{
   "description": "Nautical term for old, retired sailor or someone with manyyears of sailing experience. The term is also used to mean a \"genuine\" kind of aperson."
 }, {
   "word": "On an even keel",
-  "description": "This is a term to indicate that a vessel has no lean ortilt towards either side. The expression is often used to referencesomething or someone in a state of stability and balance."
+  "description": "This is a term to indicate that a vessel has no lean ortilt towards either side. The expression is often used to reference something or someone in a state of stability and balance."
 }, {
   "word": "On the wrong tack",
-  "description": "This was originally a nautical term for a sailingvessel which is sailing a bit too close to the wind for that particular tack.The expression is also used to reference someone approaching a task or problem from the wrongdirection or continuing in the wrong direction. "
+  "description": "This was originally a nautical term for a sailing vessel which is sailing a bit too close to the wind for that particular tack.The expression is also used to reference someone approaching a task or problem from the wrong direction or continuing in the wrong direction. "
 }, {
   "word": "Over a barrel",
-  "description": "Sailors being punished were sometimes tied over a cannonbarrel when being whipped. Today the expression is used when someone is in a bad situation and that there is often no other possible course of action."
+  "description": "Sailors being punished were sometimes tied over a cannon barrel when being whipped. Today the expression is used when someone is in a bad situation and that there is often no other possible course of action."
 }, {
   "word": "Overhaul",
-  "description": "An expression which refers to the action of the crew going aloft toadjust and replace ropes or lines to avoid chaffing while sailing.  Today the word means to maintain things in a workingcondition or to improve upon the current condition, for example to overhaul ormake repairs on a car."
+  "description": "An expression which refers to the action of the crew going aloft to adjust and replace ropes or lines to avoid chaffing while sailing.  Today the word means to maintain things in a working condition or to improve upon the current condition, for example to overhaul or make repairs on a car."
 }, {
   "word": "Over-reach",
   "description": "This is an expression that originally meant to continue to sail longer upon atack than is necessary in order to reach a given point. Today the term is usedin a general sense of exceeding a limit or having gone too far or over-extended in someventure.  "
 }, {
   "word": "Overwhelm",
-  "description": "This term comes from the Middle English word meaning \"tocapsize\" or overturn a vessel. Today the term is synonymous with being overcome,defeated or to capitulate."
+  "description": "This term comes from the Middle English word meaning \"tocapsize\" or overturn a vessel. Today the term is synonymous with being overcome, defeated or to capitulate."
 }, {
   "word": "Passed with flying colors",
   "description": "This expression comes from the custom of sailing ships that would fly their colors or put up their flags and pennants if they wanted to beidentified when passing other ships at sea. Today this expression is used torefer to someone who has passed a test or some other type of trial with a great margin."
@@ -568,22 +568,22 @@ const words = [{
   "description": "This word comes from the naval abbreviation of the word \"perquisites\" meaning the allowances or benefits (often money) offered with any specific office or appointment. Today the word is used outside of the navy and is synonymous with benefit or advantage, like getting acompany car for ones own use."
 }, {
   "word": "Pidgin English",
-  "description": "This is a term used to reference the limited or altered English language spoken by non-native English speaking people. The term is likely taken from the phonetic translation of the Chinese word meaning business, as this form of English was often used in commercial trade in ports outside ofEurope. "
+  "description": "This is a term used to reference the limited or altered English language spoken by non-native English speaking people. The term is likely taken from the phonetic translation of the Chinese word meaning business, as this form of English was often used in commercial trade in ports outside of Europe. "
 }, {
   "word": "Pipe Down",
   "description": "This originally nautical term was used as an officer's whistlesound denoting the completion of an above-deck work shift and thereby giving permission to go below. This expression is now used to mean \"be quiet\" or keep quiet\". "
 }, {
   "word": "Plumb the depths",
-  "description": "This is an expression meaning to find out what's goingon or to fully investigate something. Originally the phrase \"plumb thedepths\" came from the plumbor lead weight attached to a rope used to test the depth of the water. "
+  "description": "This is an expression meaning to find out what's goingon or to fully investigate something. Originally the phrase \"plumb the depths\" came from the plumbor lead weight attached to a rope used to test the depth of the water. "
 }, {
   "word": "Pooped",
-  "description": "This word is used to denote the swamping of an aft  deckwhen sailing down wind in high following seas. Today the word is used synonymously with worn-out or fatigued, perhaps as the crew member may have been on a \"pooped\" deck. "
+  "description": "This word is used to denote the swamping of an aft  deck when sailing down wind in high following seas. Today the word is used synonymously with worn-out or fatigued, perhaps as the crew member may have been on a \"pooped\" deck. "
 }, {
   "word": "Port Holes",
   "description": "Today the term is used to describe the windows, or openings on a vessel. The word originates from the French word porte which means door. The expression \"port hole\" originated when French boat builders began to install small doors on the side of ships which could be opened to shoot the cannons."
 }, {
   "word": "Port and Starboard",
-  "description": "Port is the nautical term for left and starboard means right. Originally the words come from the old sailing ships that did not have arudder and were steeredusing a board on the right side which became known as the \"steerboard\"side, the other side of the vessel was called the port side as the boat was docked on this side so as to not interfere with the steering board."
+  "description": "Port is the nautical term for left and starboard means right. Originally the words come from the old sailing ships that did not have arudder and were steeredusing a board on the right side which became known as the \"steerboard\" side, the other side of the vessel was called the port side as the boat was docked on this side so as to not interfere with the steering board."
 }, {
   "word": "Posh",
   "description": "Today this word means superior or fashionable and expensive. The word originated in colonial Boston where the trunks of the wealthy passengers would have the label \"POSH\", which stood for \"Portside Out Starboard Home\" instructing the luggage handlers where to place the luggage to avoid intense sun exposure. "
@@ -604,7 +604,7 @@ const words = [{
   "description": "This is an expression rooted in British nautical tradition. Sailors planning a mutiny would sign their names in a circle so the leader could not be identified. Today the term is often used in sporting events and competitions when referring to a series of games in which all members of a league play each other one time. "
 }, {
   "word": "Stay on an even keel: ",
-  "description": "This is a term to indicate that a vessel has no lean ortilt towards either side. The expression is often used to  referencesomething or someone in a state of stability and balance."
+  "description": "This is a term to indicate that a vessel has no lean ortilt towards either side. The expression is often used to  reference something or someone in a state of stability and balance."
 }, {
   "word": "Stem the tide",
   "description": "An expression originally used to mean that a ship was sailing against the tide fast enough to make headway over the ground or to move faster than the tide in the opposite direction. Today the expression means to  stop, slow, or prevent an event. "
@@ -616,7 +616,7 @@ const words = [{
   "description": "This word was originally used to describe a vessel that has been driven aground during a storm.  Today stranded is synonymous with stuck, marooned or  abandoned."
 }, {
   "word": "Swashbuckler",
-  "description": "Swashbuckler has become synonymous with adventurer,  explorer or traveler. The word originated in the 1500's, and was used to refer to below average swordsman.T  "
+  "description": "Swashbuckler has become synonymous with adventurer,  explorer or traveler. The word originated in the 1500's, and was used to refer to below average swordsman. "
 }, {
   "word": "Taken Aback",
   "description": "This is a term used to describe the position of a sailing vesselwith the bow or front facing directly into the wind so that neither side of the sails fill. Today the expression is used to describe a sense of being surprised or shocked by an unforeseen event. "
@@ -678,8 +678,8 @@ const words = [{
   "word": "Windward",
   "description": "This word means to be upwind. It is now also a naval expression meaning to gain an advantage."
 }, {
-  "word": "YachtZig-Zag",
-  "description": "A yacht is a vessels used mainly for pleasure. The word 'yacht' comes from the Dutch word 'jacht' that means to hurry.  It has been Anglicized to yacht. The word yacht only applied to light fast vessels in its early usage.  Z Zig-Zag"
+  "word": "Yacht",
+  "description": "A yacht is a vessels used mainly for pleasure. The word 'yacht' comes from the Dutch word 'jacht' that means to hurry.  It has been Anglicized to yacht. The word yacht only applied to light fast vessels in its early usage."
 }]
 
 
