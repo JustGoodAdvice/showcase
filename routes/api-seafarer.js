@@ -18,7 +18,7 @@ const words = [{
   "word": "Adrift",
   "description": "Naval word for anyone or anything that cannot be found orhas come undone. Ships are adrift when they are moved about at the will of the wind and tide. Adrift originates from the Middle English 'drifte' meaning to float.  "
 }, {
-  "word": "AfternoonWatch",
+  "word": "Afternoon Watch",
   "description": "The sea watch from noon until 4 p.m.-- one of the seven watches used by the Royal British Navy."
 }, {
   "word": "Albatross around one's neck",
