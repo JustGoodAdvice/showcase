@@ -506,10 +506,15 @@ export default class ShowcasePage {
   /**
    * Update inline HTML for taffrail variables
    */
-  updateTaffrailVarHtml() {
+  updateTaffrailVarHtml(addClassNameMark = false) {
     // handle taffrail-var
     $("body").find("taffrail-var").each((i, el) => {
       const $el = $(el);
+
+      if (addClassNameMark) {
+        $el.addClass("mark");
+      }
+
       const { variableId, variableName } = $el.data();
       // find corresponding question
       const question = _.flatMap(this.api.answers).find((a) => {

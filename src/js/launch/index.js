@@ -39,7 +39,6 @@ export default class extends ShowcasePage {
         this.listenForUrlChanges();
         this.handleClickOpenRawDataModal();
         this.handleClickOnAiUrSidebar();
-        // this.handleResizeChart();
 
         // keyboard shortcuts
         // screenshot
@@ -203,12 +202,7 @@ export default class extends ShowcasePage {
     this.updateAssumptionsList();
     this.updateRecommendationsList();
     this.updateVariablesList();
-    this.updateTaffrailVarHtml();
-
-    $("body").find("taffrail-var").each((i, el) => {
-      const $el = $(el);
-      $el.addClass("mark");
-    });
+    this.updateTaffrailVarHtml(true);
   }
 
   /**
@@ -270,7 +264,7 @@ export default class extends ShowcasePage {
   updateMainPane() {
     this._setCurrentIdx();
 
-    $(".question").show();
+    this.$advice.find(".question").show();
     if (this.api.display.type == "INPUT_REQUEST") {
       this._updateForInputRequest();
       $("html").addClass("question-show");
@@ -288,7 +282,7 @@ export default class extends ShowcasePage {
    */
   _closeQuestionModal() {
     $("html").removeClass("question-show").removeClass("question-show--with-advice");
-    $(".question").hide();
+    this.$advice.removeAttr("style").find(".question").removeAttr("style").hide();
     $(".list-all-recommendations").removeClass("unfocused");
   }
 
@@ -314,6 +308,8 @@ export default class extends ShowcasePage {
    * Template update for INPUT_REQUEST
    */
   _updateForInputRequest() {
+    this._closeQuestionModal();
+
     // render
     const str = this.TEMPLATES["InputRequest"](this.api);
     this.$advice.html(str);
@@ -322,6 +318,8 @@ export default class extends ShowcasePage {
     if (this.api.display.value == null) {
       $(".advice").find(".q-close").hide();
     }
+
+    this._positionQuestionModal();
 
     // hide "next" button unless it's a numeric input
     // const isRadio = this.api.display.form.fieldType.match(/Radio|Boolean/);
@@ -387,7 +385,29 @@ export default class extends ShowcasePage {
     // One more step....
     this._updateForPrimaryAdvice();
     this._setupChartsAll();
-    this.fetchReferencesOpenGraph();
+  }
+
+  /**
+   * Set position of the modal so it's at the bottom of the window but never below the fold
+   */
+  _positionQuestionModal() {
+    const $ques = this.$advice.find(".question");
+    const quesPos = $ques.offset();
+    const quesModalHeight = $ques.outerHeight();
+    const quesModalBottom = quesPos.top + quesModalHeight;
+    const viewportHeight = $(window).height();
+
+    if (quesModalBottom > viewportHeight) {
+      $ques.css({
+        top: viewportHeight - quesModalHeight - 50
+      });
+      $ques.parent().css({
+        position: "absolute",
+        top: 0
+      });
+    } else {
+      $ques.parent().removeAttr("style");
+    }
   }
 
   /**
@@ -395,10 +415,10 @@ export default class extends ShowcasePage {
    * active display.
    */
   _setAssumptionActive(isAdvice) {
-    const { id } = this.api.display;
     if (isAdvice) {
       $("aside .assumptions, .answers").find("a").removeClass("active");
     } else {
+      const { id } = this.api.display;
       const $statement = $("aside .assumptions, .answers").find("a").removeClass("active").end().find(`a[data-id=${id}]`);
       $statement.addClass("active");
       // if inside accordion, open relevant section
@@ -411,60 +431,6 @@ export default class extends ShowcasePage {
           $currentAcc.prev().find("button").trigger("click");
         }
       }
-    }
-  }
-
-  /**
- * Fetch OG meta for each reference
- */
-  fetchReferencesOpenGraph() {
-    const { referenceDocuments, id: adviceSetId } = this.api.adviceset;
-    if (referenceDocuments.length) {
-      const fns = [];
-      referenceDocuments.forEach((rd, i) => {
-        const { id, url, _links: { original: originalUrl = "" } } = rd;
-        const size = { width: 235, height: 165 }
-        const defaultImg = `https://picsum.photos/${size.width}/${size.height}?grayscale&random=${i}`;
-        const localStoreBgImgKey = `${adviceSetId}_refdoc_${id}_bgImg`;
-        fns.push(new Promise((resolve, reject) => {
-          const bgImg = store.get(localStoreBgImgKey);
-          if (bgImg) {
-            $(`#img_container_${id}`).empty().css("background-image", `url("${bgImg}")`);
-            return resolve();
-          } else {
-            return $.post("/api/ogs", { url: url }, (meta) => {
-              if (!meta.success) {
-                console.error("og failure", meta);
-                $(`#img_container_${id}`).empty().css("background-image", `url("${defaultImg}")`);
-                return resolve();
-              }
-
-              // pull the card image, default to a grayscale picsum
-              const { ogImage = [] } = meta;
-              const [img = {}] = ogImage;
-              let { url = defaultImg } = img;
-
-              // custom image for IRS website, their blue logo is too blue.
-              if (originalUrl && originalUrl.includes("irs.gov")) {
-                url = `${window.jga.config.cdn_host}/demos/irs-logo-white.png`;
-              }
-
-              // update doc so we don't have to do this again
-              store.set(localStoreBgImgKey, url);
-
-              // update DOM
-              $(`#img_container_${id}`).empty().css("background-image", `url("${url}")`);
-              return resolve();
-            });
-          }
-        }));
-      });
-      return Promise.all(fns).then(() => {
-        const $popoverEls = $("#group_references").find("[data-bs-toggle=popover]");
-        $popoverEls.each((i, el) => {
-          new bootstrap.Popover(el);
-        });
-      });
     }
   }
 
@@ -617,7 +583,7 @@ export default class extends ShowcasePage {
     this.$advice.on("click", "a.q-close", e => {
       e.preventDefault();
       this._setCurrentIdx();
-      this._setAssumptionActive(true);
+      this._setAssumptionActive("advice");
       this._closeQuestionModal();
     });
   }
@@ -685,35 +651,6 @@ export default class extends ShowcasePage {
       this.api.display.idx = answer.idx;
       this.updateMainPane();
     });
-  }
-
-  /**
-   * The interactive chart embed is inside an iframe and when the window resizes
-   * the iframe needs to be re-loaded.
-   */
-  handleResizeChart() {
-    let timer;
-    $(window).resize(() => {
-      if (this.api.display.type == "ADVICE") {
-        if (timer) {
-          window.clearTimeout(timer);
-        }
-        timer = setTimeout(() => {
-          this.updateMainPane();
-        }, 500);
-      }
-    });
-  }
-
-  /**
- *
- * @param {jquery} $el Click target
- * @param {boolean} shown Open or closed?
- */
-  _toggleCollapseLink($el, shown) {
-    $el.find("span").text(shown ? "Collapse" : "Expand");
-    $el.find("i").addClass(shown ? "fa-minus-square" : "fa-plus-square").removeClass(!shown ? "fa-minus-square" : "fa-plus-square");
-    $el.data("collapsed", !shown);
   }
   // #endregion
 }
