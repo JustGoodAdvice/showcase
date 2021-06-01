@@ -103,8 +103,8 @@ class AjaxLoading {
     if (timer == 75) {
       $div.html(tmpl({
         naut: {
-          word: "Becalmed",
-          description: "Unable to move due to a lack of wind. <strong>Refresh</strong>"
+          word: "Oops!",
+          description: "Becalmed: unable to move due to a lack of wind. <strong class='text-danger'>Try refreshing</strong>."
         }
       }));
       $div.find(".slideDown").slideDown();
