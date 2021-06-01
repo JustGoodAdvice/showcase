@@ -1,6 +1,8 @@
 <script id="tmpl_adviceSetDetails" type="text/x-handlebars-template">
-	<h1><a href="{{adviceset._links.advicebuilder}}" target="_blank">{{adviceset.title}}</a></h1>
+	<h1 class="title"><a href="{{adviceset._links.advicebuilder}}" target="_blank">{{adviceset.title}}</a></h1>
+	{{#if adviceset.description}}
 	<div class="d-flex justify-content-between align-items-center">
 		<p class="lead">{{adviceset.description}}</p>
 	</div>
+	{{/if}}
 </script>

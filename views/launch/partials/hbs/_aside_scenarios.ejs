@@ -1,0 +1,22 @@
+<div class="adviceset-scenarios"></div>
+
+<script id="tmpl_advicesetScenarios" type="text/x-handlebars-template">
+  <p class="text-sm"><i class="fal fa-user-check"></i> Scenarios</p>
+  {{#if scenarios}}
+    <div class="list-group list-group-flush">
+    {{#each scenarios}}
+      <li class="list-group-item list-group-item-action" {{#if body}}data-bs-toggle="popover" title="{{name}}"
+        data-bs-content="{{body}}" data-bs-trigger="hover" data-bs-placement="left" {{/if}}>
+        <div>{{name}}</div>
+      
+        <a class="text-decoration-none fs-xs text-muted stretched-link source-url d-block text-truncate" href="{{url}}"
+          target="_blank">
+          {{#if shortUrl}}{{shortUrl}}{{else}}{{url}}{{/if}}
+        </a>
+      </li>
+    {{/each}}
+    </div>
+  {{else}}
+    <span class="text-muted">None setup.</span>
+  {{/if}}
+</script>

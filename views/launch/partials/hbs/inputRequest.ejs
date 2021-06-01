@@ -1,0 +1,112 @@
+<script id="tmpl_adviceInputRequest" type="text/x-handlebars-template">
+	{{#if display._outOfContext}}
+		<h5 class="mb-3 rs-context" id="context_{{display.ruleSetId}}"><span class="text-muted">...</span></h5>
+	{{/if}}
+	<div class="question shadow-lg rounded">
+		<div class="tools">
+			<%- include("_dropdown"); %>
+			<a href="#" class="btn btn-sm btn-link q-close"><i class="fal fa-times"></i></a>
+		</div>
+		<h2 class="title">{{display.question}}</h4>
+		{{#if display.explanation}}
+			<div class="explanation">
+				<p>{{display.explanation}}</p>
+			</div>
+		{{/if}}
+		<hr>
+		<form data-id="{{display.id}}" data-field-type="{{display.form.fieldType}}">
+
+			<div class="form-group d-grid gap-2 col-12 mx-auto">
+
+				{{#ifEquals display.form.fieldType "Radio"}}
+				
+					{{#each display.form.values}}
+						{{#if isOtherResponse}}
+							<div class="input-group">
+								<div class="input-group-text">
+									<input class="form-check-input mt-0" type="radio" name="{{@root.display.form.name}}" id="{{id}}" value="{{value}}" required aria-label="Radio button for following text input named {{label}}">
+									<label class="form-check-label" for="{{id}}">
+										{{label}}
+									</label>
+								</div>
+								<input type="text" id="{{@root.display.form.questionVariable.id}}" name="{{@root.display.form.questionVariable.reservedName}}" value="{{@root.display.form.questionVariable.result.value}}" class="form-control is-other-response" aria-label="Text input for {{label}} with radio button" autocomplete="off">
+							</div>
+						{{else}}
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="{{@root.display.form.name}}" id="{{id}}" value="{{value}}" required>
+								<label class="form-check-label" for="{{id}}">
+									{{label}}
+								</label>
+								{{#if helpText}}
+									<div class="form-text text-muted">{{helpText}}</div>
+								{{/if}}
+								</label>
+							</div>
+						{{/if}}
+					{{/each}}
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Boolean"}}
+
+					<!-- side by side blocks -->
+					<div class="d-flex justify-content-center mb-4">
+						<div class="form-check w-25">
+							<input type="radio" name="{{display.form.name}}" value="1" id="yes_{{display.id}}" class="btn-check" required>
+							<label class="btn btn-outline-primary btn-block" for="yes_{{display.id}}">Yes</label>
+						</div>
+						<div class="form-check w-25">
+							<input type="radio" name="{{display.form.name}}" value="2" id="no_{{display.id}}" class="btn-check" required>
+							<label class="btn btn-outline-primary btn-block" for="no_{{display.id}}">No</label>
+						</div>
+					</div>
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "MultipleChoice"}}
+				
+					{{#each display.form.values}}
+					<div class="form-check">
+						<input type="radio" name="{{../display.form.name}}" value="{{@this}}" id="{{../display.id}}_{{@index}}"
+							class="btn-check" required>
+						<label class="btn btn-outline-primary btn-block" for="{{../display.id}}_{{@index}}">{{@this}}
+							{{#if helpText}}
+							<small class="form-text text-muted">{{helpText}}</small>
+							{{/if}}
+						</label>
+					</div>
+					{{/each}}
+				
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Number"}}
+				
+					<input type="text" class="form-control form-control-lg w-50 mx-auto" id="{{display.id}}" name="{{display.form.name}}" autocomplete="off" required>
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Percent"}}
+				
+					<input type="text" class="form-control form-control-lg w-50 mx-auto" id="{{display.id}}" name="{{display.form.name}}" data-type="{{display.form.fieldType}}" autocomplete="off" required>
+
+				{{/ifEquals}}
+
+				{{#ifEquals display.form.fieldType "Freetext"}}
+				
+					<input type="text" class="form-control form-control-lg w-50 mx-auto" id="{{display.id}}" name="{{display.form.name}}" autocomplete="off" required>
+
+				{{/ifEquals}}
+
+			</div>
+
+			<div class="continue">
+				{{#if display._isFirst}}
+					<span></span>
+				{{else}}
+					<a href="#" class="back" data-action="back"><i class="fal fa-step-backward"></i> Back</a>
+				{{/if}}
+				<button type="submit" data-id="{{display.id}}" class="btn btn-outline-primary next">Next <i class="fal fa-step-forward"></i></button>
+			</div>
+		</form>
+	</div>
+</script>

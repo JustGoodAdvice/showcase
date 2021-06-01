@@ -134,6 +134,7 @@ function sass() {
   }
   return src([
     "src/sass/taffrail.scss",
+    "src/sass/launch.scss",
     "src/sass/frb.scss",
   ])
     .pipe(sourcemaps.init())
@@ -146,6 +147,7 @@ function sass() {
 function scripts() {
   return src([
     "src/js/main.js",
+    "src/js/launch/entry.js",
     "src/js/entryFrb.js"
   ])
     .pipe(webpack(require("./webpack.config.js")))

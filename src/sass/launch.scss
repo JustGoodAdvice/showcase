@@ -1,0 +1,535 @@
+// @import 'variables';
+
+// font awesome config
+$fa-font-path: "../../@fortawesome/fontawesome-pro/webfonts";
+$fa-font-size-base: 13px;
+
+$enable-caret: false;
+$enable-gradients: true;
+
+$colors: (
+  'gray': #979DAC,
+  'gray-light': lighten(#979DAC, 25%),
+  'gray-dark': #5C677D,
+	'red': #EC2D3A,
+	'blue-dark': #12142d
+);
+
+$theme-colors: (
+  'primary': #1C2145,
+  'secondary': #3956EF,
+  'tertiary': #67DFBA
+);
+
+$font-size-base: 1.15rem;
+
+$primary: map-get($theme-colors, 'primary');
+$secondary: map-get($theme-colors, 'secondary');
+$tertiary: map-get($theme-colors, 'tertiary');
+$rust: #EC9E38;
+$gray: map-get($colors, 'gray');
+$gray-light: map-get($colors, 'gray-light');
+$gray-dark: map-get($colors, 'gray-dark');
+$blue-dark: map-get($colors, 'blue-dark');
+
+$btn-focus-box-shadow: none;
+$enable-shadows: true;
+
+$font-family-sans-serif: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$headings-font-family: 'IBM Plex Serif', $font-family-sans-serif !default;
+
+$accordion-bg: transparent;
+$accordion-button-active-bg: $gray-light;
+$list-group-bg: transparent;
+$list-group-hover-bg: $gray-light;
+
+$modal-fade-transform: scale(.8);
+
+// loader
+$zindex-fixed: 1030;
+$zindex-loading-mask: $zindex-fixed - 2;
+$zindex-loading-spinner: $zindex-fixed + 1;
+
+$banner-height: 14px;
+$aside-handle-width: 2rem;
+
+@import '../../node_modules/bootstrap5/scss/bootstrap';
+@import '../../node_modules/@fortawesome/fontawesome-pro/scss/fontawesome';
+@import '../../node_modules/@fortawesome/fontawesome-pro/scss/light';
+@import '../../node_modules/@fortawesome/fontawesome-pro/scss/brands';
+@import "../../node_modules/placeholder-loading/src/scss/placeholder-loading";
+@import 'loading';
+
+.dropdown-menu {
+  z-index: $zindex-tooltip;
+}
+
+.ph-item {
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+// allow 2nd line in html tooltips
+.tooltip {
+  .line2 {
+    border-top: 1px solid $white;
+    display: block;
+    font-size: 90%;
+    margin-top: 4px;
+    padding-top: 4px;
+  }
+}
+
+.fs-sm, .text-sm {
+  font-size: 90%;
+}
+.fs-xs {
+  font-size: 80%;
+}
+
+#toastWrapper {
+  display: none;
+  min-height: 200px;
+  min-width: 320px;
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  z-index: 9999999;
+
+  #toastContainer {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
+taffrail-var {
+  &.mark {
+    border-radius: 0;
+    background-color: transparent;
+    padding: 0;
+
+    &.active {
+      border-bottom: 1px dotted $secondary;
+      color: $primary;
+      cursor: pointer;
+
+      &:hover {
+        color: $secondary;
+      }
+    }
+    &[data-is-undefined] {
+      border-bottom: 1px dotted $danger;
+    }
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body.launch {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  header.banner {
+    background-color: $primary;
+    min-height: $banner-height;
+  }
+
+  .wrap {
+    display: flex;
+    align-items: stretch;
+    flex: 1 1 100%;
+  }
+
+  main {
+    min-height: 30rem;
+  }
+
+  aside {
+    font-size: 90%;
+
+    .list-group-flush {
+      margin-left: -1.25rem;
+      margin-right: -1.25rem;
+
+      .list-group-item {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
+    }
+
+    .accordion-item--first {
+      border-top-width: 6px;
+    }
+  }
+
+  #offcanvas-controls-handle {
+    border-bottom: 1px solid $gray-300;
+    border-left: 1px solid $gray-300;
+    border-top: 1px solid $gray-300;
+    border-top-left-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+    height: 100px;
+    max-width: $aside-handle-width;
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transition: all $offcanvas-transition-duration ease-in-out;
+    width: $aside-handle-width;
+
+    &.show {
+      right: $offcanvas-horizontal-width - 50;
+      transform: none;
+
+      i {
+        -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+        filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+        transform: scale(-1, 1);
+      }
+    }
+
+    a {
+      align-items: center;
+      background-color: $gray-200;
+      color: $gray-500;
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      text-decoration: none;
+      width: $aside-handle-width;
+
+      &:hover {
+        background-color: $gray-300;
+        color: $gray-600;
+      }
+    }
+  }
+
+  .controls.offcanvas {
+    background-color: $gray-200;
+    border-left: 0;
+    box-shadow: none;
+    top: $banner-height;
+    width: $offcanvas-horizontal-width - 50; // 350
+
+    aside {
+      background-color: $gray-200;
+      padding-top: 1rem;
+
+      nav {
+        margin-bottom: 2rem;
+        padding: 0 1.25rem;
+        a {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .settings-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding: 0 1.25rem;
+
+    li {
+
+      a {
+        text-decoration: none;
+      }
+
+      .dropdown > a > i[class*='fa-'],
+      > a > i[class*='fa-'] {
+        border-radius: 50%;
+        box-shadow: 0px 0px 2px $gray-500;
+        border: solid $gray-200;
+        line-height: 1.7em;
+        width: 2em;
+        height: 2em;
+        text-align: center;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .dropdown > a > span {
+        font-size: 90%;
+      }
+
+      /*
+      a {
+        display: block;
+        justify-content: center;
+        width: 100%;
+      }
+
+      i[class*='fa-'] {
+        border-radius: 60px;
+        box-shadow: 0px 0px 2px $gray-500;
+        padding: .5rem;
+        width: 100%;
+      }*/
+    }
+  }
+
+  .advice-set-details {
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: $h2-font-size;
+    }
+
+    .title a {
+      text-decoration: none;
+    }
+
+    .lead {
+      margin-bottom: 0;
+    }
+  }
+
+  .advice-outer-container {
+    margin-bottom: 5rem;
+    margin-top: 2.5rem;
+  }
+
+  .advice {
+    position: relative;
+
+    .question {
+			background-color: $gray-100;
+      border: 2px solid $secondary;
+			border-radius: $border-radius;
+      left: -$spacer * 3;
+      margin-top: $spacer * 2;
+			padding: 2rem 5rem;
+      position: absolute;
+      width: $spacer * 46;
+      z-index: $zindex-fixed - 3;
+
+      // .question-show--with-advice & {
+        
+      // }
+
+      .tools {
+        font-size: $font-size-base;
+        position: absolute;
+        top: $spacer;
+        right: $spacer;
+
+        display: flex;
+        align-items: center;
+
+        a.btn {
+          color: $gray-500;
+        }
+      }
+      
+      .btn:active {
+        box-shadow: none;
+      }
+
+      .title {
+        font-size: $h3-font-size;
+      }
+
+			.explanation {
+				color: $gray-dark;
+        // font-size: 90%;
+        font-weight: 300;
+			}
+
+			form {
+				padding: .5rem;
+
+				.form-group.d-grid {
+          .btn-block {
+            display: block;
+          }
+        }
+
+        .form-check + .input-group {
+          margin-top: -.5rem;
+
+          .input-group-text {
+            background-color: transparent;
+            border: 0 none;
+            margin-right: .5rem;
+            padding: 0;
+
+            .form-check-input {
+              margin-right: .5rem;
+            }
+          }
+
+          .form-control {
+            border-radius: $border-radius !important;
+          }
+        }
+
+        .continue {
+          align-items: center;
+          display: flex;
+          margin-top: 2rem;
+          justify-content: space-between;
+
+          a.back {
+            color: $gray-600;
+            font-size: 90%;
+            text-decoration: none;
+
+            &:hover {
+              color: $gray-900;
+            }
+          }
+
+          .next {
+            font-size: 90%;
+          }
+        }
+			}
+		}
+  }
+
+  .list-all-recommendations {
+    .advice-item {
+      margin-top: $spacer;
+      position: relative;
+    }
+
+    .advice-item--with-group {
+      margin-top: $spacer * 2;
+    }
+
+    ul {
+      list-style-type: square;
+      padding-left: $spacer;
+      margin-bottom: 0;
+
+      li {
+        margin-top: $spacer * .75;
+      }
+    }
+
+    .advice--group {
+      border-top: 1px solid $gray-300;
+      margin-bottom: $spacer;
+      min-height: 1px;
+      position: relative;
+
+      @include media-breakpoint-up(lg) {
+        margin-bottom: 0;
+
+        // pull group name out to the left, on large screens only
+        $pull-left: 200px;
+
+        label {
+          border-top: 1px solid $gray-300;
+          display: inline-block;
+          font-family: $font-family-sans-serif;
+          font-weight: 300;
+          left: $pull-left * -1;
+          margin-top: -1px;
+          max-width: $pull-left;
+          padding-right: $spacer / 2;
+          position: absolute;
+          width: $pull-left;
+        }
+      }
+
+      + .btn-toolbar {
+        border-top: 1px solid $gray-300;
+      }
+    }
+
+    .btn-toolbar {
+      display: none;
+      
+      .advice-editor-mode-enabled & {
+        display: block;
+      }
+
+      left: 100%;
+      position: absolute;
+      top: 0;
+
+      > .btn-group {
+        a.btn:first-child {
+          padding-left: 0;
+        }
+        
+        .btn:active,
+        .btn:hover {
+          color: $primary;
+        }
+
+        .btn:active {
+          box-shadow: none;
+        }
+
+        a.btn {
+          color: $gray-500;
+        }
+      }
+    }
+
+    .advice--headline {
+      display: inline;
+      font-family: $font-family-sans-serif;
+      font-size: $font-size-base;
+      font-weight: 500; // medium
+      line-height: $line-height-base;
+      
+      margin-bottom: 0;
+      position: relative;
+    }
+
+    .advice--summary {
+      display: inline;
+      font-weight: 300; // light
+    }
+
+    .advice--actions {
+      margin: ($spacer / 2) 0;
+    }
+  }
+
+  // inside a modal
+	.variables-container {
+
+		.variables {
+			font-family: $font-family-monospace;
+			font-size: 12px;
+
+			td:nth-child(1) {
+				max-width: 1px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+
+				& + td {
+					width: 2rem;
+				}
+			}
+
+			td.var {
+				max-width: 1px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+        
+        a {
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+			}
+		}
+	}
+}

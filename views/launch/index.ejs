@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("partials/_head"); %>
+  </head>
+
+  <body class="launch">
+
+    <header class="banner">
+      <section class="container-fluid">
+        <div class="row">
+          <div class="col">
+            
+          </div>
+        </div>
+      </section>
+      
+    </header>
+    
+    <div class="wrap">
+
+      <main class="container">
+        <div class="row advice-wrap">
+          <main class="col-lg-6 offset-lg-3 advice-outer-container">
+            <div class="advice-set-details">
+              <div class="ph-item">
+                <div class="ph-col-12">
+                  <div class="ph-row">
+                    <div class="ph-col-8 big"></div>
+                  </div>
+                  <div class="ph-row">
+                    <div class="ph-col-4"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <section id="__loading__">
+              <div class="long-loader"></div>
+              <div class="center-ph-loader">
+                <%- include("partials/hbs/loading"); %>
+              </div>
+            </section>
+            <div class="list-all-recommendations"></div>
+            <div class="advice"></div>
+          </main>
+        </div>
+      </main>
+
+    </div>
+
+    <div id="offcanvas-controls-handle"><a data-bs-toggle="offcanvas" href="#offcanvas-controls" role="button" aria-controls="offcanvas-controls"><i class="fal fa-chevron-left"></i></a></div>
+
+    <div class="controls offcanvas offcanvas-end" data-bs-backdrop="false" data-bs-scroll="true" tabindex="-1" id="offcanvas-controls" aria-labelledby="offcanvas-controlsLabel">
+      <aside class="">
+        <nav class="">
+          <a href="https://taffrail.com" target="_blank" class="brand"><img src="/img/Taffrail Logo Horizontal Navy@2x.png" height="38"></a>
+        </nav>
+        <ul class="list-unstyled settings-buttons">
+          <li><a href="/s/<%= locals.adviceSetId %>" data-toggle="tooltip" title="Start over"><i class="fal fa-undo"></i></a></li>
+          <li><a href="#" data-action="toggle-edit-advice-mode" data-toggle="tooltip" title="Toggle editor mode"><i class="fal fa-code"></i></a></li>
+          <li class="dropdown" data-toggle="tooltip" title="Change voice">
+            <a href="#" class="dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fal fa-microphone-alt"></i>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+              <h6 class="dropdown-header">VOICES</h6>
+              <div class="audience-switcher">
+                <a class="dropdown-item" href="#" data-audience-id="-1" data-action="set-audience"><i
+                    class="fal fa-microphone-alt"></i>&nbsp;Default</a>
+                <a class="dropdown-item" href="#" data-audience-id="gRGmgTjX7" data-action="set-audience"><i
+                    class="fal fa-microphone-alt"></i>&nbsp;Advisor</a>
+              </div>
+            </div>
+          </li>
+          <li class="dropdown" data-toggle="tooltip" title="API Channel">
+            <a href="#" class="dropdown-toggle" id="dropdownMenuButtonApiSelect" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fal fa-box-check"></i> <span data-channel-name></span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonApiSelect">
+              <h6 class="dropdown-header">API CHANNELS</h6>
+              <div class="channel-switcher">
+                <a class="dropdown-item" href="#" data-channel="published" data-action="set-channel"><i
+                    class="fal fa-rocket-launch"></i>&nbsp;Published</a>
+                <a class="dropdown-item" href="#" data-channel="preview" data-action="set-channel"><i
+                    class="fal fa-cubes"></i>&nbsp;Preview</a>
+              </div>
+            </div>
+          </li>
+          <li><a href="#" data-toggle="tooltip" title="View data" data-bs-toggle="modal" data-bs-target="#dataModal"><i class="fal fa-table"></i></a></li>
+          <li><a href="#" data-toggle="tooltip" title="Get support" class="intercom_messenger_launcher"><i class="fal fa-life-ring"></i></a></li>
+        </ul>
+
+        <div class="accordion accordion-flush" id="accordionFlushSidebar">
+          <div class="assumptions"></div>
+          <% const accords = [
+            {
+              title: "Questions",
+              template: "partials/hbs/_aside_user_questions",
+            },
+            {
+              title: "References",
+              template: "partials/hbs/_aside_references",
+            },
+            {
+              title: "Scenarios",
+              template: "partials/hbs/_aside_scenarios",
+            },
+            // {
+            //   title: "Related",
+            //   template: "",
+            // },
+            {
+              title: "About",
+              template: "partials/hbs/_aside_about",
+            }
+          ] %>
+
+          <% accords.forEach((accordion, i) => { %>
+            <% if (i==0) { %>
+              <h5 class="ps-3 mt-5">Advice Set</h5>  
+            <% } %>
+            <div class="accordion-item <% if (i == 0) { %>accordion-item--first<% } %>">
+              <h2 class="accordion-header" id="flush-heading<%=i %>">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<%=i %>" aria-expanded="false" aria-controls="flush-collapse<%=i %>">
+                  <%= accordion.title %>
+                </button>
+              </h2>
+              <div id="flush-collapse<%=i %>" class="accordion-collapse collapse" aria-labelledby="flush-heading<%=i %>" data-bs-parent="#accordionFlushSidebar">
+                <div class="accordion-body">
+                  <% if (accordion.template) { %>
+                    <%- include(accordion.template); %>
+                  <% } else { %> 
+                    Placeholder.
+                <% } %>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </aside>
+    </div>
+
+    <%- include("partials/hbs/adviceSetDetails"); %>
+    <%- include("partials/hbs/inputRequest"); %>
+    <%- include("partials/hbs/advice"); %>
+    <%- include("partials/hbs/recommendations"); %>
+    <%- include("partials/hbs/recommendationsList"); %>
+    <%- include("partials/error"); %>
+
+    <%- include("partials/hbs/answers"); %>
+    <%- include("partials/hbs/assumptions"); %>
+    <%- include("partials/hbs/variables"); %>
+    <%- include("partials/_modal_vars"); %>
+    <%- include("partials/_toast"); %>
+    <%- include("partials/hbs/_loader_long"); %>
+
+    <div id="__init" data-page-init="launch"></div>
+    <%- include("partials/_footer_js"); %>
+  </body>
+</html>

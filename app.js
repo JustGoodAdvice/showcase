@@ -12,7 +12,9 @@ const { default: sslRedirect } = require("heroku-ssl-redirect");
 
 const indexRouter = require("./routes/index");
 const apiRouter = require("./routes/api");
+const apiNauticalWordsRouter = require("./routes/api-seafarer");
 const showcaseRouter = require("./routes/showcase");
+const launchRouter = require("./routes/launch");
 const frbRouter = require("./routes/frb");
 
 const pkg = require("./package.json");
@@ -76,8 +78,10 @@ app.use((req, res, next) => {
 });
 
 app.use("/", indexRouter);
-app.use("/s", showcaseRouter);
+app.use("/sX", showcaseRouter);
+app.use("/s", launchRouter);
 app.use("/api", apiRouter);
+app.use("/api", apiNauticalWordsRouter);
 app.use("/frb", frbRouter);
 
 // redirect all requests to HTTPS

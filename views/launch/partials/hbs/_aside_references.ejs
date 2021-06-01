@@ -1,0 +1,20 @@
+<div class="adviceset-references"></div>
+
+<script id="tmpl_advicesetReferenceDocs" type="text/x-handlebars-template">
+{{#if _referenceDocumentsExist}}
+  <p class="text-sm"><i class="fal fa-file-check"></i> Personalized references and sources.</p>
+  <div class="advice-group references" id="group_references">
+    <ul class="list-group list-group-flush">
+      {{#each adviceset.referenceDocuments}}
+      <li class="list-group-item list-group-item-action" {{#if body}}data-bs-toggle="popover" title="{{name}}" data-bs-content="{{body}}" data-bs-trigger="hover" data-bs-placement="left" {{/if}}>
+        <div>{{name}}</div>
+
+        <a class="text-decoration-none fs-xs text-muted stretched-link source-url d-block text-truncate" href="{{url}}" target="_blank">
+          {{#if _links.original_without_prefix}}{{_links.original_without_prefix}}{{else}}{{_links.original}}{{/if}}
+        </a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}
+</script>

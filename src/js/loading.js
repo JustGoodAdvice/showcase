@@ -1,6 +1,12 @@
 import _ from "lodash";
 
 class AjaxLoading {
+  static get Handlebars() {
+    return this._Handlebars;
+  }
+  static set Handlebars(h) {
+    this._Handlebars = h;
+  }
   /**
    * Show a mask + loader over a container to indicate loading
    * @param {jQuery} $container jQuery container element
@@ -65,13 +71,51 @@ class AjaxLoading {
    * Remove mask + loader over a container to indicate loading
    * @param {string} ajaxId ID of spinner to remove
    */
-  static hide(ajaxId){
+  static hide(ajaxId, all = false){
     $(`#loader_spinner_${ajaxId}`).remove();
     const $loader = $(`#loader_${ajaxId}`);
     if ($loader.hasClass("center-ph-loader")){
       $loader.hide();
     } else {
       $loader.remove();
+    }
+
+    if (all) {
+      $("#__loading__").hide();
+    }
+  }
+
+  static showLong($container, ajaxId, timer, data) {
+    // const { adviceset } = data;
+    // const { adviceScenarios, aiUserRequests, entity, owner: { name: ownerName }, publishing, tags, _links } = adviceset;
+    // // const { description, reservedName } = entity;
+    // // const { advicebuilder } = _links;
+
+    // data.hasAdviceScenarios = adviceScenarios.length;
+    // data.hasAiUserRequests = aiUserRequests.length;
+    // data.hasTags = tags.length;
+
+    AjaxLoading.hide(ajaxId);
+
+    const $div = $("#__loading__").show().find(".long-loader");
+    const tmpl = this.Handlebars.compile($("#tmpl_loadingLong").html());
+
+    if (timer == 75) {
+      $div.html(tmpl({
+        naut: {
+          word: "Oops!",
+          description: "Becalmed: unable to move due to a lack of wind. <strong class='text-danger'>Try refreshing</strong>."
+        }
+      }));
+      $div.find(".slideDown").slideDown();
+    } else {
+      $.getJSON("/api/naut").then(obj => {
+        data.naut = obj;
+        data.ajaxId = _.uniqueId(ajaxId + "_")
+        data.timer = timer;
+        $div.html(tmpl(data));
+        $div.find(".slideDown").slideDown();
+      });
     }
   }
 }
