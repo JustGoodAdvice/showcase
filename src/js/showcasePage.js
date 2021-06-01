@@ -962,7 +962,7 @@ export default class ShowcasePage {
         }
 
         if ($el.prop("value") == value || $el.prop("value") == "\""+value+"\"") {
-          $el.prop("checked", true)
+          $el.prop("checked", true);
         }
       } else {
         // precision-to-display

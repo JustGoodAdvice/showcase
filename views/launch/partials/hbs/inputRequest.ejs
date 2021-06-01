@@ -49,13 +49,16 @@
 
 				{{#ifEquals display.form.fieldType "Boolean"}}
 
-					<div class="form-check">
-						<input type="radio" name="{{display.form.name}}" value="true" id="yes_{{display.id}}" class="btn-check" required>
-						<label class="btn btn-outline-primary btn-block" for="yes_{{display.id}}">Yes</label>
-					</div>
-					<div class="form-check">
-						<input type="radio" name="{{display.form.name}}" value="false" id="no_{{display.id}}" class="btn-check" required>
-						<label class="btn btn-outline-primary btn-block" for="no_{{display.id}}">No</label>
+					<!-- side by side blocks -->
+					<div class="d-flex justify-content-center mb-4">
+						<div class="form-check w-25">
+							<input type="radio" name="{{display.form.name}}" value="1" id="yes_{{display.id}}" class="btn-check" required>
+							<label class="btn btn-outline-primary btn-block" for="yes_{{display.id}}">Yes</label>
+						</div>
+						<div class="form-check w-25">
+							<input type="radio" name="{{display.form.name}}" value="2" id="no_{{display.id}}" class="btn-check" required>
+							<label class="btn btn-outline-primary btn-block" for="no_{{display.id}}">No</label>
+						</div>
 					</div>
 
 				{{/ifEquals}}
