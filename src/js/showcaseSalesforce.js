@@ -28,43 +28,47 @@ export default class showcaseSalesforce extends ShowcasePage {
     this.listenForUrlChanges();
     this.handleClickExpandControls();
 
-    // current querystring without "?" prefix
-    const querystring = location.search.substr(1);
-    this._loadApi(querystring, $(".column-card"), false).then(api => {
-      // on page load, save current state
-      this.history.replace(`${this.baseUrl}/${location.search}`, this.api);
-      // DOM updates
-      this.updateAdviceSetDetails();
-      this.updatePanes();
+    this.updateAdviceSetDetails().then(() => {
+      // current querystring without "?" prefix
+      const querystring = location.search.substr(1);
+      return this._loadApi(querystring, $(".column-card"), false).then(api => {
+        if (!api) {
+          return Promise.reject(new Error("API unavailable"));
+        }
+        // on page load, save current state
+        this.history.replace(`${this.baseUrl}/${location.search}`, this.api);
+        // DOM updates
+        this.updatePanes();
 
-      // keyboard shortcuts
+        // keyboard shortcuts
 
-      // expand/collapse advice
-      Mousetrap.bind("a", () => {
-        $("a[data-expand=advice]").trigger("click");
-      });
-      // expand/collapse assumptions
-      Mousetrap.bind("s", () => {
-        $("a[data-expand=assumptions]").trigger("click");
-      });
-      // show toast with keyboard shortcut map
-      Mousetrap.bind("?", () => {
-        this.showToast(undefined,{
-          title: "Keyboard Shortcuts",
-          message: "Press <code>a</code> for advice.<br>Press <code>s</code> for assumptions.",
-          delay: 5000
+        // expand/collapse advice
+        Mousetrap.bind("a", () => {
+          $("a[data-expand=advice]").trigger("click");
         });
+        // expand/collapse assumptions
+        Mousetrap.bind("s", () => {
+          $("a[data-expand=assumptions]").trigger("click");
+        });
+        // show toast with keyboard shortcut map
+        Mousetrap.bind("?", () => {
+          this.showToast(undefined,{
+            title: "Keyboard Shortcuts",
+            message: "Press <code>a</code> for advice.<br>Press <code>s</code> for assumptions.",
+            delay: 5000
+          });
+        });
+
+        // when data is updated after page-load, use this fn
+        this.$loadingContainer = $(".column-card");
+        this.updateFn = (data) => {
+          // update content
+          this.updatePanes();
+          // save state
+          this.history.push(`${this.baseUrl}/?${qs.stringify(this.api.params)}`, this.api);
+        }
       });
     });
-
-    // when data is updated after page-load, use this fn
-    this.$loadingContainer = $(".column-card");
-    this.updateFn = (data) => {
-      // update content
-      this.updatePanes();
-      // save state
-      this.history.push(`${this.baseUrl}/?${qs.stringify(this.api.params)}`, this.api);
-    }
   }
 
   /**
@@ -335,12 +339,75 @@ export default class showcaseSalesforce extends ShowcasePage {
   // #endregion
 
   /**
-	 * Update Advice Set details (left side)
-	 */
-  updateAdviceSetDetails(){
-    // render
-    const str = this.TEMPLATES["AdviceSetDetails"](this.api);
-    $(".advice-set-details").html(str);
+   * Update Advice Set details (banner + detail)
+   */
+  updateAdviceSetDetails() {
+
+    // internal helper to render banner & update <title>
+    const _render = (data) => {
+      const str = this.TEMPLATES["AdviceSetDetails"](data);
+      $(".advice-set-details").html(str);
+      // update the window title
+      this.windowTitle = `${data.adviceset.title} - ${data.adviceset.owner.name}`;
+    }
+
+    const data = { adviceset: {} }
+
+    return $.ajax({
+      url: this.api.adviceset._links.self,
+      type: "GET",
+      dataType: "json",
+      headers: {
+        "Accept": "application/json; chartset=utf-8",
+        "Authorization": `Bearer ${this.config.api_key}`
+      }
+    }).then(api => {
+      const { data: { aiUserRequests = [], adviceScenarios, entity, publishing, owner, tags } } = api;
+
+      this.config.adviceset = api.data;
+
+      data.adviceset = {
+        title: entity.name,
+        description: entity.description,
+        owner: owner,
+        _links: this.api.adviceset._links
+      }
+
+      // add new adviceset data to the state
+      this.api.adviceset = _.extend(this.api.adviceset, {
+        adviceScenarios,
+        aiUserRequests,
+        publishing,
+        tags
+      });
+
+      // check for referring AI UserRequest ID on querystring
+      // and find matching question for banner
+      if (this.fromAiUrId) {
+        const matchingAiUr = aiUserRequests.find(aiur => { return aiur.id == this.fromAiUrId });
+        if (matchingAiUr) {
+          const { request, description } = matchingAiUr;
+          data.adviceset.title = request;
+          data.adviceset.description = description ? description : entity.description;
+        }
+      }
+
+      _render(data);
+    }).catch(jqXHR => {
+      let err = "Error";
+      if (jqXHR.responseJSON) {
+        err = jqXHR.responseJSON.error.message;
+      } else {
+        err = jqXHR.statusText || jqXHR.message;
+      }
+      // insert error on banner
+      _render({
+        adviceset: {
+          title: err,
+          description: "API unavailable"
+        }
+      });
+    });
   }
 
   /**
