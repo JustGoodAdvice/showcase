@@ -311,13 +311,13 @@ export default class extends ShowcasePage {
     this._closeQuestionModal();
 
     // update form type to handle YES/NO (boolean type, not radio)
-    if (this.api.display.form.fieldType == "Radio") {
-      const { values = [] } = this.api.display.form;
-      const labels = values.map(v => { return v.label });
-      if (values.length == 2 && labels.includes("Yes") && labels.includes("No")) {
-        this.api.display.form.fieldType = "Boolean";
-      }
-    }
+    // if (this.api.display.form.fieldType == "Radio") {
+    //   const { values = [] } = this.api.display.form;
+    //   const labels = values.map(v => { return v.label });
+    //   if (values.length == 2 && labels.includes("Yes") && labels.includes("No")) {
+    //     this.api.display.form.fieldType = "Boolean";
+    //   }
+    // }
 
     // render
     const str = this.TEMPLATES["InputRequest"](this.api);
