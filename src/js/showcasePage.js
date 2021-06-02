@@ -165,8 +165,8 @@ export default class ShowcasePage {
     // pass Handlebars into the AjaxLoading static class
     Loading.Handlebars = Handlebars;
     // setup intervals for when to change long loading messages
-    const intervals = [5]; // after 6seconds, assume preview API is not cached
-    const factor = 10;
+    const intervals = [5]; // after 6 seconds, assume preview API is not cached
+    const factor = 15;
     for (let i = 1; (factor * i) < 75; i++) {
       intervals.push(factor * i);
     }
