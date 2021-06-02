@@ -405,10 +405,13 @@ export default class extends ShowcasePage {
     const quesModalHeight = $ques.outerHeight();
     const quesModalBottom = quesPos.top + quesModalHeight;
     const viewportHeight = $(window).height();
+    const SPACER = 50;
 
     if (quesModalBottom > viewportHeight) {
+      let newTop = viewportHeight - quesModalHeight - SPACER;
+      if (newTop < 0) { newTop = SPACER; }
       $ques.css({
-        top: viewportHeight - quesModalHeight - 50
+        top: newTop
       });
       $ques.parent().css({
         position: "absolute",
