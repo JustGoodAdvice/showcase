@@ -1,18 +1,3 @@
-<script type="text/javascript">
-  window.jga = window.jga || {};
-  window.jga._isMobile =<%= locals.isMobile || false %>;
-  window.jga.api = {
-    adviceset: {
-      id: "<%= locals.adviceSetId %>",
-      _links: {
-        self: "<%= locals.API_HOST %>/api/adviceset/<%= locals.adviceSetId.substring(2) %>",
-        advicebuilder: "<%= locals.linkAdviceBuilder %>"
-      }
-    },
-    _links: { self: "<%- locals.linkApi %>" }
-  };
-  window.jga.adviceSetId = "<%= locals.adviceSetId %>";
-</script>
 <% if (locals.SENTRY_DSN) { %>
 <script src="//browser.sentry-cdn.com/<%= locals.SENTRY_VERSION_APM %>/bundle.apm.min.js"
   crossorigin="anonymous"></script>

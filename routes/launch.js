@@ -7,7 +7,7 @@ router.get("/:adviceSetId/:view?", botMiddleware, (req, res, next) => {
   const { adviceSetId, view = "index" } = req.params;
   if (!adviceSetId) { return next(); }
 
-  const allowedViews = ["index", "harness", "mobile", "virtual-assistant", "salesforce", "__cleanshot"];
+  const allowedViews = ["launch", "index", "mobile", "virtual-assistant", "salesforce"];
   const template = (allowedViews.includes(view)) ? view : allowedViews[0];
   const isMobile = view == "mobile" || view == "virtual-assistant";
   const include = ["filteredVars"];
@@ -18,13 +18,15 @@ router.get("/:adviceSetId/:view?", botMiddleware, (req, res, next) => {
     include: include, showcase: true
   });
   const apiUrl = `${process.env.API_HOST}/api/advice/${adviceSetId}?${qs.stringify(qrystr)}`;
+  const iframeSrc = `../${adviceSetId}/index?${qs.stringify(qrystr)}`;
 
   return res.render(`launch/${template}`, {
     layout: false,
     adviceSetId: adviceSetId,
     linkApi: apiUrl,
     linkAdviceBuilder: `${process.env.ADVICEBUILDER_HOST}/advicesets/${adviceSetId.substring(2)}/show`,
-    isMobile: isMobile
+    isMobile: isMobile,
+    iframeSrc: iframeSrc
   });
 });
 

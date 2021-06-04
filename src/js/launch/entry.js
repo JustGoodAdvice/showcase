@@ -1,7 +1,9 @@
+import launchFrame from "./launchFrame";
 import launch from "./index";
 
 const imports = {
   launch: launch,
+  launchFrame: launchFrame,
 }
 
 // init appropriate view

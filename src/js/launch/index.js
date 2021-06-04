@@ -27,6 +27,7 @@ export default class extends ShowcasePage {
         // on page load, save current state without API params
         const currQs = qs.stringify(_.omit(qs.parse(querystring), this.paramsToOmit));
         this.history.replace(`${this.baseUrl}/?${currQs}`, this.api);
+        parent.window.jga.launch_history.replace(`${this.baseUrl}/launch?${currQs}`, this.api);
         // DOM updates
         this.updatePanes();
         // events
@@ -67,8 +68,6 @@ export default class extends ShowcasePage {
         this.updateFn = (data) => {
           // update content
           this.updatePanes();
-          // save state
-          this.history.push(`${this.baseUrl}/?${qs.stringify(_.omit(this.api.params, this.paramsToOmit))}`, this.api);
         }
       });
     });
@@ -81,18 +80,27 @@ export default class extends ShowcasePage {
     // cache element selectors
     this.$advice = $(".advice");
     // cache templates
+
+    const compile = (selector) => {
+      try {
+        return Handlebars.compile($(selector).html());
+      } catch (e) {
+        return null;
+      }
+    }
+
     this.TEMPLATES = {
-      "AdviceSetDetails": Handlebars.compile($("#tmpl_adviceSetDetails").html()),
-      "AdviceSetScenarios": Handlebars.compile($("#tmpl_advicesetScenarios").html()),
-      "AdviceSetReferences": Handlebars.compile($("#tmpl_advicesetReferenceDocs").html()),
-      "AdviceSetAiUR": Handlebars.compile($("#tmpl_advicesetUserQuestions").html()),
-      "InputRequest": Handlebars.compile($("#tmpl_adviceInputRequest").html()),
-      "Advice": Handlebars.compile($("#tmpl_adviceAdvice").html()),
-      "Recommendations": Handlebars.compile($("#tmpl_groupedRecommendationsAdviceList").html()),
-      "RecommendationsList": Handlebars.compile($("#tmpl_recommendationsAdviceList").html()),
-      "Assumptions": Handlebars.compile($("#tmpl_assumptionsList").html()),
-      "QuestionsAnswers": Handlebars.compile($("#tmpl_answersList").html()),
-      "Error": Handlebars.compile($("#tmpl_error").html()),
+      "AdviceSetDetails": compile("#tmpl_adviceSetDetails"),
+      "AdviceSetScenarios": compile("#tmpl_advicesetScenarios"),
+      "AdviceSetReferences": compile("#tmpl_advicesetReferenceDocs"),
+      "AdviceSetAiUR": compile("#tmpl_advicesetUserQuestions"),
+      "InputRequest": compile("#tmpl_adviceInputRequest"),
+      "Advice": compile("#tmpl_adviceAdvice"),
+      "Recommendations": compile("#tmpl_groupedRecommendationsAdviceList"),
+      "RecommendationsList": compile("#tmpl_recommendationsAdviceList"),
+      "Assumptions": compile("#tmpl_assumptionsList"),
+      "QuestionsAnswers": compile("#tmpl_answersList"),
+      "Error": compile("#tmpl_error"),
     };
   }
 
@@ -103,8 +111,13 @@ export default class extends ShowcasePage {
 
     // internal helper to render banner & update <title>
     const _render = (data) => {
-      const str = this.TEMPLATES["AdviceSetDetails"](data);
-      $(".advice-set-details").html(str);
+      if (this.TEMPLATES["AdviceSetDetails"]) {
+        const str = this.TEMPLATES["AdviceSetDetails"](data);
+        $(".advice-set-details").html(str);
+      }
+
+      // update adviceset titles anywhere
+      $("span[data-advice-set-title]").text(data.adviceset.title);
       // update the window title
       this.windowTitle = `${data.adviceset.title} - ${data.adviceset.owner.name}`;
 
@@ -163,18 +176,22 @@ export default class extends ShowcasePage {
       _render(data);
 
       // scenarios
-      const filteredScenarios = adviceScenarios.filter(s => { return s.verifiedStatus == "success"; }).map(s => {
-        if (!_.has(s,"shortUrl")) {
-          s.url = `/s/${this.api.adviceset.id}/?${qs.stringify(s.params)}`;
-        }
-        return s;
-      })
-      const str = this.TEMPLATES["AdviceSetScenarios"]({ scenarios: filteredScenarios });
-      $(".adviceset-scenarios").html(str);
+      if (this.TEMPLATES["AdviceSetScenarios"]) {
+        const filteredScenarios = adviceScenarios.filter(s => { return s.verifiedStatus == "success"; }).map(s => {
+          if (!_.has(s,"shortUrl")) {
+            s.url = `/s/${this.api.adviceset.id}/?${qs.stringify(s.params)}`;
+          }
+          return s;
+        })
+        const str = this.TEMPLATES["AdviceSetScenarios"]({ scenarios: filteredScenarios });
+        $(".adviceset-scenarios").html(str);
+      }
 
       // AI User Requests
-      const strAiUrs = this.TEMPLATES["AdviceSetAiUR"](this.api);
-      $(".adviceset-user-questions").html(strAiUrs);
+      if (this.TEMPLATES["AdviceSetAiUR"]) {
+        const strAiUrs = this.TEMPLATES["AdviceSetAiUR"](this.api);
+        $(".adviceset-user-questions").html(strAiUrs);
+      }
 
     }).catch(jqXHR => {
       let err = "Error";
@@ -197,6 +214,11 @@ export default class extends ShowcasePage {
    * Update 3 panes. This fn is called each time the API updates.
    */
   updatePanes() {
+    // save state
+    const _qs = qs.stringify(_.omit(this.api.params, this.paramsToOmit));
+    this.history.push(`${this.baseUrl}/?${_qs}`, this.api);
+    parent.window.jga.launch_history.push(`${this.baseUrl}/launch?${_qs}`, this.api);
+
     this.mapData();
     this.updateMainPane();
     this.updateAssumptionsList();
@@ -381,6 +403,7 @@ export default class extends ShowcasePage {
    */
   updateRecommendationsList() {
     // simple helpers for UX
+    this.api.isSalesforce = $("body").hasClass("launch--salesforce");
     this.api._recommendationsExist = this.api.recommendations.length > 0;
     this.api._referenceDocumentsExist = this.api.adviceset.referenceDocuments.length > 0;
 
@@ -388,8 +411,11 @@ export default class extends ShowcasePage {
     const tmpl = this.GROUPED_ADVICE_ENABLED ? "Recommendations" : "RecommendationsList";
     const str = this.TEMPLATES[tmpl](this.api);
     $(".list-all-recommendations").html(str);
-    const strReferences = this.TEMPLATES["AdviceSetReferences"](this.api);
-    $(".adviceset-references").html(strReferences);
+
+    if (this.TEMPLATES["AdviceSetReferences"]) {
+      const strReferences = this.TEMPLATES["AdviceSetReferences"](this.api);
+      $(".adviceset-references").html(strReferences);
+    }
 
     // One more step....
     this._updateForPrimaryAdvice();

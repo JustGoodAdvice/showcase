@@ -1,11 +1,15 @@
 <script id="tmpl_recommendationsAdviceList" type="text/x-handlebars-template">
 	{{#if _recommendationsExist}}
-		
+
+    {{#if isSalesforce}}
+      <h2 class="title">{{adviceset.title}}</h2>
+    {{/if}}
+
 		{{#each recommendations}}
       <div class="advice-item {{#if tagGroup.name}}advice-item--with-group{{/if}}">
         {{#if tagGroup.name}}
         <div class="advice--group">
-          <label>{{tagGroup.name}}</label>
+          <label><span></span>{{tagGroup.name}}</label>
         </div>
         {{/if}}
 

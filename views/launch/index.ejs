@@ -2,6 +2,11 @@
 <html>
   <head>
     <%- include("partials/_head"); %>
+    <script>
+      if (window.location == window.parent.location) {
+        window.location.href = `${window.location.origin}/s/${jga.adviceSetId}/launch${window.location.search}`;
+      }
+    </script>
   </head>
 
   <body class="launch">

@@ -22,6 +22,8 @@ $theme-colors: (
 );
 
 $font-size-base: 1.15rem;
+$font-size-sm: $font-size-base * .75;
+$line-height-sm: 1.1;
 
 $primary: map-get($theme-colors, 'primary');
 $secondary: map-get($theme-colors, 'secondary');
@@ -34,6 +36,7 @@ $blue-dark: map-get($colors, 'blue-dark');
 
 $btn-focus-box-shadow: none;
 $enable-shadows: true;
+$enable-negative-margins: true;
 
 $font-family-sans-serif: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 $headings-font-family: 'IBM Plex Serif', $font-family-sans-serif !default;
@@ -50,7 +53,7 @@ $zindex-fixed: 1030;
 $zindex-loading-mask: $zindex-fixed - 2;
 $zindex-loading-spinner: $zindex-fixed + 1;
 
-$banner-height: 14px;
+$banner-height: 0;//14px;
 $aside-handle-width: 2rem;
 
 @import '../../node_modules/bootstrap5/scss/bootstrap';
@@ -127,6 +130,54 @@ taffrail-var {
 
 html {
   height: 100%;
+}
+
+// iframe container page
+body.launcher {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  .navbar {
+    background: none $primary;
+    color: $white;
+    padding-bottom: .25rem;
+    padding-top: .25rem;
+
+    .container-fluid {
+      justify-content: center;
+    }
+
+    .nav-link {
+      color: $secondary;
+      text-align: center;
+      width: 3rem;
+
+      &.active,
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+
+  .main {
+    background-color: #343a40;
+    flex: 1 0 auto;
+    position: relative;
+  }
+
+  .iframe-preview {
+    border: 0;
+    height: calc(100% - 51px);
+    margin-top: 51px;
+    position: absolute;
+  }
+
+  .iframe-preview--mobile {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 375px;
+  }
 }
 
 body.launch {
@@ -213,6 +264,7 @@ body.launch {
     background-color: $gray-200;
     border-left: 0;
     box-shadow: none;
+    overflow-y: auto;
     top: $banner-height;
     width: $offcanvas-horizontal-width - 50; // 350
 
@@ -306,14 +358,10 @@ body.launch {
 			border-radius: $border-radius;
       left: -$spacer * 3;
       margin-top: $spacer * 2;
-			padding: 2rem 5rem;
+      padding: 2rem 5rem;
       position: absolute;
       width: $spacer * 46;
       z-index: $zindex-fixed - 3;
-
-      // .question-show--with-advice & {
-        
-      // }
 
       .tools {
         font-size: $font-size-base;
@@ -339,7 +387,6 @@ body.launch {
 
 			.explanation {
 				color: $gray-dark;
-        // font-size: 90%;
         font-weight: 300;
 			}
 
@@ -532,4 +579,307 @@ body.launch {
 			}
 		}
 	}
+}
+
+// this selector works for anytime the showcase is inside the iframe
+body.launch.showcase-iframed {
+
+  // mobile specific
+  &.iframe-preview--mobile {
+    .list-all-recommendations {
+      .advice--group {
+        label {
+          color: #606c38;
+        
+          span {
+            padding-right: .5rem;
+
+            @extend %fa-icon;
+            @extend .fal;
+            &:before {
+              content: fa-content($fa-var-lightbulb-on);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // mobile specific, using breakpoints.
+  // the @extend directive (above) cannot be used inside a media query.
+  @include media-breakpoint-down(sm) {
+    font-size: $font-size-sm;
+
+    form {
+      .form-control-lg.w-50 {
+        width: 100% !important;
+      }
+    }
+
+    .form-check {
+      min-height: $font-size-sm * $line-height-sm;
+    }
+
+    .form-check-input {
+      &:checked {
+        background-color: #bc6c25;
+        border-color: #bc6c25;
+      }
+    }
+
+    .btn-outline-primary {
+      border-color: #bc6c25;
+
+      &:hover {
+        background-color: #bc6c25;
+        border-color: #bc6c25;
+      }
+    }
+
+    taffrail-var {
+      &.mark {
+        color: #283618;
+      }
+
+      &.active {
+        border-bottom-color: #283618;
+
+        &:hover {
+          color: #bc6c25;
+        }
+      }
+    }
+
+    .controls.offcanvas {
+      font-size: $font-size-base;
+    }
+
+    .advice-outer-container {
+      margin-top: 0;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .advice-set-details {
+      background-color: #283618;
+      padding-top: 1rem;
+
+      h1 {
+        a {
+          color: #fefae0;
+        }
+
+        font-family: unset;
+        font-size: $h4-font-size;
+        padding: .75rem 1.75rem;
+      }
+    }
+
+    .advice {
+      .question {
+        border-color: #bc6c25;
+        left: 1.1rem;
+        margin-top: $spacer;
+        padding: 1rem;
+        position: absolute;
+        width: 90vw; //almost 100%
+
+        .title {
+          font-size: $h4-font-size;
+          font-family: unset;
+          line-height: $line-height-sm;
+        }
+      }
+    }
+
+    .list-all-recommendations {
+      padding: 0 1.75rem;
+
+      // always hide toolbar in alternate views
+      .btn-toolbar {
+        display: none;
+        visibility: hidden;
+      }
+
+      .advice--group {
+        border-top: 0;
+      }
+
+      .advice--headline {
+        font-size: $font-size-sm;
+      }
+
+      ul {
+        list-style-type: unset;
+      }
+    }
+  }
+}
+
+body.launch.launch--salesforce {
+  // use blueishgreen as primary color to show alternate appearance
+  // https://coolors.co/283d3b-197278-edddd4-c44536-772e25
+
+  $primary_sf: #197278;
+  $primary_sf_dark: #283D3B;
+  $primary_sf_light: #EDDDD4;
+  $them-bg-color: #E5E5EA;
+  // $me-bg-color: #0B93F6;
+  $me-bg-color: $primary_sf_light;
+
+  $sf_bg: #b0c4df;
+  $sf_brand_primary: rgb(21, 137, 238);
+  $sf_brand_link: #006dcc;
+  $sf_bg_img: "/img/salesforce7@2x.png";
+
+  background-color: $gray-200;
+
+  .sf-header {
+    background: $sf_bg url($sf_bg_img) 0 0 no-repeat;
+    background-size: cover;
+    height: 310px;
+  }
+
+  .sf-left,
+  .sf-related {
+    background: $sf_bg url($sf_bg_img) 0 0 no-repeat;
+    background-size: (2728px / 2);
+    min-height: 675px;
+  }
+
+  .sf-left {
+    background-position: 0 -315px;
+  }
+
+  .sf-right {
+    background-color: $sf_bg;
+  }
+
+  .sf-related {
+    background-position: -912px -315px;
+  }
+
+  .advice-card {
+    padding: 6px 13px 7px 8px;  
+  }
+
+  .column-card {
+    background-color: $white;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);
+    border-radius: 3px;
+    padding: 1rem;
+
+    .column-card-header {
+      border-bottom: 1px solid $gray-400;
+      color: $black;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      padding-bottom: .75rem;
+
+      span {
+        border-bottom: 3px solid $sf_brand_primary;
+        padding: 0 .75rem .75rem .75rem;
+      }
+    }
+
+    .raised-card {
+      border-radius: 3px;
+      box-shadow: 0 2px 4px 4px rgba(0,0,0,.16);
+      font-size: 90%;
+      min-height: 300px;
+      overflow: auto;
+
+      a {
+        color: $sf_brand_link;
+
+        &:not(.dropdown-item):not(.btn) {
+          border-bottom: 1px dotted $sf_brand_link;
+        }
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      .fa-li a {
+        border-bottom: 0 !important;
+      }
+
+      .btn.btn-primary {
+        background-color: $sf_brand_link;
+        border-color: $sf_brand_link;
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($sf_brand_link,0.5)
+        }
+      }
+
+      .btn.btn-outline-primary {
+        border-color: $sf_brand_link;
+
+        &:hover {
+          background-color: $sf_brand_link;
+          color: $white;
+        }
+      }
+
+      .question {
+        background-color: $white;
+      }
+
+      .question,
+      .list-all-recommendations {
+        padding: 1rem ;
+      }
+
+      .title {
+        font-size: $h6-font-size;
+        font-family: unset;
+        line-height: $line-height-sm;
+      }
+
+      .list-all-recommendations {
+        font-size: $font-size-sm;
+
+        // always hide toolbar in alternate views
+        .btn-toolbar {
+          display: none;
+          visibility: hidden;
+        }
+
+        .advice--headline {
+          font-size: $font-size-sm;
+        }
+
+        .advice--group {
+          border-top: 0 none;
+
+          label {
+            border-top: 0 none;
+            color: $primary_sf;
+            font-weight: 400;
+            max-width: unset;
+            position: static;
+            width: 100%;
+          
+            span {
+              padding-right: .5rem;
+
+              @extend %fa-icon;
+              @extend .fal;
+              &:before {
+                content: fa-content($fa-var-comment-check);
+              }
+            }
+          }
+        }
+      }
+
+      .form-control {
+        &:focus {
+          border-color: $sf_brand_link;
+          box-shadow: 0 0 0 0.2rem rgba($sf_brand_link, .25);
+        }
+      }
+    }
+  }
 }

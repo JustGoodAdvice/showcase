@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html style="margin-top:0;">
+  <head>
+    <%- include("partials/_head"); %>
+  </head>
+
+  <body class="launcher">
+
+    <nav class="navbar fixed-top" id="navbarNav">
+      <div class="container-fluid">
+        <ul class="navbar-nav flex-row">
+          <li class="nav-item">
+            <a class="nav-link active" href="#" data-dest="index" data-resize="desktop"><i class="fal fa-home"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-dest="index" data-resize="mobile"><i class="fal fa-mobile"></i></a>
+          </li>
+          <!--
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-dest="virtual-assistant"><i class="fal fa-comments"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-dest="push"><i class="fal fa-bell-on"></i></a>
+          </li>
+        -->
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-dest="salesforce"><i class="fal fa-desktop-alt"></i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="main bg-dark">
+      <iframe src="<%= locals.iframeSrc %>" width="100%" class="iframe-preview"></iframe>
+    </main>
+
+    <div id="__init" data-page-init="launchFrame"></div>
+    <%- include("partials/_footer_js"); %>
+  </body>
+</html>

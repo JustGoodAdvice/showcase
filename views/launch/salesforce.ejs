@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("partials/_head"); %>
+  </head>
+  <body class="launch launch--salesforce">
+
+    <div class="wrap">
+    
+      <main class="container">
+        <div class="row g-0 mx-n3">
+          <div class="col-12 sf-header"></div>
+        </div>
+        <div class="row g-0 mx-n3 advice-wrap">
+          <div class="col-8 sf-left"></div>
+          <div class="col-4 sf-right">
+            <div class="advice-card">
+              <div class="column-card">
+                <div class="advice">
+                  <header class="column-card-header"><span>Taffrail</span></header>
+                  <section class="raised-card">
+                    <section id="__loading__">
+                      <div class="long-loader"></div>
+                      <div class="center-ph-loader">
+                        <%- include("partials/hbs/loading"); %>
+                      </div>
+                    </section>
+                    <div class="list-all-recommendations"></div>
+                  </section>
+                </div>
+              </div>
+            </div>
+            <div class="sf-related"></div>
+          </div>
+        </div>
+      </main>
+    
+    </div>
+
+    <%- include("partials/hbs/adviceSetDetails"); %>
+    <%- include("partials/hbs/inputRequest"); %>
+    <%- include("partials/hbs/advice"); %>
+    <%- include("partials/hbs/recommendations"); %>
+    <%- include("partials/hbs/recommendationsList"); %>
+    <%- include("partials/error"); %>
+
+    <%- include("partials/hbs/answers"); %>
+    <%- include("partials/hbs/assumptions"); %>
+    <%- include("partials/hbs/variables"); %>
+    <%- include("partials/_modal_vars"); %>
+    <%- include("partials/_toast"); %>
+    <%- include("partials/hbs/_loader_long"); %>
+
+    <div id="__init" data-page-init="launch"></div>
+    <%- include("partials/_footer_js"); %>
+  </body>
+</html>

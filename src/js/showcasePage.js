@@ -86,9 +86,11 @@ export default class ShowcasePage {
 
     // inside iframe? screenshot generator helper
     const isFramed = window.location !== window.parent.location;
-    if (isFramed) {
+    if (isFramed && window.location.pathname.includes("cleanshot")) {
       $("body").addClass("showcase--redux_isFramed");
       $("main.container").removeClass("container").addClass("container-fluid");
+    } else if (isFramed) {
+      $("body").addClass("showcase-iframed");
     }
   }
 
@@ -123,6 +125,11 @@ export default class ShowcasePage {
   // eslint-disable-next-line accessor-pairs
   set windowTitle(title) {
     document.title = title;
+    try {
+      window.parent.document.title = title;
+    } catch (e) {
+      // nothing to do
+    }
   }
   // #endregion
 
