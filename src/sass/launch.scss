@@ -585,6 +585,7 @@ body.launch {
 body.launch.showcase-iframed {
 
   // mobile specific
+  &.iframe-preview--chatbot,
   &.iframe-preview--mobile {
     .list-all-recommendations {
       .advice--group {
@@ -883,6 +884,51 @@ body.launch.launch--salesforce {
         &:focus {
           border-color: $sf_brand_link;
           box-shadow: 0 0 0 0.2rem rgba($sf_brand_link, .25);
+        }
+      }
+    }
+  }
+}
+
+body.launch.launch--chatbot {
+  header.title {
+    font-size: $font-size-base;
+    font-weight: 400;
+    margin-top: 0;
+    padding: 1rem 1.5rem 0 1.5rem;
+  }
+
+  .answers-chat-bubbles {
+    .screen-edge-padding {
+      margin-top: 1rem;
+      padding: 0 1.5rem;
+    }
+
+    li.bubble {
+      background-color: $gray-200;
+      border-radius: $border-radius;
+      display: flex;
+      padding: 1rem .5rem;
+
+      + li.bubble {
+        margin-top: 1rem;
+      }
+
+      &.from-them {
+        width: 80%;
+      }
+
+      &.from-me {
+        background-color: #606c38;
+        justify-content: flex-end;
+        margin-left: 20%;
+        padding: .5rem .5rem;
+        text-align: right;
+        width: 80%;
+
+        a {
+          color: #fefae0;
+          text-decoration: none;
         }
       }
     }

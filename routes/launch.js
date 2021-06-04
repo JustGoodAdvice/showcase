@@ -7,9 +7,9 @@ router.get("/:adviceSetId/:view?", botMiddleware, (req, res, next) => {
   const { adviceSetId, view = "index" } = req.params;
   if (!adviceSetId) { return next(); }
 
-  const allowedViews = ["launch", "index", "mobile", "virtual-assistant", "salesforce"];
+  const allowedViews = ["launch", "index", "mobile", "chatbot", "salesforce"];
   const template = (allowedViews.includes(view)) ? view : allowedViews[0];
-  const isMobile = view == "mobile" || view == "virtual-assistant";
+  const isMobile = view == "mobile" || view == "chatbot";
   const include = ["filteredVars"];
   if (view == "harness") {
     include.push("formulaDebug");

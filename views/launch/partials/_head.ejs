@@ -25,7 +25,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="theme-color" content="#ffffff">
-<script>window.jga = window.jga || {}; window.jga.config = { 
+<script>window.jga = window.jga || {}; window.jga.launch_history = {replace:function(){},push:function(){}}; window.jga.config = { 
   api_channel: "published", 
   cdn_host: "<%= locals.CDN_HOST %>", 
   web_host: "<%= locals.WEB_HOST %>", 
@@ -46,7 +46,6 @@
   gtag('config', '<%= GTAG_ID %>');
 </script>
 <% } %>
-
 
 <script type="text/javascript">
   window.jga = window.jga || {};

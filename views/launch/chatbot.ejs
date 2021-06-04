@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("partials/_head"); %>
+  </head>
+  <body class="launch launch--chatbot">
+
+    <main class="container">
+      <div class="row advice-wrap">
+        <div class="col-12">
+          <main class="screen">
+            <header class="title" data-advice-set-title></header>
+            <section id="__loading__">
+              <div class="long-loader"></div>
+              <div class="center-ph-loader">
+                <%- include("partials/hbs/loading"); %>
+              </div>
+            </section>
+            <div class="answers-chat-bubbles"></div>
+            <div class="advice"></div>
+            <div class="list-all-recommendations"></div>
+          </main>
+        </div>
+      </div>
+    </main>
+
+    <%- include("partials/hbs/adviceSetDetails"); %>
+    <%- include("partials/hbs/answers-chatbubbles"); %>
+    <%- include("partials/hbs/inputRequest"); %>
+    <%- include("partials/hbs/advice"); %>
+    <%- include("partials/hbs/recommendations"); %>
+    <%- include("partials/hbs/recommendationsList"); %>
+    <%- include("partials/error"); %>
+
+    <%- include("partials/hbs/answers"); %>
+    <%- include("partials/hbs/assumptions"); %>
+    <%- include("partials/hbs/variables"); %>
+    <%- include("partials/_modal_vars"); %>
+    <%- include("partials/_toast"); %>
+    <%- include("partials/hbs/_loader_long"); %>
+
+    <div id="__init" data-page-init="launch"></div>
+    <%- include("partials/_footer_js"); %>
+  </body>
+</html>

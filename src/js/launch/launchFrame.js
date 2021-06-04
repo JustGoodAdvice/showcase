@@ -19,6 +19,7 @@ export default class {
 
     // eslint-disable-next-line complexity
     $("#navbarNav").on("click", "a.nav-link", e => {
+      e.preventDefault();
       const $a = $(e.currentTarget);
       const { dest = "index", resize } = $a.data();
       const $frame = $("iframe");
@@ -50,10 +51,12 @@ export default class {
         url += "?" + qs.stringify(querystring);
 
         // switching to the mobile index from another non-index view
-        if (dest == "index" && prevView != "index") {
+        if ((dest == "index" && prevView != "index") || resize == "mobile") {
           canResize = true;
         }
       }
+
+      console.log(url)
 
       // save for prevView check
       window.jga.launch_view = dest;

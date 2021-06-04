@@ -116,6 +116,15 @@ export default class ShowcasePage {
     return `/${prefix}/${this.api.adviceset.id}`;
   }
 
+  get viewName() {
+    const path = _.last(location.pathname.split("/"));
+    const views = ["mobile","salesforce","chatbot"];
+    if (views.includes(path)) {
+      return path; // no preceding `/`
+    }
+    return "";
+  }
+
   // these are API params set by default
   // do not save them as visible parts of the URL or in Advice Builder scenarios
   get paramsToOmit() {

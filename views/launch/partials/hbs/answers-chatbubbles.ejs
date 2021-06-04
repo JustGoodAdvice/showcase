@@ -1,0 +1,12 @@
+<script id="tmpl_answersListChatBubbles" type="text/x-handlebars-template">
+	<ul class="list-unstyled screen-edge-padding">
+		{{#each answers}}
+			<li data-id="{{id}}" data-idx="{{idx}}" class="qa bubble from-them position-relative">
+				{{question}}
+			</li>
+			<li class="qa bubble from-me position-relative">
+				<span class="a"><a href="#" class="statement stretched-link" data-id="{{id}}" data-idx="{{idx}}">{{#if answer}}{{answer}}{{else}}{{value}}{{/if}}</a></span>
+			</li>
+		{{/each}}
+	</ul>
+</script>

@@ -26,7 +26,7 @@ export default class extends ShowcasePage {
         }
         // on page load, save current state without API params
         const currQs = qs.stringify(_.omit(qs.parse(querystring), this.paramsToOmit));
-        this.history.replace(`${this.baseUrl}/?${currQs}`, this.api);
+        this.history.replace(`${this.baseUrl}/${this.viewName}?${currQs}`, this.api);
         parent.window.jga.launch_history.replace(`${this.baseUrl}/launch?${currQs}`, this.api);
         // DOM updates
         this.updatePanes();
@@ -94,6 +94,7 @@ export default class extends ShowcasePage {
       "AdviceSetScenarios": compile("#tmpl_advicesetScenarios"),
       "AdviceSetReferences": compile("#tmpl_advicesetReferenceDocs"),
       "AdviceSetAiUR": compile("#tmpl_advicesetUserQuestions"),
+      "AnswerChatBubbles": compile("#tmpl_answersListChatBubbles"),
       "InputRequest": compile("#tmpl_adviceInputRequest"),
       "Advice": compile("#tmpl_adviceAdvice"),
       "Recommendations": compile("#tmpl_groupedRecommendationsAdviceList"),
@@ -117,7 +118,7 @@ export default class extends ShowcasePage {
       }
 
       // update adviceset titles anywhere
-      $("span[data-advice-set-title]").text(data.adviceset.title);
+      $("[data-advice-set-title]").text(data.adviceset.title);
       // update the window title
       this.windowTitle = `${data.adviceset.title} - ${data.adviceset.owner.name}`;
 
@@ -216,7 +217,7 @@ export default class extends ShowcasePage {
   updatePanes() {
     // save state
     const _qs = qs.stringify(_.omit(this.api.params, this.paramsToOmit));
-    this.history.push(`${this.baseUrl}/?${_qs}`, this.api);
+    this.history.push(`${this.baseUrl}/${this.viewName}?${_qs}`, this.api);
     parent.window.jga.launch_history.push(`${this.baseUrl}/launch?${_qs}`, this.api);
 
     this.mapData();
@@ -415,6 +416,16 @@ export default class extends ShowcasePage {
     if (this.TEMPLATES["AdviceSetReferences"]) {
       const strReferences = this.TEMPLATES["AdviceSetReferences"](this.api);
       $(".adviceset-references").html(strReferences);
+    }
+
+    if (this.TEMPLATES["AnswerChatBubbles"]) {
+      // do we have ANY answers yet?
+      // show or hide depending
+      // simple helper for UX
+      this.api._answersExist = this.api.answers.length > 0;
+
+      const str = this.TEMPLATES["AnswerChatBubbles"](this.api);
+      $(".answers-chat-bubbles").html(str);
     }
 
     // One more step....
@@ -640,7 +651,7 @@ export default class extends ShowcasePage {
    * Click handler for assumptions or Q&A
    */
   handleClickAssumption() {
-    $("aside .assumptions").on("click", "a.statement", e => {
+    $("aside .assumptions, li.qa.bubble").on("click", "a.statement,a", e => {
       e.preventDefault();
       const $this = $(e.currentTarget);
       const data = $this.data();
@@ -668,7 +679,7 @@ export default class extends ShowcasePage {
       } else {
         querystr.aiUrId = id;
       }
-      window.location.href = `${this.baseUrl}?${qs.stringify(querystr)}`;
+      window.location.href = `${this.baseUrl}/${this.viewName}?${qs.stringify(querystr)}`;
     });
   }
 
