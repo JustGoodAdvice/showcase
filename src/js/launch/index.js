@@ -690,6 +690,10 @@ export default class extends ShowcasePage {
     $(document).on("click", "taffrail-var.active", e => {
       e.preventDefault();
       const $this = $(e.currentTarget);
+      const isCalculated = $this.hasClass("active--calculated");
+      if (isCalculated) {
+        return;
+      }
       const { idx } = $this.data();
       $this.tooltip("hide");
       // $("html, body").animate({ scrollTop: this.scrollTo });

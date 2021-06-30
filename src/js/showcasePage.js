@@ -556,6 +556,7 @@ export default class ShowcasePage {
         if (this.api.formulaDebug) {
           const source = this.api.formulaDebug.find(f => { return f.id == variableId });
           if (!source) { console.error("no source found", variableId); return; }
+          const hasSidebar = $("body").find(".advice-debug").length;
           const isInSidebar = $el.closest(".advice-debug").length;
           if (isInSidebar) { return; }
 
@@ -572,7 +573,7 @@ export default class ShowcasePage {
                   <div class="text-monospace var-name">
                     <a href="${dictLink}" target="_blank">${varLookup.name}</a>
                   </div>
-                  <a href="#formula_${variableId}" class="jumptoformula"><i class="fal fa-sort-amount-down-alt"></i></a>
+                  ${hasSidebar?`<a href="#formula_${variableId}" class="jumptoformula"><i class="fal fa-sort-amount-down-alt"></i></a>`:""}
                 </div>
                 <div class="expression">
                   <h5>Formula</h5>
@@ -589,6 +590,10 @@ export default class ShowcasePage {
               </div>
             </div>
           `;
+
+          if (addClassNameMark) {
+            $el.addClass("mark");
+          }
 
           $el
             .addClass("active active--calculated")
@@ -614,19 +619,21 @@ export default class ShowcasePage {
                 })
                 .tooltip({ title: "Click to copy" })
               ;
-              $(".popover")
-                .find("a.jumptoformula")
-                .on("click", e => {
-                  e.preventDefault();
-                  const $el = $(e.currentTarget);
-                  $el.tooltip("dispose");
-                  const link = $el.attr("href");
-                  $("html, body").animate({ scrollTop: $(`${link}`).offset().top - 50 }, 400, () => {
-                    $(`${link}`).addClass("flash");
-                  });
-                })
-                .tooltip({ title: "Jump to formula" })
-              ;
+              if (hasSidebar){
+                $(".popover")
+                  .find("a.jumptoformula")
+                  .on("click", e => {
+                    e.preventDefault();
+                    const $el = $(e.currentTarget);
+                    $el.tooltip("dispose");
+                    const link = $el.attr("href");
+                    $("html, body").animate({ scrollTop: $(`${link}`).offset().top - 50 }, 400, () => {
+                      $(`${link}`).addClass("flash");
+                    });
+                  })
+                  .tooltip({ title: "Jump to formula" })
+                ;
+              }
             })
           ;
         }

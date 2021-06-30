@@ -122,8 +122,84 @@ taffrail-var {
         color: $secondary;
       }
     }
+
     &[data-is-undefined] {
       border-bottom: 1px dotted $danger;
+    }
+
+    &.active--calculated {
+      border-bottom: 0 none;
+      cursor: unset;
+
+      &:hover {
+        color: unset;
+      }
+    }
+
+    &.active--not-linked {
+      border-bottom: 1px dotted $primary;
+      cursor: default;
+    }
+
+    .advice-editor-mode-enabled & {
+      &.active--calculated {
+        border-bottom: 1px dotted $warning;
+        cursor: pointer;
+
+        &:hover {
+          border-bottom: 1px dotted $primary;
+          color: $warning;
+        }
+      }
+
+      &.active--not-linked {
+        border-bottom: 1px dotted $primary;
+        cursor: default;
+      }
+    }
+  }
+}
+
+.popover {
+  min-width: 25em !important;
+
+  h5 {
+    color: $gray-600;
+    font-size: 80%;
+    text-transform: uppercase;
+  }
+
+  .var-name {
+    font-size: 90%;
+    margin-bottom: .75rem;
+
+    // max-width: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  code {
+    color: $primary;
+    display: block;
+    font-size: 80%;
+  }
+
+  .expression {
+    .value {
+      color: $secondary;
+      margin-left: .5rem;
+      white-space: nowrap;
+    }
+  }
+
+  .exp-debug {
+    margin-top: 1rem;
+    
+    code {
+      min-height: 2.5rem;
+      overflow-x: scroll;
+      white-space: nowrap;
     }
   }
 }
