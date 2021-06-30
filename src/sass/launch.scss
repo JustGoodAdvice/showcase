@@ -674,7 +674,7 @@ body.launch.showcase-iframed {
             @extend %fa-icon;
             @extend .fal;
             &:before {
-              content: fa-content($fa-var-lightbulb-on);
+              content: fa-content($fa-var-flag);
             }
           }
         }
